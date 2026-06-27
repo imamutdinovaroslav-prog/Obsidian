@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Obsidian Core Dashboard</title>
+  <title>Obsidian Core Dashboard + Расширенная аналитика</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #1a1a1a; color: #ddd; font-family: 'Segoe UI', system-ui, sans-serif; padding: 20px; }
     .dashboard { max-width: 1200px; margin: 0 auto; }
     h1 { text-align: center; margin-bottom: 20px; color: #e0e0e0; }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; background: #2a2a2a; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; background: #2a2a2a; padding: 15px; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; }
     .date { font-size: 1.2em; }
     .cns { display: flex; align-items: center; gap: 10px; }
     .cns input { width: 60px; padding: 5px; font-size: 1.1em; border: none; border-radius: 4px; background: #333; color: #fff; text-align: center; }
@@ -30,9 +31,15 @@
     .indicator.red { background: #e74c3c; }
     .indicator.orange { background: #f39c12; }
     .indicator.green { background: #2ecc71; }
+    .charts-section { margin-top: 40px; }
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+    .chart-container { background: #2a2a2a; border-radius: 10px; padding: 20px; }
+    .chart-container h3 { color: #b0b0b0; margin-bottom: 10px; text-align: center; font-size: 1em; }
+    canvas { width: 100% !important; height: auto !important; }
     @media (max-width: 600px) {
       .field { flex-direction: column; align-items: flex-start; }
       .field label { width: auto; margin-bottom: 5px; }
+      .charts-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -132,30 +139,247 @@
         <li><input type="checkbox" id="check3"> Вечерний отчёт</li>
       </ul>
     </div>
+
+    <!-- НОВЫЙ РАЗДЕЛ С ГРАФИКАМИ -->
+    <div class="charts-section">
+      <h2 style="text-align:center; color:#e0e0e0; margin-bottom:20px;">📈 Аналитика по фронтам</h2>
+      <div class="charts-grid">
+        <div class="chart-container"><h3>Энергия ЦНС</h3><canvas id="cnsChart"></canvas></div>
+        <div class="chart-container"><h3>Капитал (₽)</h3><canvas id="capitalChart"></canvas></div>
+        <div class="chart-container"><h3>Длительность сна (часы)</h3><canvas id="sleepChart"></canvas></div>
+        <div class="chart-container"><h3>Доход за месяц (₽)</h3><canvas id="incomeChart"></canvas></div>
+        <div class="chart-container"><h3>Выполнение чек-листа (0-3)</h3><canvas id="checklistChart"></canvas></div>
+        <div class="chart-container"><h3>Социальное напряжение</h3><canvas id="socialChart"></canvas></div>
+        <div class="chart-container"><h3>Учебные долги</h3><canvas id="debtsChart"></canvas></div>
+        <div class="chart-container"><h3>Активность Магазина / Канала</h3><canvas id="activityChart"></canvas></div>
+      </div>
+    </div>
   </div>
 
   <script>
-    // Загрузка данных из localStorage при старте
+    // Хранилище экземпляров графиков
+    const charts = {};
+
+    // Инициализация всех графиков
+    function initCharts() {
+      const chartDefs = [
+        { id: 'cnsChart', label: 'ЦНС', borderColor: '#f39c12', bgColor: 'rgba(243,156,18,0.2)', yMin: 1, yMax: 10, type: 'line' },
+        { id: 'capitalChart', label: 'Капитал', borderColor: '#2ecc71', bgColor: 'rgba(46,204,113,0.2)', yMin: undefined, yMax: undefined, type: 'line' },
+        { id: 'sleepChart', label: 'Сон (ч)', borderColor: '#4a90d9', bgColor: 'rgba(74,144,217,0.2)', yMin: 0, yMax: 12, type: 'bar' },
+        { id: 'incomeChart', label: 'Доход', borderColor: '#9b59b6', bgColor: 'rgba(155,89,182,0.2)', yMin: undefined, yMax: undefined, type: 'line' },
+        { id: 'checklistChart', label: 'Чек-лист (0-3)', borderColor: '#e67e22', bgColor: 'rgba(230,126,34,0.2)', yMin: 0, yMax: 3, type: 'bar' },
+        { id: 'socialChart', label: 'Напряжение (0-2)', borderColor: '#e74c3c', bgColor: 'rgba(231,76,60,0.2)', yMin: 0, yMax: 2, type: 'line' },
+        { id: 'debtsChart', label: 'Долги', borderColor: '#1abc9c', bgColor: 'rgba(26,188,156,0.2)', yMin: 0, yMax: undefined, type: 'line' },
+        { id: 'activityChart', label: 'Активность (0/1)', borderColor: '#3498db', bgColor: 'rgba(52,152,219,0.2)', yMin: 0, yMax: 1, type: 'line', multipleDatasets: true }
+      ];
+
+      chartDefs.forEach(def => {
+        const ctx = document.getElementById(def.id).getContext('2d');
+        if (def.multipleDatasets) {
+          charts[def.id] = new Chart(ctx, {
+            type: def.type,
+            data: {
+              labels: [],
+              datasets: [
+                { label: 'Магазин', data: [], borderColor: '#f1c40f', backgroundColor: 'rgba(241,196,15,0.2)', tension: 0.3 },
+                { label: 'Канал', data: [], borderColor: '#e84393', backgroundColor: 'rgba(232,67,147,0.2)', tension: 0.3 }
+              ]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: { min: def.yMin, max: def.yMax, grid: { color: '#333' }, ticks: { color: '#ccc' } },
+                x: { ticks: { color: '#ccc' } }
+              },
+              plugins: { legend: { labels: { color: '#ccc' } } }
+            }
+          });
+        } else {
+          charts[def.id] = new Chart(ctx, {
+            type: def.type,
+            data: {
+              labels: [],
+              datasets: [{
+                label: def.label,
+                data: [],
+                borderColor: def.borderColor,
+                backgroundColor: def.bgColor,
+                tension: 0.3
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                y: { min: def.yMin, max: def.yMax, grid: { color: '#333' }, ticks: { color: '#ccc' } },
+                x: { ticks: { color: '#ccc' } }
+              },
+              plugins: { legend: { labels: { color: '#ccc' } } }
+            }
+          });
+        }
+      });
+    }
+
+    function loadHistory() {
+      const history = JSON.parse(localStorage.getItem('obsidian_history')) || [];
+      const labels = history.map(e => e.date);
+      
+      // Функция обновления графика с одним датасетом
+      const updateSingle = (chartId, values) => {
+        charts[chartId].data.labels = labels;
+        charts[chartId].data.datasets[0].data = values;
+        charts[chartId].update();
+      };
+
+      // Сбор данных
+      const cnsData = history.map(e => e.cns);
+      const capitalData = history.map(e => e.capital);
+      const sleepData = history.map(e => e.sleepDurationHours);
+      const incomeData = history.map(e => e.monthIncome ?? null);
+      const checklistData = history.map(e => e.checklistScore);
+      const socialData = history.map(e => e.socialTension);
+      const debtsData = history.map(e => e.debtsCount);
+
+      updateSingle('cnsChart', cnsData);
+      updateSingle('capitalChart', capitalData);
+      updateSingle('sleepChart', sleepData);
+      updateSingle('incomeChart', incomeData);
+      updateSingle('checklistChart', checklistData);
+      updateSingle('socialChart', socialData);
+      updateSingle('debtsChart', debtsData);
+
+      // График активности магазина/канала (два датасета)
+      const storeActive = history.map(e => e.storeActive ?? null);
+      const channelActive = history.map(e => e.channelActive ?? null);
+      charts['activityChart'].data.labels = labels;
+      charts['activityChart'].data.datasets[0].data = storeActive;
+      charts['activityChart'].data.datasets[1].data = channelActive;
+      charts['activityChart'].update();
+    }
+
+    // Сохранение с историей
+    function saveAll() {
+      // Чтение всех полей
+      const cns = parseFloat(document.getElementById('cnsValue').value) || 5;
+      const sleepTime = document.getElementById('sleepTime').value;
+      const wakeTime = document.getElementById('wakeTime').value;
+      const capital = parseFloat(document.getElementById('capital').value) || 0;
+      const monthIncome = parseFloat(document.getElementById('monthIncome').value) || 0;
+      const storeStatus = document.getElementById('storeStatus').value;
+      const channelStatus = document.getElementById('channelStatus').value;
+      const socialMood = document.getElementById('socialMood').value;
+      const debtsCount = parseInt(document.getElementById('debtsCount').value) || 0;
+      const check1 = document.getElementById('check1').checked;
+      const check2 = document.getElementById('check2').checked;
+      const check3 = document.getElementById('check3').checked;
+      const checklistScore = (check1?1:0) + (check2?1:0) + (check3?1:0);
+      const socialTension = socialMood === 'calm' ? 0 : (socialMood === 'tension' ? 1 : 2);
+      const storeActive = storeStatus === 'active' ? 1 : 0;
+      const channelActive = channelStatus === 'active' ? 1 : 0;
+
+      // Расчёт продолжительности сна
+      let sleepDurationHours = null;
+      if (sleepTime && wakeTime) {
+        const [sh, sm] = sleepTime.split(':').map(Number);
+        const [wh, wm] = wakeTime.split(':').map(Number);
+        let sleepMin = sh*60+sm;
+        let wakeMin = wh*60+wm;
+        if (wakeMin < sleepMin) wakeMin += 24*60;
+        sleepDurationHours = parseFloat(((wakeMin - sleepMin)/60).toFixed(1));
+      }
+
+      // Сохраняем текущее состояние в obsidian_dashboard (как раньше)
+      const dashboardData = {
+        cns, sleepTime, wakeTime,
+        breakfast: document.getElementById('breakfast').value,
+        meals: document.getElementById('meals').value,
+        workout: document.getElementById('workout').value,
+        cnsNote: document.getElementById('cnsNote').value,
+        storeStatus, lastAction: document.getElementById('lastAction').value,
+        monthIncome, shareAgreed: document.getElementById('shareAgreed').value,
+        storeNote: document.getElementById('storeNote').value,
+        capital, goalShort: document.getElementById('goalShort').value,
+        motoSavings: document.getElementById('motoSavings').value,
+        capitalNote: document.getElementById('capitalNote').value,
+        studyStatus: document.getElementById('studyStatus').value,
+        debtsCount, nextExam: document.getElementById('nextExam').value,
+        studyNote: document.getElementById('studyNote').value,
+        veronikaStatus: document.getElementById('veronikaStatus').value,
+        maxStatus: document.getElementById('maxStatus').value,
+        brotherStatus: document.getElementById('brotherStatus').value,
+        socialMood, socialNote: document.getElementById('socialNote').value,
+        channelStatus, coreVersion: document.getElementById('coreVersion').value,
+        skillLearned: document.getElementById('skillLearned').value,
+        hobbyNote: document.getElementById('hobbyNote').value,
+        check1, check2, check3
+      };
+      localStorage.setItem('obsidian_dashboard', JSON.stringify(dashboardData));
+
+      // Добавляем запись в историю
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const historyEntry = {
+        date: dateStr,
+        cns,
+        capital,
+        sleepDurationHours,
+        monthIncome,
+        checklistScore,
+        socialTension,
+        debtsCount,
+        storeActive,
+        channelActive
+      };
+
+      let history = JSON.parse(localStorage.getItem('obsidian_history')) || [];
+      const existingIndex = history.findIndex(e => e.date === dateStr);
+      if (existingIndex !== -1) {
+        history[existingIndex] = historyEntry;
+      } else {
+        history.push(historyEntry);
+      }
+      localStorage.setItem('obsidian_history', JSON.stringify(history));
+
+      // Обновляем графики
+      loadHistory();
+      alert('✅ Данные сохранены и добавлены в историю. Графики обновлены.');
+    }
+
+    function updateCnsIndicator() {
+      const val = parseInt(document.getElementById('cnsValue').value) || 5;
+      const ind = document.getElementById('cnsIndicator');
+      ind.className = 'indicator ';
+      if (val <= 3) ind.classList.add('red');
+      else if (val <= 6) ind.classList.add('orange');
+      else ind.classList.add('green');
+    }
+
+    function displayDate() {
+      const now = new Date();
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('ru-RU', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    // Загрузка при старте
     window.onload = function() {
       const saved = JSON.parse(localStorage.getItem('obsidian_dashboard')) || {};
-      if (saved.cns) document.getElementById('cnsValue').value = saved.cns;
+      if (saved.cns !== undefined) document.getElementById('cnsValue').value = saved.cns;
       if (saved.sleepTime) document.getElementById('sleepTime').value = saved.sleepTime;
       if (saved.wakeTime) document.getElementById('wakeTime').value = saved.wakeTime;
       if (saved.breakfast) document.getElementById('breakfast').value = saved.breakfast;
-      if (saved.meals) document.getElementById('meals').value = saved.meals;
+      if (saved.meals !== undefined) document.getElementById('meals').value = saved.meals;
       if (saved.workout) document.getElementById('workout').value = saved.workout;
       if (saved.cnsNote) document.getElementById('cnsNote').value = saved.cnsNote;
       if (saved.storeStatus) document.getElementById('storeStatus').value = saved.storeStatus;
       if (saved.lastAction) document.getElementById('lastAction').value = saved.lastAction;
-      if (saved.monthIncome) document.getElementById('monthIncome').value = saved.monthIncome;
+      if (saved.monthIncome !== undefined) document.getElementById('monthIncome').value = saved.monthIncome;
       if (saved.shareAgreed) document.getElementById('shareAgreed').value = saved.shareAgreed;
       if (saved.storeNote) document.getElementById('storeNote').value = saved.storeNote;
-      if (saved.capital) document.getElementById('capital').value = saved.capital;
-      if (saved.goalShort) document.getElementById('goalShort').value = saved.goalShort;
-      if (saved.motoSavings) document.getElementById('motoSavings').value = saved.motoSavings;
+      if (saved.capital !== undefined) document.getElementById('capital').value = saved.capital;
+      if (saved.goalShort !== undefined) document.getElementById('goalShort').value = saved.goalShort;
+      if (saved.motoSavings !== undefined) document.getElementById('motoSavings').value = saved.motoSavings;
       if (saved.capitalNote) document.getElementById('capitalNote').value = saved.capitalNote;
       if (saved.studyStatus) document.getElementById('studyStatus').value = saved.studyStatus;
-      if (saved.debtsCount) document.getElementById('debtsCount').value = saved.debtsCount;
+      if (saved.debtsCount !== undefined) document.getElementById('debtsCount').value = saved.debtsCount;
       if (saved.nextExam) document.getElementById('nextExam').value = saved.nextExam;
       if (saved.studyNote) document.getElementById('studyNote').value = saved.studyNote;
       if (saved.veronikaStatus) document.getElementById('veronikaStatus').value = saved.veronikaStatus;
@@ -173,60 +397,9 @@
       
       updateCnsIndicator();
       displayDate();
+      initCharts();
+      loadHistory();
     };
-
-    function displayDate() {
-      const now = new Date();
-      document.getElementById('currentDate').textContent = now.toLocaleDateString('ru-RU', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
-    }
-
-    function updateCnsIndicator() {
-      const val = parseInt(document.getElementById('cnsValue').value) || 5;
-      const ind = document.getElementById('cnsIndicator');
-      ind.className = 'indicator ';
-      if (val <= 3) ind.classList.add('red');
-      else if (val <= 6) ind.classList.add('orange');
-      else ind.classList.add('green');
-    }
-
-    function saveAll() {
-      const data = {
-        cns: document.getElementById('cnsValue').value,
-        sleepTime: document.getElementById('sleepTime').value,
-        wakeTime: document.getElementById('wakeTime').value,
-        breakfast: document.getElementById('breakfast').value,
-        meals: document.getElementById('meals').value,
-        workout: document.getElementById('workout').value,
-        cnsNote: document.getElementById('cnsNote').value,
-        storeStatus: document.getElementById('storeStatus').value,
-        lastAction: document.getElementById('lastAction').value,
-        monthIncome: document.getElementById('monthIncome').value,
-        shareAgreed: document.getElementById('shareAgreed').value,
-        storeNote: document.getElementById('storeNote').value,
-        capital: document.getElementById('capital').value,
-        goalShort: document.getElementById('goalShort').value,
-        motoSavings: document.getElementById('motoSavings').value,
-        capitalNote: document.getElementById('capitalNote').value,
-        studyStatus: document.getElementById('studyStatus').value,
-        debtsCount: document.getElementById('debtsCount').value,
-        nextExam: document.getElementById('nextExam').value,
-        studyNote: document.getElementById('studyNote').value,
-        veronikaStatus: document.getElementById('veronikaStatus').value,
-        maxStatus: document.getElementById('maxStatus').value,
-        brotherStatus: document.getElementById('brotherStatus').value,
-        socialMood: document.getElementById('socialMood').value,
-        socialNote: document.getElementById('socialNote').value,
-        channelStatus: document.getElementById('channelStatus').value,
-        coreVersion: document.getElementById('coreVersion').value,
-        skillLearned: document.getElementById('skillLearned').value,
-        hobbyNote: document.getElementById('hobbyNote').value,
-        check1: document.getElementById('check1').checked,
-        check2: document.getElementById('check2').checked,
-        check3: document.getElementById('check3').checked,
-      };
-      localStorage.setItem('obsidian_dashboard', JSON.stringify(data));
-      alert('✅ Все данные сохранены в памяти браузера.');
-    }
   </script>
 </body>
 </html>
