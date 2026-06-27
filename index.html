@@ -97,15 +97,15 @@
     .status-угасла, .status-пауза { background: #f0c060; color: #f0c060; }
     .status-хрупкое { background: #f0a060; color: #f0a060; }
     .status-нейтрально { background: #a0c4ff; color: #a0c4ff; }
-    .field input, .field textarea {
+    input, select, textarea {
       flex: 1; padding: 8px 12px; border: none; border-radius: 6px;
       background: rgba(255,255,255,0.08); color: #fff;
       font-size: 0.9rem; font-family: inherit;
     }
-    .field input:focus, .field textarea:focus {
+    input:focus, select:focus, textarea:focus {
       background: rgba(255,255,255,0.15); outline: none;
     }
-    .field textarea { resize: vertical; min-height: 50px; }
+    textarea { resize: vertical; min-height: 50px; }
     .progress-bar {
       width: 100%; height: 8px; background: rgba(255,255,255,0.08);
       border-radius: 10px; margin-top: 8px; overflow: hidden;
@@ -141,11 +141,7 @@
   <div class="bg-text">Obsidian Core System 2</div>
   <div class="container">
     <h1>⚡ Obsidian Core v2.0</h1>
-    <p class="subtitle">
-      <span id="currentDate"></span>
-      <span class="blinking-dot"></span>
-    </p>
-
+    <p class="subtitle"><span id="currentDate"></span><span class="blinking-dot"></span></p>
     <div class="core-index">
       <div class="ring">
         <svg width="80" height="80" viewBox="0 0 80 80">
@@ -157,9 +153,7 @@
       </div>
       <span style="color:#aaa;">Obsidian Core Index</span>
     </div>
-
     <div id="frontsContainer"></div>
-
     <div class="buttons-panel">
       <button class="btn primary" onclick="saveAll()">💾 Сохранить всё</button>
       <button class="btn" onclick="toggleJson()">📋 Показать JSON</button>
@@ -172,13 +166,7 @@
     let currentData = null;
     const MANUAL_CYCLE = ['критично', 'хрупкое', 'держится', 'угасла', 'пауза', 'нейтрально'];
 
-    // Автоматическое определение статуса по числовому уровню
-    function autoStatus(level) {
-      if (level <= 3) return 'критично';
-      if (level <= 6) return 'хрупкое';
-      return 'держится';
-    }
-
+    // ========== Загрузка ==========
     window.onload = async () => {
       document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', {
         weekday:'short', year:'numeric', month:'long', day:'numeric'
@@ -192,10 +180,7 @@
         } catch(e){}
       }
       if (!currentData) currentData = getEmptyStructure();
-      // Синхронизируем статусы для числовых параметров при загрузке
-      currentData.фронты.forEach(f => f.параметры.forEach(p => {
-        if (p.уровень !== undefined) p.статус = autoStatus(p.уровень);
-      }));
+      syncAllAutoStatuses();
       renderAll();
     };
 
@@ -206,31 +191,31 @@
           {
             название: "0.4 — ЦНС и тело",
             параметры: [
-              { имя: "Сон", состояние: "", статус: "критично" },
-              { имя: "Питание", состояние: "", статус: "держится" },
-              { имя: "Физнагрузка", состояние: "", статус: "угасла" },
-              { имя: "Общее ЦНС", состояние: "", уровень: 4.5 }
+              { имя: "Сон", sleep_bed: "23:30", sleep_wake: "07:00" },
+              { имя: "Питание", nutrition_level: 2 },
+              { имя: "Физнагрузка", workout_desc: "", workout_streak: 0, workout_note: "", статус: "угасла" },
+              { имя: "Общее ЦНС", уровень: 4.5 }
             ]
           },
           {
             название: "1 — Магазин / Студия",
             параметры: [
-              { имя: "Магазин «СКИФ»", состояние: "", статус: "критично" },
-              { имя: "Студия автосвета", состояние: "", статус: "угасла" }
+              { имя: "Магазин «СКИФ»", статус: "критично" },
+              { имя: "Студия автосвета", статус: "угасла" }
             ]
           },
           {
             название: "0.1 — Капитал",
             параметры: [
-              { имя: "Сумма", состояние: "", уровень: 6 },
-              { имя: "Доход", состояние: "", статус: "критично" }
+              { имя: "Баланс / Цель", capital_balance: 65000, capital_goal: 100000 },
+              { имя: "Доход за месяц", capital_income: 0 }
             ]
           },
           {
             название: "Наблюдение",
             параметры: [
-              { имя: "Школа", состояние: "", статус: "нейтрально" },
-              { имя: "Соц. среда", состояние: "", статус: "нейтрально" }
+              { имя: "Школа", статус: "нейтрально" },
+              { имя: "Соц. среда", статус: "нейтрально" }
             ]
           }
         ],
@@ -239,7 +224,60 @@
       };
     }
 
+    // ========== Автостатусы ==========
+    function sleepStatus(bed, wake) {
+      if (!bed || !wake) return 'нейтрально';
+      const [bh, bm] = bed.split(':').map(Number);
+      const [wh, wm] = wake.split(':').map(Number);
+      let bedMins = bh * 60 + bm;
+      let wakeMins = wh * 60 + wm;
+      if (wakeMins <= bedMins) wakeMins += 24 * 60; // сон после полуночи
+      const duration = (wakeMins - bedMins) / 60;
+      if (duration < 6) return 'критично';
+      if (duration < 7) return 'хрупкое';
+      if (duration <= 9) return 'держится';
+      return 'нейтрально';
+    }
+
+    function nutritionStatus(level) {
+      if (level <= 0) return 'критично';
+      if (level === 1) return 'хрупкое';
+      return 'держится';
+    }
+
+    function capitalBalanceStatus(balance, goal) {
+      if (!goal || goal === 0) return 'нейтрально';
+      const pct = balance / goal;
+      if (pct >= 0.8) return 'держится';
+      if (pct >= 0.5) return 'хрупкое';
+      return 'критично';
+    }
+
+    function capitalIncomeStatus(income) {
+      return income > 0 ? 'держится' : 'критично';
+    }
+
+    function syncAllAutoStatuses() {
+      currentData.фронты.forEach(front => {
+        front.параметры.forEach(p => {
+          if (p.имя === 'Сон') p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
+          else if (p.имя === 'Питание') p.статус = nutritionStatus(p.nutrition_level);
+          else if (p.имя === 'Общее ЦНС') p.статус = autoStatus(p.уровень);
+          else if (p.имя === 'Баланс / Цель') p.статус = capitalBalanceStatus(p.capital_balance, p.capital_goal);
+          else if (p.имя === 'Доход за месяц') p.статус = capitalIncomeStatus(p.capital_income);
+        });
+      });
+    }
+
+    function autoStatus(level) {
+      if (level <= 3) return 'критично';
+      if (level <= 6) return 'хрупкое';
+      return 'держится';
+    }
+
+    // ========== Рендер ==========
     function renderAll() {
+      syncAllAutoStatuses();
       const container = document.getElementById('frontsContainer');
       let html = '';
       let allScores = [];
@@ -250,166 +288,215 @@
         const pct = Math.round((score / max) * 100);
 
         html += `<div class="card" style="animation-delay:${fi*0.1}s">`;
-        html += `<div class="card-header">`;
-        html += `<h2>${фронт.название}</h2>`;
-        html += `<div class="mini-bar">
-                   <div class="mini-bar-track">
-                     <div class="mini-bar-fill" style="width:${pct}%"></div>
-                   </div>
-                   <span class="mini-bar-label">${pct}%</span>
-                 </div>`;
-        html += `</div>`;
+        html += `<div class="card-header"><h2>${фронт.название}</h2>
+          <div class="mini-bar"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%"></div></div>
+          <span class="mini-bar-label">${pct}%</span></div></div>`;
 
         фронт.параметры.forEach((param, pi) => {
-          const isNumeric = (param.уровень !== undefined);
-          const currentStatus = isNumeric ? autoStatus(param.уровень) : param.статус;
-          const dotClass = `status-${currentStatus}`;
-          const clickable = isNumeric ? '' : 'manual';
-          const title = isNumeric ? `Авто: ${currentStatus}` : currentStatus;
-
-          html += `<div class="field">`;
-          html += `<label>
-                     <span class="status-dot ${dotClass} ${clickable}"
-                           title="${title}"
-                           ${!isNumeric ? `onclick="cycleStatus(${fi},${pi})"` : ''}></span>
-                     ${param.имя}
-                   </label>`;
-
-          if (isNumeric) {
-            html += `<input type="number" min="0" max="10" step="0.1"
-                          value="${param.уровень}"
-                          oninput="updateNumericParam(${fi},${pi}, this.value); updateAllVisuals();">`;
-            html += `<div class="progress-bar" style="flex-basis:100%;">
-                       <div class="progress-fill" style="width:${param.уровень*10}%"></div>
-                     </div>`;
-          } else {
-            html += `<input type="text" value="${escapeHtml(param.состояние || '')}"
-                          onchange="updateParam(${fi},${pi},'состояние', this.value)">`;
-          }
-          html += `</div>`;
+          html += renderParameter(fi, pi, param);
         });
         html += `</div>`;
       });
 
       html += `<div class="card" style="animation-delay:${currentData.фронты.length*0.1}s">
-                 <h2>📋 Протоколы</h2>
-                 <div class="field"><textarea onchange="updateGlobal('протоколы', this.value)">${escapeHtml(currentData.протоколы||'')}</textarea></div>
-               </div>`;
+        <h2>📋 Протоколы</h2>
+        <div class="field"><textarea onchange="updateGlobal('протоколы', this.value)">${escapeHtml(currentData.протоколы||'')}</textarea></div>
+      </div>`;
       html += `<div class="card" style="animation-delay:${currentData.фронты.length*0.1+0.1}s">
-                 <h2>🎯 Ближайшие цели</h2>
-                 <ul class="checklist">`;
-      (currentData.цели || []).forEach((цель, i) => {
-        html += `<li><input type="checkbox" ${цель.startsWith('✓')?'checked':''} onchange="toggleGoal(${i})">
-                 <input type="text" value="${escapeHtml(цель.replace('✓',''))}" onchange="updateGoal(${i}, this.value)"></li>`;
+        <h2>🎯 Ближайшие цели</h2><ul class="checklist">`;
+      (currentData.цели||[]).forEach((goal,i) => {
+        html += `<li><input type="checkbox" ${goal.startsWith('✓')?'checked':''} onchange="toggleGoal(${i})">
+          <input type="text" value="${escapeHtml(goal.replace('✓',''))}" onchange="updateGoal(${i}, this.value)"></li>`;
       });
       html += `<li><button class="btn" onclick="addGoal()">+ Добавить цель</button></li></ul></div>`;
-
       container.innerHTML = html;
       updateCoreRing(allScores);
     }
 
-    function calcFrontHealth(фронт) {
-      let totalScore = 0, count = 0;
-      const statusScore = {
-        'держится':8, 'сохранён':8, 'нейтрально':7,
-        'угасла':4, 'пауза':4, 'хрупкое':3, 'критично':1, 'нет':1
-      };
-      фронт.параметры.forEach(p => {
-        if (p.уровень !== undefined) {
-          totalScore += p.уровень;
-          count++;
-        } else {
-          totalScore += statusScore[p.статус] || 5;
-          count++;
-        }
-      });
-      return { score: totalScore, max: count * 10 };
+    function renderParameter(fi, pi, p) {
+      let h = '';
+      const status = p.статус || 'нейтрально';
+      const dotClass = `status-${status}`;
+      const isManual = (p.имя === 'Физнагрузка' || (!p.имя.match(/^(Сон|Питание|Общее ЦНС|Баланс / Цель|Доход за месяц)$/)));
+      const clickAttr = isManual ? `onclick="cycleStatus(${fi},${pi})" class="manual"` : '';
+      const title = isManual ? status : `Авто: ${status}`;
+
+      h += `<div class="field"><label><span class="status-dot ${dotClass} ${clickAttr}" title="${title}"></span>${p.имя}</label>`;
+
+      if (p.имя === 'Сон') {
+        h += `<input type="time" value="${p.sleep_bed||''}" onchange="updateSleep(${fi},${pi},'sleep_bed',this.value)" style="width:100px;">`;
+        h += `<span style="color:#aaa;margin:0 4px;">→</span>`;
+        h += `<input type="time" value="${p.sleep_wake||''}" onchange="updateSleep(${fi},${pi},'sleep_wake',this.value)" style="width:100px;">`;
+        const dur = calcSleepDuration(p.sleep_bed, p.sleep_wake);
+        h += `<span style="margin-left:8px;color:#aaa;">${dur}</span>`;
+      }
+      else if (p.имя === 'Питание') {
+        h += `<input type="number" min="0" max="3" value="${p.nutrition_level||0}" oninput="updateNutrition(${fi},${pi},this.value)" style="width:80px;">`;
+      }
+      else if (p.имя === 'Физнагрузка') {
+        h += `<input type="text" placeholder="Что сделал" value="${escapeHtml(p.workout_desc||'')}" onchange="updateWorkout(${fi},${pi},'workout_desc',this.value)" style="flex:2;">`;
+        h += `<input type="number" placeholder="Дней подряд" value="${p.workout_streak||0}" onchange="updateWorkout(${fi},${pi},'workout_streak',parseInt(this.value)||0)" style="width:80px;">`;
+        h += `<textarea placeholder="Заметка" onchange="updateWorkout(${fi},${pi},'workout_note',this.value)">${escapeHtml(p.workout_note||'')}</textarea>`;
+      }
+      else if (p.имя === 'Общее ЦНС') {
+        h += `<input type="number" min="0" max="10" step="0.1" value="${p.уровень||0}" oninput="updateCns(${fi},${pi},this.value)" style="width:80px;">`;
+        h += `<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${p.уровень*10}%"></div></div>`;
+      }
+      else if (p.имя === 'Баланс / Цель') {
+        h += `<input type="number" placeholder="Баланс" value="${p.capital_balance||0}" oninput="updateCapital(${fi},${pi},'capital_balance',this.value)" style="width:100px;">`;
+        h += `<span style="color:#aaa;">/</span>`;
+        h += `<input type="number" placeholder="Цель" value="${p.capital_goal||0}" oninput="updateCapital(${fi},${pi},'capital_goal',this.value)" style="width:100px;">`;
+        const goalPct = p.capital_goal ? Math.min(100, Math.round(p.capital_balance / p.capital_goal * 100)) : 0;
+        h += `<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${goalPct}%"></div></div>`;
+      }
+      else if (p.имя === 'Доход за месяц') {
+        h += `<input type="number" value="${p.capital_income||0}" oninput="updateCapital(${fi},${pi},'capital_income',this.value)" style="width:120px;"> ₽`;
+      }
+      else {
+        h += `<input type="text" value="${escapeHtml(p.состояние||'')}" onchange="updateText(${fi},${pi}, this.value)">`;
+      }
+      h += `</div>`;
+      return h;
     }
 
-    function cycleStatus(fi, pi) {
-      const param = currentData.фронты[fi].параметры[pi];
-      if (param.уровень !== undefined) return; // не даём менять вручную
-      const idx = MANUAL_CYCLE.indexOf(param.статус);
-      const next = MANUAL_CYCLE[(idx + 1) % MANUAL_CYCLE.length];
-      param.статус = next;
-      renderAll();
+    // ========== Обработчики ==========
+    function updateSleep(fi, pi, key, value) {
+      currentData.фронты[fi].параметры[pi][key] = value;
+      const p = currentData.фронты[fi].параметры[pi];
+      p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
+      refreshFieldVisual(fi, pi);
+      updateAllMiniBars();
     }
-
-    function updateNumericParam(fi, pi, rawValue) {
-      const val = parseFloat(rawValue) || 0;
-      const clamped = Math.min(10, Math.max(0, val));
-      currentData.фронты[fi].параметры[pi].уровень = clamped;
-      // Автоматически обновляем статус
-      currentData.фронты[fi].параметры[pi].статус = autoStatus(clamped);
+    function updateNutrition(fi, pi, value) {
+      const level = parseInt(value) || 0;
+      currentData.фронты[fi].параметры[pi].nutrition_level = Math.min(3, Math.max(0, level));
+      currentData.фронты[fi].параметры[pi].статус = nutritionStatus(level);
+      refreshFieldVisual(fi, pi);
+      updateAllMiniBars();
     }
-
-    function updateParam(fi, pi, key, value) {
+    function updateWorkout(fi, pi, key, value) {
       currentData.фронты[fi].параметры[pi][key] = value;
     }
-    function updateGlobal(key, value) { currentData[key] = value; }
-    function toggleGoal(i) {
-      let g = currentData.цели[i];
-      currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓'+g;
+    function updateCns(fi, pi, value) {
+      const val = parseFloat(value) || 0;
+      currentData.фронты[fi].параметры[pi].уровень = Math.min(10, Math.max(0, val));
+      currentData.фронты[fi].параметры[pi].статус = autoStatus(val);
+      refreshFieldVisual(fi, pi);
+      updateAllMiniBars();
     }
-    function updateGoal(i, text) {
-      const checked = currentData.цели[i].startsWith('✓');
-      currentData.цели[i] = checked ? '✓'+text : text;
+    function updateCapital(fi, pi, key, value) {
+      const num = parseFloat(value) || 0;
+      currentData.фронты[fi].параметры[pi][key] = num;
+      const p = currentData.фронты[fi].параметры[pi];
+      if (p.имя === 'Баланс / Цель') p.статус = capitalBalanceStatus(p.capital_balance, p.capital_goal);
+      else if (p.имя === 'Доход за месяц') p.статус = capitalIncomeStatus(p.capital_income);
+      refreshFieldVisual(fi, pi);
+      updateAllMiniBars();
     }
-    function addGoal() {
-      currentData.цели.push('');
+    function updateText(fi, pi, value) {
+      currentData.фронты[fi].параметры[pi].состояние = value;
+    }
+    function cycleStatus(fi, pi) {
+      const p = currentData.фронты[fi].параметры[pi];
+      if (p.имя.match(/^(Сон|Питание|Общее ЦНС|Баланс \/ Цель|Доход за месяц)$/)) return;
+      const idx = MANUAL_CYCLE.indexOf(p.статус);
+      const next = MANUAL_CYCLE[(idx + 1) % MANUAL_CYCLE.length];
+      p.статус = next;
       renderAll();
     }
 
-    function updateAllVisuals() {
-      // Обновляем мини-бары и кольцо без полной перерисовки
+    function refreshFieldVisual(fi, pi) {
+      const card = document.querySelectorAll('.card')[fi];
+      if (!card) return;
+      const fields = card.querySelectorAll('.field');
+      const field = fields[pi];
+      if (!field) return;
+      const dot = field.querySelector('.status-dot');
+      if (dot) {
+        const newStatus = currentData.фронты[fi].параметры[pi].статус;
+        dot.className = `status-dot status-${newStatus}`;
+        dot.title = `Авто: ${newStatus}`;
+      }
+    }
+
+    function updateAllMiniBars() {
       const cards = document.querySelectorAll('.card');
-      currentData.фронты.forEach((фронт, fi) => {
-        const { score, max } = calcFrontHealth(фронт);
-        const pct = Math.round((score/max)*100);
+      let allScores = [];
+      currentData.фронты.forEach((front, fi) => {
+        const { score, max } = calcFrontHealth(front);
+        allScores.push(score / max);
+        const pct = Math.round((score / max) * 100);
         const card = cards[fi];
         if (card) {
           const fill = card.querySelector('.mini-bar-fill');
           const label = card.querySelector('.mini-bar-label');
-          if (fill) fill.style.width = pct+'%';
-          if (label) label.textContent = pct+'%';
+          if (fill) fill.style.width = pct + '%';
+          if (label) label.textContent = pct + '%';
         }
-      });
-      const allScores = currentData.фронты.map(f => {
-        const { score, max } = calcFrontHealth(f);
-        return score/max;
       });
       updateCoreRing(allScores);
-      // Обновляем цвет лампочек для числовых полей (можно точечно)
-      document.querySelectorAll('.field').forEach(field => {
-        const input = field.querySelector('input[type="number"]');
-        if (input) {
-          const dot = field.querySelector('.status-dot');
-          if (dot) {
-            const val = parseFloat(input.value) || 0;
-            const newStatus = autoStatus(val);
-            dot.className = `status-dot status-${newStatus}`;
-          }
-        }
+    }
+
+    function calcFrontHealth(front) {
+      let total = 0, count = 0;
+      const statusScore = { 'держится':8, 'сохранён':8, 'нейтрально':7, 'угасла':4, 'пауза':4, 'хрупкое':3, 'критично':1, 'нет':1 };
+      front.параметры.forEach(p => {
+        if (p.уровень !== undefined) { total += p.уровень; count++; }
+        else if (p.имя === 'Сон') {
+          const s = statusScore[p.статус] || 5; total += s; count++;
+        } else if (p.имя === 'Питание') {
+          const s = statusScore[p.статус] || 5; total += s; count++;
+        } else if (p.имя === 'Баланс / Цель') {
+          const s = statusScore[p.статус] || 5; total += s; count++;
+        } else if (p.имя === 'Доход за месяц') {
+          const s = statusScore[p.статус] || 5; total += s; count++;
+        } else if (p.статус) {
+          total += statusScore[p.статус] || 5; count++;
+        } else { count++; total += 5; }
       });
+      return { score: total, max: count * 10 };
+    }
+
+    function calcSleepDuration(bed, wake) {
+      if (!bed || !wake) return '';
+      const [bh, bm] = bed.split(':').map(Number);
+      const [wh, wm] = wake.split(':').map(Number);
+      let bedMins = bh * 60 + bm;
+      let wakeMins = wh * 60 + wm;
+      if (wakeMins <= bedMins) wakeMins += 24 * 60;
+      const h = Math.floor((wakeMins - bedMins) / 60);
+      const m = (wakeMins - bedMins) % 60;
+      return `${h}ч ${m}м`;
     }
 
     function updateCoreRing(scores) {
-      const avg = scores.reduce((a,b)=>a+b,0) / scores.length;
+      const avg = scores.reduce((a,b) => a + b, 0) / scores.length;
       const pct = Math.round(avg * 100);
-      document.getElementById('corePercent').textContent = pct+'%';
+      document.getElementById('corePercent').textContent = pct + '%';
       const circle = document.getElementById('coreRing');
       const circumference = 2 * Math.PI * 34;
-      const offset = circumference - (avg * circumference);
-      circle.style.strokeDashoffset = offset;
+      circle.style.strokeDashoffset = circumference - (avg * circumference);
       circle.style.stroke = avg < 0.4 ? '#ff5e5e' : avg < 0.7 ? '#f0c060' : '#6ee7b7';
     }
 
+    // ========== Глобальные ==========
+    function updateGlobal(key, value) { currentData[key] = value; }
+    function toggleGoal(i) {
+      let g = currentData.цели[i];
+      currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓' + g;
+    }
+    function updateGoal(i, text) {
+      const checked = currentData.цели[i].startsWith('✓');
+      currentData.цели[i] = checked ? '✓' + text : text;
+    }
+    function addGoal() { currentData.цели.push(''); renderAll(); }
+
     function saveAll() {
+      syncAllAutoStatuses();
       localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
       updateJsonPreview();
-      alert('✅ Сохранено локально. Чтобы обновить облако, скопируйте JSON ниже и вставьте в data.json на GitHub.');
+      alert('✅ Сохранено локально. Для облака — скопируйте JSON ниже и вставьте в data.json.');
     }
-
     function updateJsonPreview() {
       document.getElementById('jsonPreview').textContent = JSON.stringify(currentData, null, 2);
     }
@@ -419,15 +506,13 @@
       else { updateJsonPreview(); prev.style.display = 'block'; }
     }
     function resetToJson() {
-      if (confirm('Сбросить все локальные правки до версии из data.json?')) {
+      if (confirm('Сбросить до версии из data.json?')) {
         localStorage.removeItem('obsidian_hybrid');
         location.reload();
       }
     }
 
-    function escapeHtml(t) {
-      return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
+    function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   </script>
 </body>
 </html>
