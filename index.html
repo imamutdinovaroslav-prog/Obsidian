@@ -9,133 +9,130 @@
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
       background: linear-gradient(135deg, #0b0c1a 0%, #1a1c3b 50%, #2d1b3a 100%);
-      color: #e0e0e0;
-      line-height: 1.5;
-      padding: 30px 20px;
-      min-height: 100vh;
-      position: relative;
-      overflow-x: hidden;
+      color: #e0e0e0; line-height: 1.5; padding: 30px 20px;
+      min-height: 100vh; position: relative; overflow-x: hidden;
     }
     .bg-text {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: clamp(3rem, 12vw, 10rem);
-      font-weight: 900;
-      color: rgba(255,255,255,0.03);
-      white-space: nowrap;
-      pointer-events: none;
-      z-index: 0;
-      letter-spacing: 0.05em;
-      user-select: none;
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      font-size: clamp(3rem,12vw,10rem); font-weight: 900;
+      color: rgba(255,255,255,0.03); white-space: nowrap;
+      pointer-events: none; z-index: 0; letter-spacing: 0.05em; user-select: none;
     }
     .container { max-width: 750px; margin: 0 auto; position: relative; z-index: 1; }
-    h1 {
-      font-size: 2.2rem; font-weight: 600; margin-bottom: 5px;
-      color: #f0f0f0; text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    h1 { font-size: 2.2rem; font-weight: 600; color: #f0f0f0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    .subtitle { color: #8b8fa3; margin-bottom: 20px; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+    .blinking-dot { width: 8px; height: 8px; background: #6ee7b7; border-radius: 50%; animation: blink 1.5s infinite; box-shadow: 0 0 8px #6ee7b7; }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+    .core-index {
+      display: flex; align-items: center; justify-content: center; gap: 20px;
+      margin-bottom: 30px;
     }
-    .subtitle {
-      color: #8b8fa3; margin-bottom: 30px; font-size: 0.95rem;
-      display: flex; align-items: center; gap: 6px;
+    .ring {
+      position: relative; width: 80px; height: 80px;
     }
-    .blinking-dot {
-      display: inline-block; width: 8px; height: 8px;
-      background: #6ee7b7; border-radius: 50%; margin-left: 4px;
-      animation: blink 1.5s ease-in-out infinite;
-      box-shadow: 0 0 8px #6ee7b7;
+    .ring svg { transform: rotate(-90deg); }
+    .ring .bg-circle { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 8; }
+    .ring .fg-circle {
+      fill: none; stroke: #6ee7b7; stroke-width: 8;
+      stroke-linecap: round; transition: stroke-dashoffset 0.6s;
     }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+    .ring .percent {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      font-size: 1.2rem; font-weight: 600; color: #fff;
+    }
     .card {
-      background: rgba(20, 25, 35, 0.6);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: rgba(20,25,35,0.6); backdrop-filter: blur(12px);
       border-radius: 16px; padding: 24px; margin-bottom: 20px;
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: 0 8px 20px rgba(0,0,0,0.3);
       transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-      opacity: 0; animation: fadeInCard 0.5s ease forwards;
+      opacity: 0; animation: fadeIn 0.5s ease forwards;
     }
-    @keyframes fadeInCard { to { opacity: 1; } }
+    @keyframes fadeIn { to { opacity: 1; } }
     .card:hover {
       transform: translateY(-4px);
       border-color: rgba(255,255,255,0.18);
       box-shadow: 0 12px 28px rgba(0,0,0,0.5);
     }
-    h2 {
-      font-size: 1.2rem; font-weight: 600; margin-bottom: 18px;
-      color: #c0c4d0; letter-spacing: 0.02em;
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
     }
+    .card-header h2 {
+      font-size: 1.1rem; font-weight: 600; color: #c0c4d0;
+      letter-spacing: 0.02em; margin: 0;
+    }
+    .mini-bar {
+      display: flex; align-items: center; gap: 8px; min-width: 120px;
+    }
+    .mini-bar-track {
+      flex: 1; height: 6px; background: rgba(255,255,255,0.1);
+      border-radius: 3px; overflow: hidden;
+    }
+    .mini-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, #f0a060, #6ee7b7);
+      transition: width 0.5s;
+    }
+    .mini-bar-label { font-size: 0.8rem; color: #aaa; width: 40px; text-align: right; }
     .field {
       display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-      margin-bottom: 18px; padding-bottom: 14px;
+      margin-bottom: 16px; padding-bottom: 12px;
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     .field:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
     .field label {
-      width: 130px; font-size: 0.9rem; color: #aaa;
-      display: flex; align-items: center; gap: 6px;
+      width: 120px; font-size: 0.9rem; color: #aaa;
+      display: flex; align-items: center; gap: 8px;
     }
     .status-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      display: inline-block; box-shadow: 0 0 8px currentColor;
-      transition: transform 0.2s, box-shadow 0.2s;
+      width: 12px; height: 12px; border-radius: 50%;
+      display: inline-block; box-shadow: 0 0 10px currentColor;
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
     }
+    .status-dot:hover { transform: scale(1.3); }
     .status-критично, .status-нет { background: #ff5e5e; color: #ff5e5e; }
     .status-держится, .status-сохранён { background: #6ee7b7; color: #6ee7b7; }
     .status-угасла, .status-пауза { background: #f0c060; color: #f0c060; }
     .status-хрупкое { background: #f0a060; color: #f0a060; }
     .status-нейтрально { background: #a0c4ff; color: #a0c4ff; }
-    .field input, .field select, .field textarea {
+    .field input, .field textarea {
       flex: 1; padding: 8px 12px; border: none; border-radius: 6px;
       background: rgba(255,255,255,0.08); color: #fff;
       font-size: 0.9rem; font-family: inherit;
-      transition: background 0.2s;
     }
-    .field input:focus, .field select:focus, .field textarea:focus {
+    .field input:focus, .field textarea:focus {
       background: rgba(255,255,255,0.15); outline: none;
     }
     .field textarea { resize: vertical; min-height: 50px; }
-
-    /* Прогресс-бар */
     .progress-bar {
       width: 100%; height: 8px; background: rgba(255,255,255,0.08);
-      border-radius: 10px; margin-top: 6px; overflow: hidden;
+      border-radius: 10px; margin-top: 8px; overflow: hidden;
     }
     .progress-fill {
       height: 100%; border-radius: 10px;
       background: linear-gradient(90deg, #f0a060, #e07050);
-      transition: width 0.4s ease;
+      transition: width 0.4s;
     }
-
-    .checklist { list-style: none; padding-left: 0; }
+    .checklist { list-style: none; padding: 0; }
     .checklist li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
     .checklist input[type="checkbox"] { width: 18px; height: 18px; accent-color: #666; }
-
-    .buttons-panel {
-      display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;
-    }
+    .buttons-panel { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
     .btn {
       padding: 10px 24px; border: none; border-radius: 8px;
       font-size: 1rem; font-weight: 500; cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
       background: rgba(255,255,255,0.1); color: #fff;
-      backdrop-filter: blur(5px);
+      transition: background 0.2s, transform 0.1s;
     }
     .btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
     .btn.primary { background: #4a7c6b; }
     .btn.primary:hover { background: #5f9a84; }
-
     .json-preview {
       background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px;
       margin-top: 15px; font-family: monospace; font-size: 0.8rem;
       white-space: pre-wrap; word-break: break-word;
       max-height: 200px; overflow-y: auto; display: none;
       border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    @media (max-width: 600px) {
-      .field { flex-direction: column; align-items: flex-start; }
-      .field label { width: auto; margin-bottom: 4px; }
-      .buttons-panel { flex-direction: column; }
     }
   </style>
 </head>
@@ -144,34 +141,44 @@
   <div class="container">
     <h1>⚡ Obsidian Core v2.0</h1>
     <p class="subtitle">
-      Состояние на <span id="currentDate"></span>
+      <span id="currentDate"></span>
       <span class="blinking-dot"></span>
     </p>
 
-    <!-- Карточки фронтов генерируются здесь -->
+    <!-- Кольцевой индекс -->
+    <div class="core-index">
+      <div class="ring">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle class="bg-circle" cx="40" cy="40" r="34"/>
+          <circle id="coreRing" class="fg-circle" cx="40" cy="40" r="34"
+                  stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+        </svg>
+        <div class="percent" id="corePercent">0%</div>
+      </div>
+      <span style="color:#aaa;">Obsidian Core Index</span>
+    </div>
+
     <div id="frontsContainer"></div>
 
-    <!-- Блок кнопок управления -->
     <div class="buttons-panel">
       <button class="btn primary" onclick="saveAll()">💾 Сохранить всё</button>
       <button class="btn" onclick="toggleJson()">📋 Показать JSON</button>
       <button class="btn" onclick="resetToJson()">🔄 Сбросить из JSON</button>
     </div>
-
-    <!-- JSON для копирования -->
     <div id="jsonPreview" class="json-preview"></div>
   </div>
 
   <script>
     let currentData = null;
+    const STATUS_CYCLE = ['критично', 'хрупкое', 'держится', 'угасла', 'пауза', 'нейтрально'];
 
-    // ========== Инициализация ==========
+    // Инициализация
     window.onload = async () => {
-      displayDate();
+      document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', {
+        weekday:'short', year:'numeric', month:'long', day:'numeric'
+      });
       const saved = localStorage.getItem('obsidian_hybrid');
-      if (saved) {
-        try { currentData = JSON.parse(saved); } catch(e){}
-      }
+      if (saved) { try { currentData = JSON.parse(saved); } catch(e){} }
       if (!currentData) {
         try {
           const res = await fetch('data.json');
@@ -179,15 +186,8 @@
         } catch(e){}
       }
       if (!currentData) currentData = getEmptyStructure();
-      renderFronts(currentData);
+      renderAll();
     };
-
-    function displayDate() {
-      const now = new Date();
-      document.getElementById('currentDate').textContent = now.toLocaleDateString('ru-RU', {
-        weekday: 'short', year: 'numeric', month: 'long', day: 'numeric'
-      });
-    }
 
     function getEmptyStructure() {
       return {
@@ -202,77 +202,127 @@
               { имя: "Общее ЦНС", состояние: "", статус: "хрупкое", уровень: 4.5 }
             ]
           },
-          // ... остальные фронты аналогично (сокращено для примера, полную структуру можно взять из предыдущего data.json)
+          {
+            название: "1 — Магазин / Студия",
+            параметры: [
+              { имя: "Магазин «СКИФ»", состояние: "", статус: "критично" },
+              { имя: "Студия автосвета", состояние: "", статус: "угасла" }
+            ]
+          },
+          {
+            название: "0.1 — Капитал",
+            параметры: [
+              { имя: "Сумма", состояние: "", статус: "держится", уровень: 6 },
+              { имя: "Доход", состояние: "", статус: "критично" }
+            ]
+          },
+          {
+            название: "Наблюдение",
+            параметры: [
+              { имя: "Школа", состояние: "", статус: "нейтрально" },
+              { имя: "Соц. среда", состояние: "", статус: "нейтрально" }
+            ]
+          }
         ],
         протоколы: "",
         цели: [""]
       };
     }
 
-    // ========== Рендер ==========
-    function renderFronts(data) {
+    // ========== РЕНДЕР ==========
+    function renderAll() {
       const container = document.getElementById('frontsContainer');
       let html = '';
+      let allScores = [];
 
-      data.фронты.forEach((фронт, fi) => {
-        html += `<div class="card" style="animation-delay: ${fi * 0.1}s">`;
+      currentData.фронты.forEach((фронт, fi) => {
+        const { score, max } = calcFrontHealth(фронт);
+        allScores.push(score / max);
+        const pct = Math.round((score / max) * 100);
+
+        html += `<div class="card" style="animation-delay:${fi*0.1}s">`;
+        html += `<div class="card-header">`;
         html += `<h2>${фронт.название}</h2>`;
+        html += `<div class="mini-bar">
+                   <div class="mini-bar-track">
+                     <div class="mini-bar-fill" style="width:${pct}%"></div>
+                   </div>
+                   <span class="mini-bar-label">${pct}%</span>
+                 </div>`;
+        html += `</div>`;
 
         фронт.параметры.forEach((param, pi) => {
-          const statusClass = `status-${param.статус || 'нейтрально'}`;
+          const dotClass = `status-${param.статус || 'нейтрально'}`;
           html += `<div class="field">`;
-          html += `<label><span class="status-dot ${statusClass}"></span>${param.имя}</label>`;
+          html += `<label>
+                     <span class="status-dot ${dotClass}"
+                           title="${param.статус}"
+                           onclick="cycleStatus(${fi},${pi})"></span>
+                     ${param.имя}
+                   </label>`;
 
-          // Для ЦНС — числовой инпут + прогресс-бар
           if (param.уровень !== undefined) {
-            html += `<input type="number" min="0" max="10" step="0.1" value="${param.уровень}" 
-                      oninput="updateParam(${fi},${pi},'уровень', parseFloat(this.value)); updateProgressBar(this);" 
-                      style="width:80px;">`;
-            html += `<div class="progress-bar" style="flex-basis:100%;">
-                       <div id="progress-${fi}-${pi}" class="progress-fill" style="width:${param.уровень*10}%"></div>
-                     </div>`;
+            html += `<input type="number" min="0" max="10" step="0.1"
+                          value="${param.уровень}"
+                          oninput="updateParam(${fi},${pi},'уровень', parseFloat(this.value)); updateMiniBars();">
+                      <div class="progress-bar" style="flex-basis:100%;">
+                        <div class="progress-fill" style="width:${param.уровень*10}%"></div>
+                      </div>`;
           } else {
-            html += `<input type="text" value="${escapeHtml(param.состояние || '')}" 
-                      onchange="updateParam(${fi},${pi},'состояние', this.value)" placeholder="Описание">`;
+            html += `<input type="text" value="${escapeHtml(param.состояние || '')}"
+                          onchange="updateParam(${fi},${pi},'состояние', this.value)">`;
           }
-
-          html += `<select onchange="updateParam(${fi},${pi},'статус', this.value)" style="width:120px;">`;
-          ['критично','держится','угасла','хрупкое','нейтрально','сохранён','пауза','нет'].forEach(st => {
-            html += `<option value="${st}" ${param.статус === st ? 'selected' : ''}>${st}</option>`;
-          });
-          html += `</select>`;
           html += `</div>`;
         });
         html += `</div>`;
       });
 
       // Протоколы и цели
-      html += `<div class="card" style="animation-delay: ${data.фронты.length * 0.1}s">
+      html += `<div class="card" style="animation-delay:${currentData.фронты.length*0.1}s">
                  <h2>📋 Протоколы</h2>
-                 <div class="field"><textarea onchange="updateGlobal('протоколы', this.value)">${escapeHtml(data.протоколы || '')}</textarea></div>
+                 <div class="field"><textarea onchange="updateGlobal('протоколы', this.value)">${escapeHtml(currentData.протоколы||'')}</textarea></div>
                </div>`;
-      html += `<div class="card" style="animation-delay: ${data.фронты.length * 0.1 + 0.1}s">
+      html += `<div class="card" style="animation-delay:${currentData.фронты.length*0.1+0.1}s">
                  <h2>🎯 Ближайшие цели</h2>
-                 <ul class="checklist" id="goalsList">`;
-      (data.цели || []).forEach((цель, i) => {
-        html += `<li><input type="checkbox" ${цель.startsWith('✓') ? 'checked' : ''} onchange="toggleGoal(${i})">
-                 <input type="text" value="${escapeHtml(цель.replace('✓',''))}" onchange="updateGoal(${i}, this.value)" style="flex:1;"></li>`;
+                 <ul class="checklist">`;
+      (currentData.цели || []).forEach((цель, i) => {
+        html += `<li><input type="checkbox" ${цель.startsWith('✓')?'checked':''} onchange="toggleGoal(${i})">
+                 <input type="text" value="${escapeHtml(цель.replace('✓',''))}" onchange="updateGoal(${i}, this.value)"></li>`;
       });
       html += `<li><button class="btn" onclick="addGoal()">+ Добавить цель</button></li></ul></div>`;
 
       container.innerHTML = html;
+      updateCoreRing(allScores);
     }
 
-    // Вспомогательная функция обновления прогресс-бара при вводе числа
-    function updateProgressBar(input) {
-      const id = input.id || '';
-      if (id.startsWith('progress-')) return; // уже сам бар
-      const [fi, pi] = id.split('-').slice(1);
-      const fill = document.getElementById(`progress-${fi}-${pi}`);
-      if (fill) {
-        const val = parseFloat(input.value) || 0;
-        fill.style.width = `${Math.min(100, Math.max(0, val * 10))}%`;
-      }
+    // Здоровье фронта
+    function calcFrontHealth(фронт) {
+      let totalScore = 0, count = 0;
+      const statusScore = {
+        'держится':8, 'сохранён':8, 'нейтрально':7,
+        'угасла':4, 'пауза':4, 'хрупкое':3, 'критично':1, 'нет':1
+      };
+      фронт.параметры.forEach(p => {
+        if (p.уровень !== undefined) {
+          totalScore += p.уровень;
+          count++;
+        } else {
+          totalScore += statusScore[p.статус] || 5;
+          count++;
+        }
+      });
+      const maxPossible = count * 10;
+      return { score: totalScore, max: maxPossible };
+    }
+
+    // Переключение статуса по лампочке
+    function cycleStatus(fi, pi) {
+      const param = currentData.фронты[fi].параметры[pi];
+      const current = param.статус;
+      const idx = STATUS_CYCLE.indexOf(current);
+      const next = STATUS_CYCLE[(idx + 1) % STATUS_CYCLE.length];
+      param.статус = next;
+      renderAll(); // перерисовываем для обновления цвета и мини-баров
     }
 
     function updateParam(fi, pi, key, value) {
@@ -280,45 +330,76 @@
     }
     function updateGlobal(key, value) { currentData[key] = value; }
     function toggleGoal(i) {
-      let goal = currentData.цели[i];
-      currentData.цели[i] = goal.startsWith('✓') ? goal.substring(1) : '✓' + goal;
+      let g = currentData.цели[i];
+      currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓'+g;
     }
-    function updateGoal(i, newText) {
+    function updateGoal(i, text) {
       const checked = currentData.цели[i].startsWith('✓');
-      currentData.цели[i] = checked ? '✓' + newText : newText;
+      currentData.цели[i] = checked ? '✓'+text : text;
     }
     function addGoal() {
       currentData.цели.push('');
-      renderFronts(currentData);
+      renderAll();
+    }
+
+    // Обновление мини-баров и кольца после изменения числа
+    function updateMiniBars() {
+      // пересчитываем и обновляем все мини-бары без полной перерисовки
+      const cards = document.querySelectorAll('.card');
+      currentData.фронты.forEach((фронт, fi) => {
+        const { score, max } = calcFrontHealth(фронт);
+        const pct = Math.round((score/max)*100);
+        const card = cards[fi];
+        if (card) {
+          const fill = card.querySelector('.mini-bar-fill');
+          const label = card.querySelector('.mini-bar-label');
+          if (fill) fill.style.width = pct+'%';
+          if (label) label.textContent = pct+'%';
+        }
+      });
+      // обновим кольцо
+      const allScores = currentData.фронты.map(f => {
+        const { score, max } = calcFrontHealth(f);
+        return score/max;
+      });
+      updateCoreRing(allScores);
+    }
+
+    function updateCoreRing(scores) {
+      const avg = scores.reduce((a,b)=>a+b,0) / scores.length;
+      const pct = Math.round(avg * 100);
+      document.getElementById('corePercent').textContent = pct+'%';
+      const circle = document.getElementById('coreRing');
+      const circumference = 2 * Math.PI * 34; // r=34
+      const offset = circumference - (avg * circumference);
+      circle.style.strokeDashoffset = offset;
+      // цвет меняем от красного до зелёного
+      circle.style.stroke = avg < 0.4 ? '#ff5e5e' : avg < 0.7 ? '#f0c060' : '#6ee7b7';
     }
 
     function saveAll() {
       localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
       updateJsonPreview();
-      alert('✅ Данные сохранены локально. Чтобы обновить облако, скопируйте JSON ниже и вставьте в data.json на GitHub.');
+      alert('✅ Сохранено локально. Чтобы обновить облако, скопируйте JSON ниже и вставьте в data.json на GitHub.');
     }
 
     function updateJsonPreview() {
       document.getElementById('jsonPreview').textContent = JSON.stringify(currentData, null, 2);
     }
     function toggleJson() {
-      const preview = document.getElementById('jsonPreview');
-      if (preview.style.display === 'block') {
-        preview.style.display = 'none';
-      } else {
-        updateJsonPreview();
-        preview.style.display = 'block';
-      }
+      const prev = document.getElementById('jsonPreview');
+      if (prev.style.display === 'block') prev.style.display = 'none';
+      else { updateJsonPreview(); prev.style.display = 'block'; }
     }
     function resetToJson() {
-      if (confirm('Сбросить все локальные изменения до версии из data.json?')) {
+      if (confirm('Сбросить все локальные правки до версии из data.json?')) {
         localStorage.removeItem('obsidian_hybrid');
         location.reload();
       }
     }
 
-    function escapeHtml(text) {
-      return String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    function escapeHtml(t) {
+      return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
   </script>
 </body>
