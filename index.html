@@ -8,20 +8,27 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(135deg, #0b0c1a 0%, #1a1c3b 50%, #2d1b3a 100%);
+      background: #0a0a0a; /* чисто чёрный */
       color: #e0e0e0; line-height: 1.5; padding: 30px 20px;
       min-height: 100vh; position: relative; overflow-x: hidden;
     }
     .bg-text {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
       font-size: clamp(3rem,12vw,10rem); font-weight: 900;
-      color: rgba(255,255,255,0.03); white-space: nowrap;
-      pointer-events: none; z-index: 0; letter-spacing: 0.05em; user-select: none;
+      color: rgba(138, 43, 226, 0.06); /* фиолетовый полупрозрачный */
+      white-space: nowrap; pointer-events: none; z-index: 0;
+      letter-spacing: 0.05em; user-select: none;
     }
     .container { max-width: 750px; margin: 0 auto; position: relative; z-index: 1; }
-    h1 { font-size: 2.2rem; font-weight: 600; color: #f0f0f0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-    .subtitle { color: #8b8fa3; margin-bottom: 20px; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
-    .blinking-dot { width: 8px; height: 8px; background: #6ee7b7; border-radius: 50%; animation: blink 1.5s infinite; box-shadow: 0 0 8px #6ee7b7; }
+    h1 {
+      font-size: 2.2rem; font-weight: 600; color: #f0f0f0;
+      text-shadow: 0 0 12px rgba(138, 43, 226, 0.5);
+    }
+    .subtitle { color: #9b8ecc; margin-bottom: 20px; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; }
+    .blinking-dot {
+      width: 8px; height: 8px; background: #9b59b6; border-radius: 50%;
+      animation: blink 1.5s infinite; box-shadow: 0 0 8px #9b59b6;
+    }
     @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
     .core-index {
       display: flex; align-items: center; justify-content: center; gap: 20px;
@@ -31,9 +38,9 @@
       position: relative; width: 80px; height: 80px;
     }
     .ring svg { transform: rotate(-90deg); }
-    .ring .bg-circle { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 8; }
+    .ring .bg-circle { fill: none; stroke: rgba(138, 43, 226, 0.2); stroke-width: 8; }
     .ring .fg-circle {
-      fill: none; stroke: #6ee7b7; stroke-width: 8;
+      fill: none; stroke: #9b59b6; stroke-width: 8;
       stroke-linecap: round; transition: stroke-dashoffset 0.6s;
     }
     .ring .percent {
@@ -41,44 +48,45 @@
       font-size: 1.2rem; font-weight: 600; color: #fff;
     }
     .card {
-      background: rgba(20,25,35,0.6); backdrop-filter: blur(12px);
+      background: rgba(15, 15, 20, 0.7); /* тёмный, почти чёрный */
+      backdrop-filter: blur(12px);
       border-radius: 16px; padding: 24px; margin-bottom: 20px;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      border: 1px solid rgba(138, 43, 226, 0.2);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 0 10px rgba(138, 43, 226, 0.1);
       transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
       opacity: 0; animation: fadeIn 0.5s ease forwards;
     }
     @keyframes fadeIn { to { opacity: 1; } }
     .card:hover {
       transform: translateY(-4px);
-      border-color: rgba(255,255,255,0.18);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.5);
+      border-color: rgba(138, 43, 226, 0.5);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.6), 0 0 18px rgba(138, 43, 226, 0.25);
     }
     .card-header {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
     }
     .card-header h2 {
-      font-size: 1.1rem; font-weight: 600; color: #c0c4d0;
+      font-size: 1.1rem; font-weight: 600; color: #c0bfd0;
       letter-spacing: 0.02em; margin: 0;
     }
     .mini-bar {
       display: flex; align-items: center; gap: 8px; min-width: 120px;
     }
     .mini-bar-track {
-      flex: 1; height: 6px; background: rgba(255,255,255,0.1);
+      flex: 1; height: 6px; background: rgba(138, 43, 226, 0.2);
       border-radius: 3px; overflow: hidden;
     }
     .mini-bar-fill {
       height: 100%; border-radius: 3px;
-      background: linear-gradient(90deg, #f0a060, #6ee7b7);
+      background: linear-gradient(90deg, #9b59b6, #8e44ad);
       transition: width 0.5s;
     }
-    .mini-bar-label { font-size: 0.8rem; color: #aaa; width: 40px; text-align: right; }
+    .mini-bar-label { font-size: 0.8rem; color: #9b8ecc; width: 40px; text-align: right; }
     .field {
       display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
       margin-bottom: 16px; padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(138, 43, 226, 0.1);
     }
     .field:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
     .field label {
@@ -92,48 +100,52 @@
     }
     .status-dot.manual { cursor: pointer; }
     .status-dot.manual:hover { transform: scale(1.3); }
+    /* Цвета статусов сохранены */
     .status-критично, .status-нет { background: #ff5e5e; color: #ff5e5e; }
     .status-держится, .status-сохранён { background: #6ee7b7; color: #6ee7b7; }
     .status-угасла, .status-пауза { background: #f0c060; color: #f0c060; }
     .status-хрупкое { background: #f0a060; color: #f0a060; }
-    .status-нейтрально { background: #a0c4ff; color: #a0c4ff; }
+    .status-нейтрально { background: #9b59b6; color: #9b59b6; } /* фиолетовый */
     input, select, textarea {
       flex: 1; padding: 8px 12px; border: none; border-radius: 6px;
-      background: rgba(255,255,255,0.08); color: #fff;
+      background: rgba(138, 43, 226, 0.1); color: #fff;
       font-size: 0.9rem; font-family: inherit;
+      border: 1px solid rgba(138, 43, 226, 0.2);
     }
     input:focus, select:focus, textarea:focus {
-      background: rgba(255,255,255,0.15); outline: none;
+      background: rgba(138, 43, 226, 0.2); outline: none;
+      border-color: #9b59b6;
     }
     textarea { resize: vertical; min-height: 50px; }
     .progress-bar {
-      width: 100%; height: 8px; background: rgba(255,255,255,0.08);
+      width: 100%; height: 8px; background: rgba(138, 43, 226, 0.2);
       border-radius: 10px; margin-top: 8px; overflow: hidden;
     }
     .progress-fill {
       height: 100%; border-radius: 10px;
-      background: linear-gradient(90deg, #f0a060, #e07050);
+      background: linear-gradient(90deg, #9b59b6, #e070d0);
       transition: width 0.4s;
     }
     .checklist { list-style: none; padding: 0; }
     .checklist li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-    .checklist input[type="checkbox"] { width: 18px; height: 18px; accent-color: #666; }
+    .checklist input[type="checkbox"] { width: 18px; height: 18px; accent-color: #9b59b6; }
     .buttons-panel { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
     .btn {
       padding: 10px 24px; border: none; border-radius: 8px;
       font-size: 1rem; font-weight: 500; cursor: pointer;
-      background: rgba(255,255,255,0.1); color: #fff;
+      background: rgba(138, 43, 226, 0.15); color: #ddd;
       transition: background 0.2s, transform 0.1s;
+      border: 1px solid rgba(138, 43, 226, 0.3);
     }
-    .btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
-    .btn.primary { background: #4a7c6b; }
-    .btn.primary:hover { background: #5f9a84; }
+    .btn:hover { background: rgba(138, 43, 226, 0.25); transform: translateY(-1px); }
+    .btn.primary { background: #7d3c98; border-color: #9b59b6; }
+    .btn.primary:hover { background: #8e44ad; }
     .json-preview {
-      background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px;
+      background: rgba(20, 20, 30, 0.8); border-radius: 8px; padding: 15px;
       margin-top: 15px; font-family: monospace; font-size: 0.8rem;
       white-space: pre-wrap; word-break: break-word;
       max-height: 200px; overflow-y: auto; display: none;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(138, 43, 226, 0.3);
     }
   </style>
 </head>
@@ -151,7 +163,7 @@
         </svg>
         <div class="percent" id="corePercent">0%</div>
       </div>
-      <span style="color:#aaa;">Obsidian Core Index</span>
+      <span style="color:#9b8ecc;">Obsidian Core Index</span>
     </div>
     <div id="frontsContainer"></div>
     <div class="buttons-panel">
@@ -290,7 +302,6 @@
 
     function syncAllAutoStatuses() {
       currentData.фронты.forEach(front => {
-        // Найдём баланс и цель для вычисления статуса баланса
         let balance = null, goal = null;
         if (front.название === "0.1 — Капитал") {
           front.параметры.forEach(p => {
@@ -302,12 +313,10 @@
           if (p.имя === 'Сон') p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
           else if (p.имя === 'Питание') p.статус = nutritionStatus(p.nutrition_level);
           else if (p.имя === 'Общее ЦНС') p.статус = cnsStatus(p.уровень);
-          else if (p.имя === 'Баланс') {
-            p.статус = balanceStatus(p.capital_balance, goal);
-          }
+          else if (p.имя === 'Баланс') p.статус = balanceStatus(p.capital_balance, goal);
           else if (p.имя === 'Доход за месяц') p.статус = incomeStatus(p.capital_income);
           else if (p.имя === 'Несданных долгов') p.статус = debtsStatus(p.debts_count);
-          // Цель остаётся ручной, автостатус не присваиваем
+          // Цель остаётся ручной
         });
       });
     }
@@ -353,7 +362,6 @@
     function renderParameter(fi, pi, p, front) {
       let h = '';
       const status = p.статус || 'нейтрально';
-      // Ручные лампочки для всего, кроме авто-параметров (Сон, Питание, ЦНС, Баланс, Доход, Долги)
       const isAuto = ['Сон', 'Питание', 'Общее ЦНС', 'Баланс', 'Доход за месяц', 'Несданных долгов'].includes(p.имя);
       const isManual = !isAuto;
       const dotClass = `status-${status}`;
@@ -364,10 +372,10 @@
 
       if (p.имя === 'Сон') {
         h += `<input type="time" value="${p.sleep_bed||''}" onchange="updateSleep(${fi},${pi},'sleep_bed',this.value)" style="width:100px;">`;
-        h += `<span style="color:#aaa;margin:0 4px;">→</span>`;
+        h += `<span style="color:#9b8ecc;margin:0 4px;">→</span>`;
         h += `<input type="time" value="${p.sleep_wake||''}" onchange="updateSleep(${fi},${pi},'sleep_wake',this.value)" style="width:100px;">`;
         const dur = calcSleepDuration(p.sleep_bed, p.sleep_wake);
-        h += `<span style="margin-left:8px;color:#aaa;">${dur}</span>`;
+        h += `<span style="margin-left:8px;color:#9b8ecc;">${dur}</span>`;
       }
       else if (p.имя === 'Питание') {
         h += `<input type="number" min="0" max="3" value="${p.nutrition_level||0}" oninput="updateNutrition(${fi},${pi},this.value)" style="width:80px;">`;
@@ -384,7 +392,6 @@
       }
       else if (p.имя === 'Баланс') {
         h += `<input type="number" value="${p.capital_balance||0}" oninput="updateBalance(${fi},${pi},this.value)" style="width:120px;"> ₽`;
-        // Найдём цель для прогресс-бара
         const goalParam = front.параметры.find(par => par.имя === 'Цель');
         const goal = goalParam ? goalParam.capital_goal : 0;
         const progressPct = goal ? Math.min(100, Math.round(p.capital_balance / goal * 100)) : 0;
@@ -437,7 +444,6 @@
     function updateBalance(fi, pi, value) {
       const num = parseFloat(value) || 0;
       currentData.фронты[fi].параметры[pi].capital_balance = num;
-      // Обновляем статус баланса, цель берём из соседнего параметра
       const front = currentData.фронты[fi];
       const goalParam = front.параметры.find(p => p.имя === 'Цель');
       const goal = goalParam ? goalParam.capital_goal : 0;
@@ -448,13 +454,11 @@
     function updateGoalCapital(fi, pi, value) {
       const num = parseFloat(value) || 0;
       currentData.фронты[fi].параметры[pi].capital_goal = num;
-      // Обновить статус баланса, т.к. цель поменялась
       const front = currentData.фронты[fi];
       const balanceParam = front.параметры.find(p => p.имя === 'Баланс');
       if (balanceParam) {
         const balance = balanceParam.capital_balance || 0;
         balanceParam.статус = balanceStatus(balance, num);
-        // Обновить точку баланса на экране
         const balanceIndex = front.параметры.indexOf(balanceParam);
         refreshFieldDot(fi, balanceIndex);
       }
@@ -539,7 +543,6 @@
         } else if (p.имя === 'Баланс') {
           total += statusScore[p.статус] || 5; count++;
         } else if (p.имя === 'Цель') {
-          // Цель сама по себе не имеет прямого состояния, берём нейтральное
           total += 5; count++;
         } else if (p.имя === 'Доход за месяц') {
           total += statusScore[p.статус] || 5; count++;
@@ -571,7 +574,7 @@
       const circle = document.getElementById('coreRing');
       const circumference = 2 * Math.PI * 34;
       circle.style.strokeDashoffset = circumference - (avg * circumference);
-      circle.style.stroke = avg < 0.4 ? '#ff5e5e' : avg < 0.7 ? '#f0c060' : '#6ee7b7';
+      circle.style.stroke = avg < 0.4 ? '#ff5e5e' : avg < 0.7 ? '#f0c060' : '#9b59b6';
     }
 
     // ========== Глобальные ==========
