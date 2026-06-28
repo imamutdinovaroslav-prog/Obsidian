@@ -109,11 +109,11 @@
     }
     .status-dot.manual { cursor: pointer; }
     .status-dot.manual:hover { transform: scale(1.3); }
-    .status-критично, .status-нет { background: #e05a5a; color: #e05a5a; } /* чуть приглушённый красный */
-    .status-держится, .status-сохранён { background: #5fa88d; color: #5fa88d; } /* приглушённый зелёный */
-    .status-угасла, .status-пауза { background: #c9a44a; color: #c9a44a; } /* приглушённый жёлтый */
-    .status-хрупкое { background: #c97a4a; color: #c97a4a; } /* приглушённый оранжевый */
-    .status-нейтрально { background: #888; color: #888; } /* серый */
+    /* Новые статусы */
+    .status-плохо { background: #e05a5a; color: #e05a5a; }
+    .status-среднее { background: #f0a060; color: #f0a060; }
+    .status-хорошо { background: #5fa88d; color: #5fa88d; }
+    .status-нейтрально { background: #888; color: #888; }
     input, select, textarea {
       flex: 1; padding: 8px 12px; border: none; border-radius: 6px;
       background: rgba(150, 150, 150, 0.1); color: #ddd;
@@ -172,7 +172,6 @@
     </div>
     <p class="subtitle"><span id="currentDate"></span><span class="blinking-dot"></span></p>
 
-    <!-- Дашборд -->
     <div id="tab-dashboard" class="tab-content active">
       <div class="core-index">
         <div class="ring">
@@ -194,7 +193,6 @@
       <div id="jsonPreview" class="json-preview"></div>
     </div>
 
-    <!-- Графики -->
     <div id="tab-charts" class="tab-content">
       <div class="chart-container">
         <h2 style="margin-bottom:15px; color:#ccc;">📈 Obsidian Core Index (история)</h2>
@@ -210,7 +208,8 @@
 
   <script>
     let currentData = null;
-    const MANUAL_CYCLE = ['критично', 'хрупкое', 'держится', 'угасла', 'пауза', 'нейтрально'];
+    // Новый цикл ручных статусов
+    const MANUAL_CYCLE = ['нейтрально', 'плохо', 'среднее', 'хорошо'];
     let indexChartInstance = null;
     let frontsChartInstance = null;
 
@@ -236,6 +235,8 @@
       }
       if (!currentData) currentData = getEmptyStructure();
       if (!currentData.история) currentData.история = [];
+      // Конвертируем старые статусы в новые при необходимости
+      convertOldStatuses();
       ensureAllStatuses();
       syncAllAutoStatuses();
       renderAll();
@@ -251,22 +252,22 @@
             параметры: [
               { имя: "Сон", sleep_bed: "23:30", sleep_wake: "07:00" },
               { имя: "Питание", nutrition_level: 2 },
-              { имя: "Физнагрузка", workout_desc: "", workout_streak: 0, workout_note: "", статус: "угасла" },
+              { имя: "Физнагрузка", workout_desc: "", workout_streak: 0, workout_note: "", статус: "среднее" },
               { имя: "Общее ЦНС", уровень: 4.5, cns_note: "" }
             ]
           },
           {
             название: "1 — Магазин / Студия",
             параметры: [
-              { имя: "Магазин «СКИФ»", статус: "критично", состояние: "" },
-              { имя: "Студия автосвета", статус: "угасла", состояние: "" }
+              { имя: "Магазин «СКИФ»", статус: "плохо", состояние: "" },
+              { имя: "Студия автосвета", статус: "среднее", состояние: "" }
             ]
           },
           {
             название: "0.1 — Капитал",
             параметры: [
               { имя: "Баланс", capital_balance: 65000 },
-              { имя: "Цель", capital_goal: 100000, статус: "держится" },
+              { имя: "Цель", capital_goal: 100000, статус: "среднее" },
               { имя: "Доход за месяц", capital_income: 0 }
             ]
           },
@@ -290,7 +291,7 @@
           {
             название: "4 — Хобби / Творчество",
             параметры: [
-              { имя: "Канал автосвета", статус: "угасла", состояние: "" },
+              { имя: "Канал автосвета", статус: "среднее", состояние: "" },
               { имя: "Obsidian Core версия", состояние: "v2.0" },
               { имя: "Что изучал", состояние: "" }
             ]
@@ -300,6 +301,25 @@
         цели: ["Вода, завтрак, подход", "Одно действие по магазину/студии", "Вечерний отчёт"],
         история: []
       };
+    }
+
+    // Преобразование старых статусов в новые (если загружены старые данные)
+    function convertOldStatuses() {
+      const map = {
+        'критично': 'плохо',
+        'нет': 'плохо',
+        'держится': 'хорошо',
+        'сохранён': 'хорошо',
+        'угасла': 'среднее',
+        'пауза': 'среднее',
+        'хрупкое': 'среднее',
+        'нейтрально': 'нейтрально'
+      };
+      currentData.фронты.forEach(front => {
+        front.параметры.forEach(p => {
+          if (p.статус && map[p.статус]) p.статус = map[p.статус];
+        });
+      });
     }
 
     function ensureAllStatuses() {
@@ -321,6 +341,7 @@
       });
     }
 
+    // Новые автостатусы
     function sleepStatus(bed, wake) {
       if (!bed || !wake) return 'нейтрально';
       const [bh, bm] = bed.split(':').map(Number);
@@ -329,38 +350,37 @@
       let wakeMins = wh * 60 + wm;
       if (wakeMins <= bedMins) wakeMins += 24 * 60;
       const duration = (wakeMins - bedMins) / 60;
-      if (duration < 6) return 'критично';
-      if (duration < 7) return 'хрупкое';
-      if (duration <= 9) return 'держится';
-      return 'нейтрально';
+      if (duration < 6) return 'плохо';
+      if (duration < 7) return 'среднее';
+      return 'хорошо';
     }
 
     function nutritionStatus(level) {
-      if (level <= 0) return 'критично';
-      if (level === 1) return 'хрупкое';
-      return 'держится';
+      if (level <= 0) return 'плохо';
+      if (level === 1) return 'среднее';
+      return 'хорошо';
     }
 
     function cnsStatus(level) {
-      if (level <= 3) return 'критично';
-      if (level <= 6) return 'хрупкое';
-      return 'держится';
+      if (level <= 3) return 'плохо';
+      if (level <= 6) return 'среднее';
+      return 'хорошо';
     }
 
     function balanceStatus(balance, goal) {
       if (!goal || goal === 0) return 'нейтрально';
       const pct = balance / goal;
-      if (pct >= 0.8) return 'держится';
-      if (pct >= 0.5) return 'хрупкое';
-      return 'критично';
+      if (pct >= 0.8) return 'хорошо';
+      if (pct >= 0.5) return 'среднее';
+      return 'плохо';
     }
 
-    function incomeStatus(income) { return income > 0 ? 'держится' : 'критично'; }
+    function incomeStatus(income) { return income > 0 ? 'хорошо' : 'плохо'; }
 
     function debtsStatus(count) {
-      if (count === 0) return 'держится';
-      if (count <= 2) return 'хрупкое';
-      return 'критично';
+      if (count === 0) return 'хорошо';
+      if (count <= 2) return 'среднее';
+      return 'плохо';
     }
 
     function syncAllAutoStatuses() {
@@ -570,8 +590,10 @@
     function calcFrontHealth(front) {
       let total = 0, count = 0;
       const statusScore = {
-        'держится':8, 'сохранён':8, 'нейтрально':7,
-        'угасла':4, 'пауза':4, 'хрупкое':3, 'критично':1, 'нет':1
+        'хорошо': 8,
+        'нейтрально': 6,
+        'среднее': 4,
+        'плохо': 1
       };
       front.параметры.forEach(p => {
         if (p.уровень !== undefined) { total += p.уровень; count++; }
@@ -605,10 +627,9 @@
       const circle = document.getElementById('coreRing');
       const circumference = 2 * Math.PI * 34;
       circle.style.strokeDashoffset = circumference - (avg * circumference);
-      circle.style.stroke = avg < 0.4 ? '#c97a4a' : avg < 0.7 ? '#c9a44a' : '#888';
+      circle.style.stroke = avg < 0.4 ? '#e05a5a' : avg < 0.7 ? '#f0a060' : '#888';
     }
 
-    // ========== Сохранение с историей ==========
     function saveAll() {
       syncAllAutoStatuses();
       const snapshot = {
@@ -626,7 +647,7 @@
       }
       localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
       updateJsonPreview();
-      alert('✅ Сохранено локально. История обновлена.');
+      alert('✅ Сохранено. История обновлена.');
     }
 
     function calcOverallIndex() {
@@ -642,7 +663,6 @@
       document.getElementById('jsonPreview').textContent = JSON.stringify(currentData, null, 2);
     }
 
-    // ========== Графики ==========
     function renderCharts() {
       const history = currentData.история || [];
       if (history.length === 0) {
@@ -651,7 +671,6 @@
       }
       const labels = history.map(h => h.дата);
       const indexData = history.map(h => Math.round(h.индекс * 100));
-
       const ctx1 = document.getElementById('indexChart').getContext('2d');
       if (indexChartInstance) indexChartInstance.destroy();
       indexChartInstance = new Chart(ctx1, {
@@ -673,11 +692,10 @@
           plugins: { legend: { labels: { color: '#aaa' } } }
         }
       });
-
       const ctx2 = document.getElementById('frontsChart').getContext('2d');
       if (frontsChartInstance) frontsChartInstance.destroy();
       const frontNames = currentData.фронты.map(f => f.название);
-      const colors = ['#e05a5a','#5fa88d','#c9a44a','#c97a4a','#a0a0a0','#888'];
+      const colors = ['#e05a5a','#5fa88d','#f0a060','#a0a0a0','#888','#666'];
       const datasets = frontNames.map((name, idx) => ({
         label: name,
         data: history.map(h => {
@@ -714,14 +732,12 @@
       if (prev.style.display === 'block') prev.style.display = 'none';
       else { updateJsonPreview(); prev.style.display = 'block'; }
     }
-
     function resetToJson() {
       if (confirm('Сбросить до версии из data.json? Все локальные данные будут потеряны.')) {
         localStorage.removeItem('obsidian_hybrid');
         location.reload();
       }
     }
-
     function updateGlobal(key, value) { currentData[key] = value; }
     function toggleGoal(i) { let g = currentData.цели[i]; currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓' + g; }
     function updateGoal(i, text) {
@@ -729,7 +745,6 @@
       currentData.цели[i] = checked ? '✓' + text : text;
     }
     function addGoal() { currentData.цели.push(''); renderAll(); }
-
     function escapeHtml(t) {
       return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
