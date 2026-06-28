@@ -15,8 +15,8 @@
     .bg-text {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
       font-size: clamp(3rem,12vw,10rem); font-weight: 900;
-      color: rgba(255, 255, 255, 0.06); /* белый полупрозрачный */
-      text-shadow: 0 0 60px rgba(255, 255, 255, 0.08); /* мягкое белое свечение */
+      color: rgba(255, 255, 255, 0.06);
+      text-shadow: 0 0 60px rgba(255, 255, 255, 0.08);
       white-space: nowrap; pointer-events: none; z-index: 0;
       letter-spacing: 0.05em; user-select: none;
     }
@@ -35,9 +35,7 @@
       display: flex; align-items: center; justify-content: center; gap: 20px;
       margin-bottom: 30px;
     }
-    .ring {
-      position: relative; width: 80px; height: 80px;
-    }
+    .ring { position: relative; width: 80px; height: 80px; }
     .ring svg { transform: rotate(-90deg); }
     .ring .bg-circle { fill: none; stroke: rgba(138, 43, 226, 0.2); stroke-width: 8; }
     .ring .fg-circle {
@@ -49,8 +47,7 @@
       font-size: 1.2rem; font-weight: 600; color: #fff;
     }
     .card {
-      background: rgba(15, 15, 20, 0.7);
-      backdrop-filter: blur(12px);
+      background: rgba(15, 15, 20, 0.7); backdrop-filter: blur(12px);
       border-radius: 16px; padding: 24px; margin-bottom: 20px;
       border: 1px solid rgba(138, 43, 226, 0.2);
       box-shadow: 0 8px 20px rgba(0,0,0,0.5), 0 0 10px rgba(138, 43, 226, 0.1);
@@ -71,9 +68,7 @@
       font-size: 1.1rem; font-weight: 600; color: #c0bfd0;
       letter-spacing: 0.02em; margin: 0;
     }
-    .mini-bar {
-      display: flex; align-items: center; gap: 8px; min-width: 120px;
-    }
+    .mini-bar { display: flex; align-items: center; gap: 8px; min-width: 120px; }
     .mini-bar-track {
       flex: 1; height: 6px; background: rgba(138, 43, 226, 0.2);
       border-radius: 3px; overflow: hidden;
@@ -192,9 +187,11 @@
         } catch(e){}
       }
       if (!currentData) currentData = getEmptyStructure();
-      ensureAllStatuses();      // гарантирует, что у каждого параметра есть статус
-      syncAllAutoStatuses();    // обновляет только автоматические (сон, питание, цнс, баланс, доход)
+      ensureAllStatuses();
+      syncAllAutoStatuses();
       renderAll();
+      // Делегирование кликов для ручных лампочек
+      document.getElementById('frontsContainer').addEventListener('click', handleDotClick);
     };
 
     function getEmptyStructure() {
@@ -256,12 +253,10 @@
       };
     }
 
-    // Присваивает статус по умолчанию всем параметрам, у которых его нет
     function ensureAllStatuses() {
       currentData.фронты.forEach(front => {
         front.параметры.forEach(p => {
           if (!p.статус) {
-            // Если это числовой параметр без статуса (не должно быть, но на всякий случай)
             if (p.уровень !== undefined) p.статус = cnsStatus(p.уровень);
             else if (p.sleep_bed !== undefined) p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
             else if (p.nutrition_level !== undefined) p.статус = nutritionStatus(p.nutrition_level);
@@ -271,13 +266,13 @@
             }
             else if (p.capital_income !== undefined) p.статус = incomeStatus(p.capital_income);
             else if (p.debts_count !== undefined) p.статус = debtsStatus(p.debts_count);
-            else p.статус = 'нейтрально'; // все остальные текстовые
+            else p.статус = 'нейтрально';
           }
         });
       });
     }
 
-    // ========== Автостатусы (Сон, Питание, ЦНС, Баланс, Доход) ==========
+    // ========== Автостатусы ==========
     function sleepStatus(bed, wake) {
       if (!bed || !wake) return 'нейтрально';
       const [bh, bm] = bed.split(':').map(Number);
@@ -337,7 +332,7 @@
           else if (p.имя === 'Общее ЦНС') p.статус = cnsStatus(p.уровень);
           else if (p.имя === 'Баланс') p.статус = balanceStatus(p.capital_balance, goal);
           else if (p.имя === 'Доход за месяц') p.статус = incomeStatus(p.capital_income);
-          // Остальные (включая долги) не трогаем — они ручные
+          // остальные — ручные, не трогаем
         });
       });
     }
@@ -383,14 +378,13 @@
     function renderParameter(fi, pi, p, front) {
       let h = '';
       const status = p.статус || 'нейтрально';
-      // Автоматические только эти:
       const isAuto = ['Сон', 'Питание', 'Общее ЦНС', 'Баланс', 'Доход за месяц'].includes(p.имя);
       const isManual = !isAuto;
       const dotClass = `status-${status}`;
-      const clickAttr = isManual ? `onclick="cycleStatus(${fi},${pi})" class="manual"` : '';
-      const title = isManual ? status : `Авто: ${status}`;
+      // Добавляем data-атрибуты для обработки клика
+      const dataAttrs = isManual ? `data-fi="${fi}" data-pi="${pi}" class="manual"` : '';
 
-      h += `<div class="field"><label><span class="status-dot ${dotClass} ${clickAttr}" title="${title}"></span>${p.имя}</label>`;
+      h += `<div class="field"><label><span class="status-dot ${dotClass} ${dataAttrs}" title="${isManual ? status : 'Авто: ' + status}"></span>${p.имя}</label>`;
 
       if (p.имя === 'Сон') {
         h += `<input type="time" value="${p.sleep_bed||''}" onchange="updateSleep(${fi},${pi},'sleep_bed',this.value)" style="width:100px;">`;
@@ -435,7 +429,35 @@
       return h;
     }
 
-    // ========== Обработчики ==========
+    // Обработчик клика делегированием
+    function handleDotClick(e) {
+      const dot = e.target.closest('.status-dot.manual');
+      if (!dot) return;
+      const fi = parseInt(dot.dataset.fi);
+      const pi = parseInt(dot.dataset.pi);
+      if (isNaN(fi) || isNaN(pi)) return;
+      cycleStatus(fi, pi);
+    }
+
+    function cycleStatus(fi, pi) {
+      const p = currentData.фронты[fi].параметры[pi];
+      if (!p.статус) p.статус = 'нейтрально';
+      const idx = MANUAL_CYCLE.indexOf(p.статус);
+      const next = MANUAL_CYCLE[(idx + 1) % MANUAL_CYCLE.length];
+      p.статус = next;
+      // Обновляем точку на экране
+      const card = document.querySelectorAll('.card')[fi];
+      if (card) {
+        const dots = card.querySelectorAll('.status-dot');
+        if (dots[pi]) {
+          dots[pi].className = `status-dot manual status-${next}`;
+          dots[pi].title = next;
+        }
+      }
+      updateAllMiniBars();
+    }
+
+    // ========== Обработчики данных (без изменений) ==========
     function updateSleep(fi, pi, key, value) {
       currentData.фронты[fi].параметры[pi][key] = value;
       const p = currentData.фронты[fi].параметры[pi];
@@ -496,27 +518,9 @@
     function updateDebts(fi, pi, value) {
       const count = parseInt(value) || 0;
       currentData.фронты[fi].параметры[pi].debts_count = Math.max(0, count);
-      // статус не меняется автоматически, только через клик по лампочке
     }
     function updateText(fi, pi, value) {
       currentData.фронты[fi].параметры[pi].состояние = value;
-    }
-    function cycleStatus(fi, pi) {
-      const p = currentData.фронты[fi].параметры[pi];
-      if (!p.статус) p.статус = 'нейтрально';
-      const idx = MANUAL_CYCLE.indexOf(p.статус);
-      const next = MANUAL_CYCLE[(idx + 1) % MANUAL_CYCLE.length];
-      p.статус = next;
-      // Обновляем точку на экране без перерисовки
-      const card = document.querySelectorAll('.card')[fi];
-      if (card) {
-        const dots = card.querySelectorAll('.status-dot');
-        if (dots[pi]) {
-          dots[pi].className = `status-dot manual status-${next}`;
-          dots[pi].title = next;
-        }
-      }
-      updateAllMiniBars();
     }
 
     function refreshFieldDot(fi, pi) {
@@ -555,23 +559,14 @@
         'угасла':4, 'пауза':4, 'хрупкое':3, 'критично':1, 'нет':1
       };
       front.параметры.forEach(p => {
-        if (p.уровень !== undefined) {
-          total += p.уровень; count++;
-        } else if (p.имя === 'Сон') {
-          total += statusScore[p.статус] || 5; count++;
-        } else if (p.имя === 'Питание') {
-          total += statusScore[p.статус] || 5; count++;
-        } else if (p.имя === 'Баланс') {
-          total += statusScore[p.статус] || 5; count++;
-        } else if (p.имя === 'Цель') {
-          total += 5; count++;
-        } else if (p.имя === 'Доход за месяц') {
-          total += statusScore[p.статус] || 5; count++;
-        } else if (p.имя === 'Несданных долгов') {
-          total += statusScore[p.статус] || 5; count++;
-        } else {
-          total += statusScore[p.статус] || 5; count++;
-        }
+        if (p.уровень !== undefined) { total += p.уровень; count++; }
+        else if (p.имя === 'Сон') { total += statusScore[p.статус] || 5; count++; }
+        else if (p.имя === 'Питание') { total += statusScore[p.статус] || 5; count++; }
+        else if (p.имя === 'Баланс') { total += statusScore[p.статус] || 5; count++; }
+        else if (p.имя === 'Цель') { total += 5; count++; }
+        else if (p.имя === 'Доход за месяц') { total += statusScore[p.статус] || 5; count++; }
+        else if (p.имя === 'Несданных долгов') { total += statusScore[p.статус] || 5; count++; }
+        else { total += statusScore[p.статус] || 5; count++; }
       });
       return { score: total, max: count * 10 };
     }
@@ -598,7 +593,6 @@
       circle.style.stroke = avg < 0.4 ? '#ff5e5e' : avg < 0.7 ? '#f0c060' : '#9b59b6';
     }
 
-    // ========== Глобальные ==========
     function updateGlobal(key, value) { currentData[key] = value; }
     function toggleGoal(i) {
       let g = currentData.цели[i];
