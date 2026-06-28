@@ -192,8 +192,8 @@
         } catch(e){}
       }
       if (!currentData) currentData = getEmptyStructure();
-      initManualStatuses();      // однократно установить статусы для полей без явного статуса
-      syncAllAutoStatuses();     // синхронизировать автоматические статусы (кроме долгов)
+      ensureAllStatuses();      // гарантирует, что у каждого параметра есть статус
+      syncAllAutoStatuses();    // обновляет только автоматические (сон, питание, цнс, баланс, доход)
       renderAll();
     };
 
@@ -229,7 +229,7 @@
             название: "2 — Учёба",
             параметры: [
               { имя: "Статус учёбы", статус: "нейтрально", состояние: "Каникулы" },
-              { имя: "Несданных долгов", debts_count: 0 }, // статус будет присвоен при инициализации
+              { имя: "Несданных долгов", debts_count: 0 },
               { имя: "Ближайший экзамен", состояние: "" }
             ]
           },
@@ -256,23 +256,28 @@
       };
     }
 
-    // Однократная установка статусов для параметров, у которых их нет, но есть логика
-    function initManualStatuses() {
+    // Присваивает статус по умолчанию всем параметрам, у которых его нет
+    function ensureAllStatuses() {
       currentData.фронты.forEach(front => {
         front.параметры.forEach(p => {
-          if (p.имя === 'Несданных долгов' && p.статус === undefined) {
-            p.статус = debtsStatus(p.debts_count || 0);
-          }
-          // Для других текстовых полей без статуса можно задать нейтрально, если нужно
-          else if (!p.статус && !p.уровень && !p.sleep_bed && !p.nutrition_level && !p.capital_balance && !p.capital_goal && !p.capital_income) {
-            // Если это текстовое поле без статуса (например, "Ближайший экзамен"), дадим нейтральный статус
-            p.статус = 'нейтрально';
+          if (!p.статус) {
+            // Если это числовой параметр без статуса (не должно быть, но на всякий случай)
+            if (p.уровень !== undefined) p.статус = cnsStatus(p.уровень);
+            else if (p.sleep_bed !== undefined) p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
+            else if (p.nutrition_level !== undefined) p.статус = nutritionStatus(p.nutrition_level);
+            else if (p.capital_balance !== undefined) {
+              const goal = front.параметры.find(par => par.имя === 'Цель')?.capital_goal || 0;
+              p.статус = balanceStatus(p.capital_balance, goal);
+            }
+            else if (p.capital_income !== undefined) p.статус = incomeStatus(p.capital_income);
+            else if (p.debts_count !== undefined) p.статус = debtsStatus(p.debts_count);
+            else p.статус = 'нейтрально'; // все остальные текстовые
           }
         });
       });
     }
 
-    // ========== Автостатусы (только для тех, что остались автоматическими) ==========
+    // ========== Автостатусы (Сон, Питание, ЦНС, Баланс, Доход) ==========
     function sleepStatus(bed, wake) {
       if (!bed || !wake) return 'нейтрально';
       const [bh, bm] = bed.split(':').map(Number);
@@ -327,13 +332,12 @@
           });
         }
         front.параметры.forEach(p => {
-          // Несданных долгов теперь ручные – не обновляем автоматически
           if (p.имя === 'Сон') p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
           else if (p.имя === 'Питание') p.статус = nutritionStatus(p.nutrition_level);
           else if (p.имя === 'Общее ЦНС') p.статус = cnsStatus(p.уровень);
           else if (p.имя === 'Баланс') p.статус = balanceStatus(p.capital_balance, goal);
           else if (p.имя === 'Доход за месяц') p.статус = incomeStatus(p.capital_income);
-          // Для Цели не трогаем – она ручная
+          // Остальные (включая долги) не трогаем — они ручные
         });
       });
     }
@@ -379,7 +383,7 @@
     function renderParameter(fi, pi, p, front) {
       let h = '';
       const status = p.статус || 'нейтрально';
-      // Теперь автоматические только: Сон, Питание, ЦНС, Баланс, Доход за месяц
+      // Автоматические только эти:
       const isAuto = ['Сон', 'Питание', 'Общее ЦНС', 'Баланс', 'Доход за месяц'].includes(p.имя);
       const isManual = !isAuto;
       const dotClass = `status-${status}`;
@@ -431,7 +435,7 @@
       return h;
     }
 
-    // ========== Обработчики (без изменений в логике, кроме долгов – теперь ручные) ==========
+    // ========== Обработчики ==========
     function updateSleep(fi, pi, key, value) {
       currentData.фронты[fi].параметры[pi][key] = value;
       const p = currentData.фронты[fi].параметры[pi];
@@ -492,17 +496,18 @@
     function updateDebts(fi, pi, value) {
       const count = parseInt(value) || 0;
       currentData.фронты[fi].параметры[pi].debts_count = Math.max(0, count);
-      // Не обновляем статус автоматически, оставляем текущий
+      // статус не меняется автоматически, только через клик по лампочке
     }
     function updateText(fi, pi, value) {
       currentData.фронты[fi].параметры[pi].состояние = value;
     }
     function cycleStatus(fi, pi) {
       const p = currentData.фронты[fi].параметры[pi];
-      if (!p.статус) return;
+      if (!p.статус) p.статус = 'нейтрально';
       const idx = MANUAL_CYCLE.indexOf(p.статус);
       const next = MANUAL_CYCLE[(idx + 1) % MANUAL_CYCLE.length];
       p.статус = next;
+      // Обновляем точку на экране без перерисовки
       const card = document.querySelectorAll('.card')[fi];
       if (card) {
         const dots = card.querySelectorAll('.status-dot');
