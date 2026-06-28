@@ -207,7 +207,8 @@
           {
             название: "0.1 — Капитал",
             параметры: [
-              { имя: "Баланс / Цель", capital_balance: 65000, capital_goal: 100000 },
+              { имя: "Баланс", capital_balance: 65000 },
+              { имя: "Цель", capital_goal: 100000, статус: "держится" },
               { имя: "Доход за месяц", capital_income: 0 }
             ]
           },
@@ -269,7 +270,7 @@
       return 'держится';
     }
 
-    function capitalBalanceStatus(balance, goal) {
+    function balanceStatus(balance, goal) {
       if (!goal || goal === 0) return 'нейтрально';
       const pct = balance / goal;
       if (pct >= 0.8) return 'держится';
@@ -277,7 +278,7 @@
       return 'критично';
     }
 
-    function capitalIncomeStatus(income) {
+    function incomeStatus(income) {
       return income > 0 ? 'держится' : 'критично';
     }
 
@@ -289,13 +290,24 @@
 
     function syncAllAutoStatuses() {
       currentData.фронты.forEach(front => {
+        // Найдём баланс и цель для вычисления статуса баланса
+        let balance = null, goal = null;
+        if (front.название === "0.1 — Капитал") {
+          front.параметры.forEach(p => {
+            if (p.имя === "Баланс") balance = p.capital_balance;
+            if (p.имя === "Цель") goal = p.capital_goal;
+          });
+        }
         front.параметры.forEach(p => {
           if (p.имя === 'Сон') p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
           else if (p.имя === 'Питание') p.статус = nutritionStatus(p.nutrition_level);
           else if (p.имя === 'Общее ЦНС') p.статус = cnsStatus(p.уровень);
-          else if (p.имя === 'Баланс / Цель') p.статус = capitalBalanceStatus(p.capital_balance, p.capital_goal);
-          else if (p.имя === 'Доход за месяц') p.статус = capitalIncomeStatus(p.capital_income);
+          else if (p.имя === 'Баланс') {
+            p.статус = balanceStatus(p.capital_balance, goal);
+          }
+          else if (p.имя === 'Доход за месяц') p.статус = incomeStatus(p.capital_income);
           else if (p.имя === 'Несданных долгов') p.статус = debtsStatus(p.debts_count);
+          // Цель остаётся ручной, автостатус не присваиваем
         });
       });
     }
@@ -318,7 +330,7 @@
           <span class="mini-bar-label">${pct}%</span></div></div>`;
 
         фронт.параметры.forEach((param, pi) => {
-          html += renderParameter(fi, pi, param);
+          html += renderParameter(fi, pi, param, фронт);
         });
         html += `</div>`;
       });
@@ -338,10 +350,12 @@
       updateCoreRing(allScores);
     }
 
-    function renderParameter(fi, pi, p) {
+    function renderParameter(fi, pi, p, front) {
       let h = '';
       const status = p.статус || 'нейтрально';
-      const isManual = !['Сон','Питание','Общее ЦНС','Баланс / Цель','Доход за месяц','Несданных долгов'].includes(p.имя);
+      // Ручные лампочки для всего, кроме авто-параметров (Сон, Питание, ЦНС, Баланс, Доход, Долги)
+      const isAuto = ['Сон', 'Питание', 'Общее ЦНС', 'Баланс', 'Доход за месяц', 'Несданных долгов'].includes(p.имя);
+      const isManual = !isAuto;
       const dotClass = `status-${status}`;
       const clickAttr = isManual ? `onclick="cycleStatus(${fi},${pi})" class="manual"` : '';
       const title = isManual ? status : `Авто: ${status}`;
@@ -368,21 +382,24 @@
         h += `<textarea placeholder="Самочувствие" onchange="updateCnsNote(${fi},${pi},this.value)">${escapeHtml(p.cns_note||'')}</textarea>`;
         h += `<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${p.уровень*10}%"></div></div>`;
       }
-      else if (p.имя === 'Баланс / Цель') {
-        h += `<input type="number" placeholder="Баланс" value="${p.capital_balance||0}" oninput="updateCapital(${fi},${pi},'capital_balance',this.value)" style="width:100px;">`;
-        h += `<span style="color:#aaa;">/</span>`;
-        h += `<input type="number" placeholder="Цель" value="${p.capital_goal||0}" oninput="updateCapital(${fi},${pi},'capital_goal',this.value)" style="width:100px;">`;
-        const goalPct = p.capital_goal ? Math.min(100, Math.round(p.capital_balance / p.capital_goal * 100)) : 0;
-        h += `<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${goalPct}%"></div></div>`;
+      else if (p.имя === 'Баланс') {
+        h += `<input type="number" value="${p.capital_balance||0}" oninput="updateBalance(${fi},${pi},this.value)" style="width:120px;"> ₽`;
+        // Найдём цель для прогресс-бара
+        const goalParam = front.параметры.find(par => par.имя === 'Цель');
+        const goal = goalParam ? goalParam.capital_goal : 0;
+        const progressPct = goal ? Math.min(100, Math.round(p.capital_balance / goal * 100)) : 0;
+        h += `<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${progressPct}%"></div></div>`;
+      }
+      else if (p.имя === 'Цель') {
+        h += `<input type="number" value="${p.capital_goal||0}" oninput="updateGoalCapital(${fi},${pi},this.value)" style="width:120px;"> ₽`;
       }
       else if (p.имя === 'Доход за месяц') {
-        h += `<input type="number" value="${p.capital_income||0}" oninput="updateCapital(${fi},${pi},'capital_income',this.value)" style="width:120px;"> ₽`;
+        h += `<input type="number" value="${p.capital_income||0}" oninput="updateIncome(${fi},${pi},this.value)" style="width:120px;"> ₽`;
       }
       else if (p.имя === 'Несданных долгов') {
         h += `<input type="number" min="0" value="${p.debts_count||0}" oninput="updateDebts(${fi},${pi},this.value)" style="width:80px;">`;
       }
       else {
-        // Текстовый параметр с ручной лампочкой
         h += `<input type="text" value="${escapeHtml(p.состояние||'')}" onchange="updateText(${fi},${pi}, this.value)">`;
       }
       h += `</div>`;
@@ -417,12 +434,36 @@
     function updateCnsNote(fi, pi, value) {
       currentData.фронты[fi].параметры[pi].cns_note = value;
     }
-    function updateCapital(fi, pi, key, value) {
+    function updateBalance(fi, pi, value) {
       const num = parseFloat(value) || 0;
-      currentData.фронты[fi].параметры[pi][key] = num;
-      const p = currentData.фронты[fi].параметры[pi];
-      if (p.имя === 'Баланс / Цель') p.статус = capitalBalanceStatus(p.capital_balance, p.capital_goal);
-      else if (p.имя === 'Доход за месяц') p.статус = capitalIncomeStatus(p.capital_income);
+      currentData.фронты[fi].параметры[pi].capital_balance = num;
+      // Обновляем статус баланса, цель берём из соседнего параметра
+      const front = currentData.фронты[fi];
+      const goalParam = front.параметры.find(p => p.имя === 'Цель');
+      const goal = goalParam ? goalParam.capital_goal : 0;
+      currentData.фронты[fi].параметры[pi].статус = balanceStatus(num, goal);
+      refreshFieldDot(fi, pi);
+      updateAllMiniBars();
+    }
+    function updateGoalCapital(fi, pi, value) {
+      const num = parseFloat(value) || 0;
+      currentData.фронты[fi].параметры[pi].capital_goal = num;
+      // Обновить статус баланса, т.к. цель поменялась
+      const front = currentData.фронты[fi];
+      const balanceParam = front.параметры.find(p => p.имя === 'Баланс');
+      if (balanceParam) {
+        const balance = balanceParam.capital_balance || 0;
+        balanceParam.статус = balanceStatus(balance, num);
+        // Обновить точку баланса на экране
+        const balanceIndex = front.параметры.indexOf(balanceParam);
+        refreshFieldDot(fi, balanceIndex);
+      }
+      updateAllMiniBars();
+    }
+    function updateIncome(fi, pi, value) {
+      const num = parseFloat(value) || 0;
+      currentData.фронты[fi].параметры[pi].capital_income = num;
+      currentData.фронты[fi].параметры[pi].статус = incomeStatus(num);
       refreshFieldDot(fi, pi);
       updateAllMiniBars();
     }
@@ -442,11 +483,13 @@
       const idx = MANUAL_CYCLE.indexOf(p.статус);
       const next = MANUAL_CYCLE[(idx + 1) % MANUAL_CYCLE.length];
       p.статус = next;
-      // Обновляем точку и мини-бары
-      const dot = document.querySelectorAll('.card')[fi]?.querySelectorAll('.status-dot')[pi];
-      if (dot) {
-        dot.className = `status-dot manual status-${next}`;
-        dot.title = next;
+      const card = document.querySelectorAll('.card')[fi];
+      if (card) {
+        const dots = card.querySelectorAll('.status-dot');
+        if (dots[pi]) {
+          dots[pi].className = `status-dot manual status-${next}`;
+          dots[pi].title = next;
+        }
       }
       updateAllMiniBars();
     }
@@ -455,11 +498,10 @@
       const card = document.querySelectorAll('.card')[fi];
       if (!card) return;
       const dots = card.querySelectorAll('.status-dot');
-      const dot = dots[pi];
-      if (dot) {
+      if (dots[pi]) {
         const newStatus = currentData.фронты[fi].параметры[pi].статус;
-        dot.className = `status-dot ${dot.classList.contains('manual') ? 'manual' : ''} status-${newStatus}`;
-        dot.title = newStatus;
+        dots[pi].className = `status-dot ${dots[pi].classList.contains('manual') ? 'manual' : ''} status-${newStatus}`;
+        dots[pi].title = newStatus;
       }
     }
 
@@ -494,8 +536,11 @@
           total += statusScore[p.статус] || 5; count++;
         } else if (p.имя === 'Питание') {
           total += statusScore[p.статус] || 5; count++;
-        } else if (p.имя === 'Баланс / Цель') {
+        } else if (p.имя === 'Баланс') {
           total += statusScore[p.статус] || 5; count++;
+        } else if (p.имя === 'Цель') {
+          // Цель сама по себе не имеет прямого состояния, берём нейтральное
+          total += 5; count++;
         } else if (p.имя === 'Доход за месяц') {
           total += statusScore[p.статус] || 5; count++;
         } else if (p.имя === 'Несданных долгов') {
