@@ -109,7 +109,6 @@
     }
     .status-dot.manual { cursor: pointer; }
     .status-dot.manual:hover { transform: scale(1.3); }
-    /* Новые статусы */
     .status-плохо { background: #e05a5a; color: #e05a5a; }
     .status-среднее { background: #f0a060; color: #f0a060; }
     .status-хорошо { background: #5fa88d; color: #5fa88d; }
@@ -189,6 +188,10 @@
         <button class="btn primary" onclick="saveAll()">💾 Сохранить всё</button>
         <button class="btn" onclick="toggleJson()">📋 Показать JSON</button>
         <button class="btn" onclick="resetToJson()">🔄 Сбросить из JSON</button>
+        <!-- НОВАЯ КНОПКА: скопировать дайджест -->
+        <button class="btn" onclick="copyStateToClipboard()">📋 Скопировать state для чата</button>
+        <!-- ОПЦИОНАЛЬНАЯ КНОПКА для автоматической загрузки на GitHub (раскомментируй, если нужна) -->
+        <!-- <button class="btn" onclick="uploadStateToGitHub()">🚀 Загрузить state.txt на GitHub</button> -->
       </div>
       <div id="jsonPreview" class="json-preview"></div>
     </div>
@@ -207,8 +210,8 @@
   </div>
 
   <script>
+    // ---------- Глобальные переменные и утилиты ----------
     let currentData = null;
-    // Новый цикл ручных статусов
     const MANUAL_CYCLE = ['нейтрально', 'плохо', 'среднее', 'хорошо'];
     let indexChartInstance = null;
     let frontsChartInstance = null;
@@ -235,7 +238,6 @@
       }
       if (!currentData) currentData = getEmptyStructure();
       if (!currentData.история) currentData.история = [];
-      // Конвертируем старые статусы в новые при необходимости
       convertOldStatuses();
       ensureAllStatuses();
       syncAllAutoStatuses();
@@ -303,7 +305,64 @@
       };
     }
 
-    // Преобразование старых статусов в новые (если загружены старые данные)
+    function escapeHtml(t) {
+      return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ---------- Функции статусов ----------
+    function sleepStatus(bed, wake) {
+      if (!bed || !wake) return 'нейтрально';
+      const [bh, bm] = bed.split(':').map(Number);
+      const [wh, wm] = wake.split(':').map(Number);
+      let bedMins = bh * 60 + bm;
+      let wakeMins = wh * 60 + wm;
+      if (wakeMins <= bedMins) wakeMins += 24 * 60;
+      const duration = (wakeMins - bedMins) / 60;
+      if (duration < 6) return 'плохо';
+      if (duration < 7) return 'среднее';
+      return 'хорошо';
+    }
+
+    function nutritionStatus(level) {
+      if (level <= 0) return 'плохо';
+      if (level === 1) return 'среднее';
+      return 'хорошо';
+    }
+
+    function cnsStatus(level) {
+      if (level <= 3) return 'плохо';
+      if (level <= 6) return 'среднее';
+      return 'хорошо';
+    }
+
+    function balanceStatus(balance, goal) {
+      if (!goal || goal === 0) return 'нейтрально';
+      const pct = balance / goal;
+      if (pct >= 0.8) return 'хорошо';
+      if (pct >= 0.5) return 'среднее';
+      return 'плохо';
+    }
+
+    function incomeStatus(income) { return income > 0 ? 'хорошо' : 'плохо'; }
+    function debtsStatus(count) {
+      if (count === 0) return 'хорошо';
+      if (count <= 2) return 'среднее';
+      return 'плохо';
+    }
+
+    function calcSleepDuration(bed, wake) {
+      if (!bed || !wake) return '';
+      const [bh, bm] = bed.split(':').map(Number);
+      const [wh, wm] = wake.split(':').map(Number);
+      let bedMins = bh * 60 + bm;
+      let wakeMins = wh * 60 + wm;
+      if (wakeMins <= bedMins) wakeMins += 24 * 60;
+      const h = Math.floor((wakeMins - bedMins) / 60);
+      const m = (wakeMins - bedMins) % 60;
+      return `${h}ч ${m}м`;
+    }
+
+    // ---------- Синхронизация статусов ----------
     function convertOldStatuses() {
       const map = {
         'критично': 'плохо',
@@ -341,48 +400,6 @@
       });
     }
 
-    // Новые автостатусы
-    function sleepStatus(bed, wake) {
-      if (!bed || !wake) return 'нейтрально';
-      const [bh, bm] = bed.split(':').map(Number);
-      const [wh, wm] = wake.split(':').map(Number);
-      let bedMins = bh * 60 + bm;
-      let wakeMins = wh * 60 + wm;
-      if (wakeMins <= bedMins) wakeMins += 24 * 60;
-      const duration = (wakeMins - bedMins) / 60;
-      if (duration < 6) return 'плохо';
-      if (duration < 7) return 'среднее';
-      return 'хорошо';
-    }
-
-    function nutritionStatus(level) {
-      if (level <= 0) return 'плохо';
-      if (level === 1) return 'среднее';
-      return 'хорошо';
-    }
-
-    function cnsStatus(level) {
-      if (level <= 3) return 'плохо';
-      if (level <= 6) return 'среднее';
-      return 'хорошо';
-    }
-
-    function balanceStatus(balance, goal) {
-      if (!goal || goal === 0) return 'нейтрально';
-      const pct = balance / goal;
-      if (pct >= 0.8) return 'хорошо';
-      if (pct >= 0.5) return 'среднее';
-      return 'плохо';
-    }
-
-    function incomeStatus(income) { return income > 0 ? 'хорошо' : 'плохо'; }
-
-    function debtsStatus(count) {
-      if (count === 0) return 'хорошо';
-      if (count <= 2) return 'среднее';
-      return 'плохо';
-    }
-
     function syncAllAutoStatuses() {
       currentData.фронты.forEach(front => {
         let balance = null, goal = null;
@@ -400,6 +417,28 @@
           else if (p.имя === 'Доход за месяц') p.статус = incomeStatus(p.capital_income);
         });
       });
+    }
+
+    // ---------- Отрисовка и обработка ----------
+    function calcFrontHealth(front) {
+      let total = 0, count = 0;
+      const statusScore = {
+        'хорошо': 8,
+        'нейтрально': 6,
+        'среднее': 4,
+        'плохо': 1
+      };
+      front.параметры.forEach(p => {
+        if (p.уровень !== undefined) { total += p.уровень; count++; }
+        else if (p.имя === 'Сон') { total += statusScore[p.статус] || 5; count++; }
+        else if (p.имя === 'Питание') { total += statusScore[p.статус] || 5; count++; }
+        else if (p.имя === 'Баланс') { total += statusScore[p.статус] || 5; count++; }
+        else if (p.имя === 'Цель') { total += 5; count++; }
+        else if (p.имя === 'Доход за месяц') { total += statusScore[p.статус] || 5; count++; }
+        else if (p.имя === 'Несданных долгов') { total += statusScore[p.статус] || 5; count++; }
+        else { total += statusScore[p.статус] || 5; count++; }
+      });
+      return { score: total, max: count * 10 };
     }
 
     function renderAll() {
@@ -587,39 +626,6 @@
       updateCoreRing(allScores);
     }
 
-    function calcFrontHealth(front) {
-      let total = 0, count = 0;
-      const statusScore = {
-        'хорошо': 8,
-        'нейтрально': 6,
-        'среднее': 4,
-        'плохо': 1
-      };
-      front.параметры.forEach(p => {
-        if (p.уровень !== undefined) { total += p.уровень; count++; }
-        else if (p.имя === 'Сон') { total += statusScore[p.статус] || 5; count++; }
-        else if (p.имя === 'Питание') { total += statusScore[p.статус] || 5; count++; }
-        else if (p.имя === 'Баланс') { total += statusScore[p.статус] || 5; count++; }
-        else if (p.имя === 'Цель') { total += 5; count++; }
-        else if (p.имя === 'Доход за месяц') { total += statusScore[p.статус] || 5; count++; }
-        else if (p.имя === 'Несданных долгов') { total += statusScore[p.статус] || 5; count++; }
-        else { total += statusScore[p.статус] || 5; count++; }
-      });
-      return { score: total, max: count * 10 };
-    }
-
-    function calcSleepDuration(bed, wake) {
-      if (!bed || !wake) return '';
-      const [bh, bm] = bed.split(':').map(Number);
-      const [wh, wm] = wake.split(':').map(Number);
-      let bedMins = bh * 60 + bm;
-      let wakeMins = wh * 60 + wm;
-      if (wakeMins <= bedMins) wakeMins += 24 * 60;
-      const h = Math.floor((wakeMins - bedMins) / 60);
-      const m = (wakeMins - bedMins) % 60;
-      return `${h}ч ${m}м`;
-    }
-
     function updateCoreRing(scores) {
       const avg = scores.reduce((a,b) => a + b, 0) / scores.length;
       const pct = Math.round(avg * 100);
@@ -630,6 +636,16 @@
       circle.style.stroke = avg < 0.4 ? '#e05a5a' : avg < 0.7 ? '#f0a060' : '#888';
     }
 
+    function calcOverallIndex() {
+      let sum = 0;
+      currentData.фронты.forEach(f => {
+        const { score, max } = calcFrontHealth(f);
+        sum += score / max;
+      });
+      return sum / currentData.фронты.length;
+    }
+
+    // ---------- Сохранение и история ----------
     function saveAll() {
       syncAllAutoStatuses();
       const snapshot = {
@@ -650,19 +666,34 @@
       alert('✅ Сохранено. История обновлена.');
     }
 
-    function calcOverallIndex() {
-      let sum = 0;
-      currentData.фронты.forEach(f => {
-        const { score, max } = calcFrontHealth(f);
-        sum += score / max;
-      });
-      return sum / currentData.фронты.length;
-    }
-
     function updateJsonPreview() {
       document.getElementById('jsonPreview').textContent = JSON.stringify(currentData, null, 2);
     }
 
+    function toggleJson() {
+      const prev = document.getElementById('jsonPreview');
+      if (prev.style.display === 'block') prev.style.display = 'none';
+      else { updateJsonPreview(); prev.style.display = 'block'; }
+    }
+
+    function resetToJson() {
+      if (confirm('Сбросить до версии из data.json? Все локальные данные будут потеряны.')) {
+        localStorage.removeItem('obsidian_hybrid');
+        location.reload();
+      }
+    }
+
+    function updateGlobal(key, value) { currentData[key] = value; }
+
+    // ---------- Цели ----------
+    function toggleGoal(i) { let g = currentData.цели[i]; currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓' + g; }
+    function updateGoal(i, text) {
+      const checked = currentData.цели[i].startsWith('✓');
+      currentData.цели[i] = checked ? '✓' + text : text;
+    }
+    function addGoal() { currentData.цели.push(''); renderAll(); }
+
+    // ---------- Графики ----------
     function renderCharts() {
       const history = currentData.история || [];
       if (history.length === 0) {
@@ -727,26 +758,125 @@
       }
     }
 
-    function toggleJson() {
-      const prev = document.getElementById('jsonPreview');
-      if (prev.style.display === 'block') prev.style.display = 'none';
-      else { updateJsonPreview(); prev.style.display = 'block'; }
-    }
-    function resetToJson() {
-      if (confirm('Сбросить до версии из data.json? Все локальные данные будут потеряны.')) {
-        localStorage.removeItem('obsidian_hybrid');
-        location.reload();
+    // ===================== НОВЫЕ ФУНКЦИИ =====================
+
+    function generateStateText() {
+      syncAllAutoStatuses();
+      let text = `# Состояние системы Obsidian Core на ${new Date().toLocaleString('ru-RU')}\n\n`;
+
+      // Obsidian Core Index
+      const index = calcOverallIndex();
+      text += `## Obsidian Core Index: ${Math.round(index * 100)}%\n\n`;
+
+      // Фронты
+      currentData.фронты.forEach(front => {
+        const { score, max } = calcFrontHealth(front);
+        const health = Math.round((score / max) * 100);
+        text += `### ${front.название} (здоровье: ${health}%)\n`;
+        front.параметры.forEach(p => {
+          let value = '';
+          if (p.имя === 'Сон') {
+            const duration = calcSleepDuration(p.sleep_bed, p.sleep_wake);
+            value = `${p.sleep_bed} → ${p.sleep_wake} (${duration})`;
+          } else if (p.имя === 'Питание') {
+            const levels = ['', 'Плохо', 'Средне', 'Хорошо'];
+            value = `Уровень ${p.nutrition_level} (${levels[p.nutrition_level] || '—'})`;
+          } else if (p.имя === 'Физнагрузка') {
+            value = `${p.workout_desc || '—'} (стрик ${p.workout_streak} дн.) ${p.workout_note ? ' — ' + p.workout_note : ''}`;
+          } else if (p.имя === 'Общее ЦНС') {
+            value = `Уровень ${p.уровень}/10 ${p.cns_note ? ' — ' + p.cns_note : ''}`;
+          } else if (p.имя === 'Баланс') {
+            value = `${p.capital_balance} ₽`;
+          } else if (p.имя === 'Цель') {
+            value = `${p.capital_goal} ₽`;
+          } else if (p.имя === 'Доход за месяц') {
+            value = `${p.capital_income} ₽`;
+          } else if (p.имя === 'Несданных долгов') {
+            value = p.debts_count;
+          } else {
+            value = p.состояние || '—';
+          }
+          text += `- **${p.имя}**: ${value} (${p.статус || 'нейтрально'})\n`;
+        });
+        text += '\n';
+      });
+
+      // Протоколы
+      if (currentData.протоколы) {
+        text += `## Протоколы\n${currentData.протоколы}\n\n`;
       }
+
+      // Цели
+      if (currentData.цели && currentData.цели.length > 0) {
+        text += `## Ежедневные действия\n`;
+        currentData.цели.forEach((goal, i) => {
+          const done = goal.startsWith('✓') ? '✅' : '⬜';
+          text += `${done} ${goal.replace('✓', '')}\n`;
+        });
+        text += '\n';
+      }
+
+      // Последние записи истории
+      if (currentData.история && currentData.история.length > 0) {
+        const last = currentData.история[currentData.история.length - 1];
+        text += `## Последнее сохранение: ${last.дата}, индекс ${Math.round(last.индекс * 100)}%\n`;
+      }
+
+      return text;
     }
-    function updateGlobal(key, value) { currentData[key] = value; }
-    function toggleGoal(i) { let g = currentData.цели[i]; currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓' + g; }
-    function updateGoal(i, text) {
-      const checked = currentData.цели[i].startsWith('✓');
-      currentData.цели[i] = checked ? '✓' + text : text;
+
+    function copyStateToClipboard() {
+      const stateText = generateStateText();
+      navigator.clipboard.writeText(stateText).then(() => {
+        alert('✅ Состояние скопировано! Вставь его в state.txt на GitHub.');
+        document.getElementById('jsonPreview').textContent = stateText;
+        document.getElementById('jsonPreview').style.display = 'block';
+      }).catch(() => {
+        alert('Не удалось скопировать. Текст отображён в блоке JSON.');
+        document.getElementById('jsonPreview').textContent = stateText;
+        document.getElementById('jsonPreview').style.display = 'block';
+      });
     }
-    function addGoal() { currentData.цели.push(''); renderAll(); }
-    function escapeHtml(t) {
-      return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    // Опциональная функция для прямой загрузки на GitHub (требует токен)
+    async function uploadStateToGitHub() {
+      const token = prompt('Введите GitHub токен (с правами repo):');
+      if (!token) return;
+      const stateText = generateStateText();
+      const repo = 'imamutdinovaroslav-prog/Obsidian';
+      const path = 'state.txt';
+      const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+      let sha = null;
+      try {
+        const getRes = await fetch(url, { headers: { Authorization: `token ${token}` } });
+        if (getRes.ok) {
+          const data = await getRes.json();
+          sha = data.sha;
+        }
+      } catch(e) {}
+
+      const body = {
+        message: 'Обновление state через дашборд',
+        content: btoa(unescape(encodeURIComponent(stateText))),
+        ...(sha && { sha })
+      };
+
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (res.ok) {
+        alert('✅ state.txt успешно загружен на GitHub!');
+      } else {
+        const err = await res.json();
+        alert('Ошибка: ' + err.message);
+      }
     }
   </script>
 </body>
