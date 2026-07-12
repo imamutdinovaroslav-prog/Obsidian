@@ -188,10 +188,8 @@
         <button class="btn primary" onclick="saveAll()">💾 Сохранить всё</button>
         <button class="btn" onclick="toggleJson()">📋 Показать JSON</button>
         <button class="btn" onclick="resetToJson()">🔄 Сбросить из JSON</button>
-        <!-- НОВАЯ КНОПКА: скопировать дайджест -->
         <button class="btn" onclick="copyStateToClipboard()">📋 Скопировать state для чата</button>
-        <!-- ОПЦИОНАЛЬНАЯ КНОПКА для автоматической загрузки на GitHub (раскомментируй, если нужна) -->
-        <!-- <button class="btn" onclick="uploadStateToGitHub()">🚀 Загрузить state.txt на GitHub</button> -->
+        <button class="btn" onclick="uploadStateToGitHub()">🚀 Загрузить state.txt на GitHub</button>
       </div>
       <div id="jsonPreview" class="json-preview"></div>
     </div>
@@ -758,17 +756,12 @@
       }
     }
 
-    // ===================== НОВЫЕ ФУНКЦИИ =====================
-
+    // ===================== ФУНКЦИИ ЭКСПОРТА =====================
     function generateStateText() {
       syncAllAutoStatuses();
       let text = `# Состояние системы Obsidian Core на ${new Date().toLocaleString('ru-RU')}\n\n`;
-
-      // Obsidian Core Index
       const index = calcOverallIndex();
       text += `## Obsidian Core Index: ${Math.round(index * 100)}%\n\n`;
-
-      // Фронты
       currentData.фронты.forEach(front => {
         const { score, max } = calcFrontHealth(front);
         const health = Math.round((score / max) * 100);
@@ -800,13 +793,9 @@
         });
         text += '\n';
       });
-
-      // Протоколы
       if (currentData.протоколы) {
         text += `## Протоколы\n${currentData.протоколы}\n\n`;
       }
-
-      // Цели
       if (currentData.цели && currentData.цели.length > 0) {
         text += `## Ежедневные действия\n`;
         currentData.цели.forEach((goal, i) => {
@@ -815,13 +804,10 @@
         });
         text += '\n';
       }
-
-      // Последние записи истории
       if (currentData.история && currentData.история.length > 0) {
         const last = currentData.история[currentData.история.length - 1];
         text += `## Последнее сохранение: ${last.дата}, индекс ${Math.round(last.индекс * 100)}%\n`;
       }
-
       return text;
     }
 
@@ -838,7 +824,6 @@
       });
     }
 
-    // Опциональная функция для прямой загрузки на GitHub (требует токен)
     async function uploadStateToGitHub() {
       const token = prompt('Введите GitHub токен (с правами repo):');
       if (!token) return;
