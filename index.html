@@ -60,7 +60,6 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* Новый аналитический блок */
     .system-summary {
       background: rgba(25, 25, 30, 0.8);
       backdrop-filter: blur(10px);
@@ -229,10 +228,7 @@
         <span style="color:#999;">Obsidian Core Index</span>
       </div>
 
-      <!-- Новый аналитический блок -->
-      <div id="systemSummary" class="system-summary">
-        <!-- Заполняется динамически -->
-      </div>
+      <div id="systemSummary" class="system-summary"></div>
 
       <div id="frontsContainer"></div>
       <div class="buttons-panel">
@@ -289,7 +285,6 @@
       ensureAllStatuses();
       syncAllAutoStatuses();
       renderAll();
-      document.getElementById('frontsContainer').addEventListener('click', handleDotClick);
     };
 
     function getEmptyStructure() {
@@ -489,7 +484,6 @@
       return { score: total, max: count * 10 };
     }
 
-    // Обновление аналитического блока
     function updateSystemSummary() {
       const summaryEl = document.getElementById('systemSummary');
       if (!summaryEl) return;
@@ -503,7 +497,6 @@
 
       let html = `<div class="system-status"><span class="dot" style="background:${цвет};"></span> ${статус} (${indexPercent}%)</div>`;
 
-      // Тренд
       const история = currentData.история || [];
       if (история.length >= 2) {
         const prev = история[история.length - 2];
@@ -520,7 +513,6 @@
         html += `<div class="trend-text">Тренд: недостаточно данных</div>`;
       }
 
-      // Критические точки
       const критические = [];
       currentData.фронты.forEach(front => {
         front.параметры.forEach(p => {
@@ -565,7 +557,7 @@
 
     function renderAll() {
       syncAllAutoStatuses();
-      updateSystemSummary(); // обновляем сводку
+      updateSystemSummary();
       const container = document.getElementById('frontsContainer');
       let html = '';
       let allScores = [];
@@ -600,8 +592,9 @@
       const status = p.статус || 'нейтрально';
       const isAuto = ['Сон', 'Питание', 'Общее ЦНС', 'Баланс', 'Доход за месяц'].includes(p.имя);
       const isManual = !isAuto;
-      const dataAttrs = isManual ? `data-fi="${fi}" data-pi="${pi}" class="manual"` : '';
-      h += `<div class="field"><label><span class="status-dot status-${status} ${dataAttrs}" title="${isManual ? status : 'Авто: ' + status}"></span>${p.имя}</label>`;
+      // Для ручных лампочек — прямой onclick
+      const clickHandler = isManual ? `onclick="cycleStatus(${fi},${pi})"` : '';
+      h += `<div class="field"><label><span class="status-dot status-${status} ${isManual ? 'manual' : ''}" ${clickHandler} title="${isManual ? status : 'Авто: ' + status}"></span>${p.имя}</label>`;
       if (p.имя === 'Сон') {
         h += `<input type="time" value="${p.sleep_bed||''}" onchange="updateSleep(${fi},${pi},'sleep_bed',this.value)" style="width:100px;">`;
         h += `<span style="color:#999;margin:0 4px;">→</span>`;
@@ -636,21 +629,13 @@
       return h;
     }
 
-    function handleDotClick(e) {
-      const dot = e.target.closest('.status-dot.manual');
-      if (!dot) return;
-      const fi = parseInt(dot.dataset.fi);
-      const pi = parseInt(dot.dataset.pi);
-      if (isNaN(fi) || isNaN(pi)) return;
-      cycleStatus(fi, pi);
-    }
-
     function cycleStatus(fi, pi) {
       const p = currentData.фронты[fi].параметры[pi];
       if (!p.статус) p.статус = 'нейтрально';
       const idx = MANUAL_CYCLE.indexOf(p.статус);
       const next = MANUAL_CYCLE[(idx + 1) % MANUAL_CYCLE.length];
       p.статус = next;
+      // Обновляем точку в DOM
       const card = document.querySelectorAll('.card')[fi];
       if (card) {
         const dots = card.querySelectorAll('.status-dot');
@@ -660,7 +645,7 @@
         }
       }
       updateAllMiniBars();
-      updateSystemSummary(); // обновляем сводку при смене статуса
+      updateSystemSummary();
     }
 
     function updateSleep(fi, pi, key, value) {
@@ -775,7 +760,6 @@
       return sum / currentData.фронты.length;
     }
 
-    // ---------- Сохранение с обновлением сегодняшней записи ----------
     async function saveAll() {
       syncAllAutoStatuses();
       const сегодня = new Date().toISOString().slice(0,10);
@@ -798,7 +782,7 @@
 
       localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
       updateJsonPreview();
-      updateSystemSummary(); // обновим сводку с трендом
+      updateSystemSummary();
 
       const token = localStorage.getItem('github_token');
       if (token) {
@@ -843,7 +827,6 @@
 
     function updateGlobal(key, value) { currentData[key] = value; }
 
-    // ---------- Цели ----------
     function toggleGoal(i) { let g = currentData.цели[i]; currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓' + g; }
     function updateGoal(i, text) {
       const checked = currentData.цели[i].startsWith('✓');
@@ -851,7 +834,6 @@
     }
     function addGoal() { currentData.цели.push(''); renderAll(); }
 
-    // ---------- Графики ----------
     function renderCharts() {
       const history = currentData.история || [];
       if (history.length === 0) {
@@ -917,7 +899,6 @@
       }
     }
 
-    // ===================== Генерация state.txt (без изменений) =====================
     function generateStateText() {
       syncAllAutoStatuses();
       const сегодня = new Date().toLocaleDateString('ru-RU');
