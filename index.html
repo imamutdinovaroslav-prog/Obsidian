@@ -316,7 +316,8 @@
       const duration = (wakeMins - bedMins) / 60;
       if (duration < 6) return 'плохо';
       if (duration < 7) return 'среднее';
-      return 'хорошо';
+      if (duration <= 9) return 'хорошо';
+      return 'нейтрально'; // больше 9 часов - пересып
     }
 
     function nutritionStatus(level) {
@@ -641,11 +642,12 @@
       return sum / currentData.фронты.length;
     }
 
-    // ---------- Сохранение с авто-загрузкой state.txt ----------
+    // ---------- Сохранение с обновлением сегодняшней записи ----------
     async function saveAll() {
       syncAllAutoStatuses();
+      const сегодня = new Date().toISOString().slice(0,10);
       const snapshot = {
-        дата: new Date().toISOString().slice(0,10),
+        дата: сегодня,
         индекс: calcOverallIndex(),
         фронты: currentData.фронты.map(f => ({
           название: f.название,
@@ -653,10 +655,17 @@
         }))
       };
       if (!currentData.история) currentData.история = [];
-      const last = currentData.история[currentData.история.length - 1];
-      if (!last || last.дата !== snapshot.дата) {
+      
+      // Ищем запись за сегодня
+      const existingIndex = currentData.история.findIndex(item => item.дата === сегодня);
+      if (existingIndex !== -1) {
+        // Обновляем существующую запись
+        currentData.история[existingIndex] = snapshot;
+      } else {
+        // Добавляем новую
         currentData.история.push(snapshot);
       }
+
       localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
       updateJsonPreview();
 
