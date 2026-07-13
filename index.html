@@ -59,6 +59,51 @@
     }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+
+    /* Новый аналитический блок */
+    .system-summary {
+      background: rgba(25, 25, 30, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(150, 150, 150, 0.15);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+    .system-status {
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .system-status .dot {
+      width: 14px; height: 14px; border-radius: 50%;
+    }
+    .trend-text {
+      color: #aaa;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    .critical-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 5px;
+    }
+    .critical-list li {
+      padding: 4px 0;
+      font-size: 0.9rem;
+      color: #e05a5a;
+    }
+    .critical-list li::before {
+      content: "⚠️ ";
+    }
+    .no-critical {
+      color: #5fa88d;
+      font-weight: 500;
+    }
+
     .card {
       background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(12px);
       border-radius: 16px; padding: 24px; margin-bottom: 20px;
@@ -183,6 +228,12 @@
         </div>
         <span style="color:#999;">Obsidian Core Index</span>
       </div>
+
+      <!-- Новый аналитический блок -->
+      <div id="systemSummary" class="system-summary">
+        <!-- Заполняется динамически -->
+      </div>
+
       <div id="frontsContainer"></div>
       <div class="buttons-panel">
         <button class="btn primary" onclick="saveAll()">💾 Сохранить всё</button>
@@ -438,8 +489,83 @@
       return { score: total, max: count * 10 };
     }
 
+    // Обновление аналитического блока
+    function updateSystemSummary() {
+      const summaryEl = document.getElementById('systemSummary');
+      if (!summaryEl) return;
+
+      const indexPercent = Math.round(calcOverallIndex() * 100);
+      let статус = '', цвет = '';
+      if (indexPercent < 40) { статус = 'Критический'; цвет = '#e05a5a'; }
+      else if (indexPercent < 60) { статус = 'Нестабильный'; цвет = '#f0a060'; }
+      else if (indexPercent < 80) { статус = 'Стабильный'; цвет = '#5fa88d'; }
+      else { статус = 'Оптимальный'; цвет = '#888'; }
+
+      let html = `<div class="system-status"><span class="dot" style="background:${цвет};"></span> ${статус} (${indexPercent}%)</div>`;
+
+      // Тренд
+      const история = currentData.история || [];
+      if (история.length >= 2) {
+        const prev = история[история.length - 2];
+        const last = история[история.length - 1];
+        const prevIndex = Math.round(prev.индекс * 100);
+        const lastIndex = Math.round(last.индекс * 100);
+        const diff = lastIndex - prevIndex;
+        let тренд = '';
+        if (diff > 0) тренд = `↗️ Растёт (+${diff}%)`;
+        else if (diff < 0) тренд = `↘️ Падает (${diff}%)`;
+        else тренд = `↔️ Стабильно`;
+        html += `<div class="trend-text">Тренд: ${тренд} (было ${prevIndex}%)</div>`;
+      } else if (история.length === 1) {
+        html += `<div class="trend-text">Тренд: недостаточно данных</div>`;
+      }
+
+      // Критические точки
+      const критические = [];
+      currentData.фронты.forEach(front => {
+        front.параметры.forEach(p => {
+          if (p.статус === 'плохо') {
+            let значение = '';
+            if (p.имя === 'Сон') {
+              const duration = calcSleepDuration(p.sleep_bed, p.sleep_wake);
+              значение = `${p.sleep_bed} → ${p.sleep_wake} (${duration})`;
+            } else if (p.имя === 'Питание') {
+              значение = `${p.nutrition_level} приёмов пищи`;
+            } else if (p.имя === 'Физнагрузка') {
+              значение = p.workout_desc || 'отсутствует';
+              if (p.workout_streak) значение += ` (стрик ${p.workout_streak} дн.)`;
+            } else if (p.имя === 'Общее ЦНС') {
+              значение = `Уровень ${p.уровень}/10`;
+            } else if (p.имя === 'Баланс') {
+              значение = `${p.capital_balance} ₽`;
+            } else if (p.имя === 'Цель') {
+              значение = `${p.capital_goal} ₽`;
+            } else if (p.имя === 'Доход за месяц') {
+              значение = `${p.capital_income} ₽`;
+            } else if (p.имя === 'Несданных долгов') {
+              значение = p.debts_count;
+            } else {
+              значение = p.состояние || '—';
+            }
+            критические.push(`${p.имя}: ${значение}`);
+          }
+        });
+      });
+
+      if (критические.length > 0) {
+        html += `<div style="margin-top:8px; font-weight:600; color:#e05a5a;">🚨 Критические точки</div><ul class="critical-list">`;
+        критические.forEach(item => html += `<li>${item}</li>`);
+        html += `</ul>`;
+      } else {
+        html += `<div class="no-critical" style="margin-top:8px;">✅ Критических точек нет</div>`;
+      }
+
+      summaryEl.innerHTML = html;
+    }
+
     function renderAll() {
       syncAllAutoStatuses();
+      updateSystemSummary(); // обновляем сводку
       const container = document.getElementById('frontsContainer');
       let html = '';
       let allScores = [];
@@ -534,6 +660,7 @@
         }
       }
       updateAllMiniBars();
+      updateSystemSummary(); // обновляем сводку при смене статуса
     }
 
     function updateSleep(fi, pi, key, value) {
@@ -542,6 +669,7 @@
       p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
       refreshFieldDot(fi, pi);
       updateAllMiniBars();
+      updateSystemSummary();
     }
     function updateNutrition(fi, pi, value) {
       const level = parseInt(value) || 0;
@@ -549,6 +677,7 @@
       currentData.фронты[fi].параметры[pi].статус = nutritionStatus(level);
       refreshFieldDot(fi, pi);
       updateAllMiniBars();
+      updateSystemSummary();
     }
     function updateWorkout(fi, pi, key, value) { currentData.фронты[fi].параметры[pi][key] = value; }
     function updateCns(fi, pi, value) {
@@ -557,6 +686,7 @@
       currentData.фронты[fi].параметры[pi].статус = cnsStatus(val);
       refreshFieldDot(fi, pi);
       updateAllMiniBars();
+      updateSystemSummary();
     }
     function updateCnsNote(fi, pi, value) { currentData.фронты[fi].параметры[pi].cns_note = value; }
     function updateBalance(fi, pi, value) {
@@ -568,6 +698,7 @@
       currentData.фронты[fi].параметры[pi].статус = balanceStatus(num, goal);
       refreshFieldDot(fi, pi);
       updateAllMiniBars();
+      updateSystemSummary();
     }
     function updateGoalCapital(fi, pi, value) {
       const num = parseFloat(value) || 0;
@@ -581,6 +712,7 @@
         refreshFieldDot(fi, balanceIndex);
       }
       updateAllMiniBars();
+      updateSystemSummary();
     }
     function updateIncome(fi, pi, value) {
       const num = parseFloat(value) || 0;
@@ -588,6 +720,7 @@
       currentData.фронты[fi].параметры[pi].статус = incomeStatus(num);
       refreshFieldDot(fi, pi);
       updateAllMiniBars();
+      updateSystemSummary();
     }
     function updateDebts(fi, pi, value) {
       currentData.фронты[fi].параметры[pi].debts_count = Math.max(0, parseInt(value) || 0);
@@ -665,6 +798,7 @@
 
       localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
       updateJsonPreview();
+      updateSystemSummary(); // обновим сводку с трендом
 
       const token = localStorage.getItem('github_token');
       if (token) {
@@ -779,17 +913,17 @@
         if (indexChartInstance) indexChartInstance.destroy();
         if (frontsChartInstance) frontsChartInstance.destroy();
         alert('История очищена.');
+        updateSystemSummary();
       }
     }
 
-    // ===================== НОВАЯ generateStateText =====================
+    // ===================== Генерация state.txt (без изменений) =====================
     function generateStateText() {
       syncAllAutoStatuses();
       const сегодня = new Date().toLocaleDateString('ru-RU');
       const index = calcOverallIndex();
       const indexPercent = Math.round(index * 100);
 
-      // Статус системы
       let статусСистемы = '';
       if (indexPercent < 40) статусСистемы = 'Критический';
       else if (indexPercent < 60) статусСистемы = 'Нестабильный';
@@ -799,7 +933,6 @@
       let text = `# Состояние системы Obsidian Core на ${сегодня}\n\n`;
       text += `## Obsidian Core Index: ${indexPercent}% (${статусСистемы})\n`;
 
-      // Тренд за 2 дня
       const история = currentData.история || [];
       if (история.length >= 2) {
         const prev = история[история.length - 2];
@@ -817,7 +950,6 @@
       }
       text += '\n';
 
-      // Критические точки
       const критические = [];
       currentData.фронты.forEach(front => {
         front.параметры.forEach(p => {
@@ -857,7 +989,6 @@
         text += `## 🚨 Критические точки\n✅ Критических точек нет\n\n`;
       }
 
-      // Фронты с улучшенным отображением
       currentData.фронты.forEach(front => {
         const { score, max } = calcFrontHealth(front);
         const health = Math.round((score / max) * 100);
