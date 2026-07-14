@@ -3,7 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Obsidian Core | Командный центр</title>
+  <title>Obsidian Core | Тест вкладок</title>
+  <style>
+    body { background: #0a0a0a; color: #e0e0e0; font-family: sans-serif; padding: 20px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 20px; background: #333; color: #ccc; border: none; border-radius: 8px; cursor: pointer; }
+    .tab-btn.active { background: #555; color: #fff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview')">📊 Обзор</button>
+    <button class="tab-btn" onclick="switchTab('finance')">💰 Финансы</button>
+    <button class="tab-btn" onclick="switchTab('sport')">🏃 Спорт</button>
+    <button class="tab-btn" onclick="switchTab('charts')">📈 Графики</button>
+  </div>
+
+  <div id="tab-overview" class="tab-content active"><h2>Обзор</h2><p>Здесь будет дашборд</p></div>
+  <div id="tab-finance" class="tab-content"><h2>Финансы</h2><p>Здесь будет финансовый модуль</p></div>
+  <div id="tab-sport" class="tab-content"><h2>Спорт</h2><p>Здесь будет спортивный модуль</p></div>
+  <div id="tab-charts" class="tab-content"><h2>Графики</h2><p>Здесь будут графики</p></div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+      document.getElementById('tab-' + tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obsidian Core | Обзор</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -69,9 +106,7 @@
       border: 1px solid rgba(150, 150, 150, 0.15);
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    .system-status {
-      font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
-    }
+    .system-status { font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     .system-status .dot { width: 14px; height: 14px; border-radius: 50%; }
     .trend-text { color: #aaa; margin-bottom: 10px; font-size: 0.9rem; }
     .critical-list { list-style: none; padding-left: 0; margin-top: 5px; }
@@ -168,34 +203,6 @@
       border-radius: 16px; padding: 20px; margin-bottom: 20px;
       border: 1px solid rgba(150, 150, 150, 0.12);
     }
-
-    /* Финансы */
-    .finance-card { background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(12px); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(150,150,150,0.12); }
-    .finance-card h3 { font-size: 1rem; color: #ccc; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-    .balance-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .balance-row:last-child { border-bottom: none; }
-    .sub-account { padding-left: 20px; font-size: 0.9rem; color: #aaa; }
-    .phase-badge { background: #f0a060; color: #000; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
-    .progress-finance { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 5px 0; }
-    .progress-finance-fill { height: 100%; border-radius: 4px; background: #5fa88d; }
-    .operation-list { max-height: 200px; overflow-y: auto; margin-top: 10px; }
-    .operation-item { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
-    .positive { color: #5fa88d; }
-    .negative { color: #e05a5a; }
-    .small-btn { padding: 5px 12px; font-size: 0.8rem; margin: 2px; }
-
-    /* Спорт */
-    .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
-    .modal.active { display: flex; }
-    .modal-content { background: #1e1e24; border-radius: 16px; padding: 24px; max-width: 500px; width: 90%; border: 1px solid rgba(150,150,150,0.3); max-height: 80vh; overflow-y: auto; position: relative; }
-    .modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; }
-    .exercise-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
-    .exercise-row input, .exercise-row select { flex: 1; min-width: 80px; }
-    .pain-slider { display: flex; gap: 5px; align-items: center; }
-    .pain-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(150,150,150,0.3); color: #ccc; cursor: pointer; font-size: 0.9rem; }
-    .pain-btn.active { background: #e05a5a; color: #fff; border-color: #e05a5a; }
-    .history-item { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 0.85rem; }
-    .delete-btn { background: none; border: none; color: #e05a5a; cursor: pointer; margin-left: 10px; }
   </style>
 </head>
 <body>
@@ -234,47 +241,16 @@
       <div id="jsonPreview" class="json-preview"></div>
     </div>
 
-    <!-- Финансы -->
-    <div id="tab-finance" class="tab-content">
-      <div id="financeContainer"></div>
-    </div>
-
-    <!-- Спорт -->
-    <div id="tab-sport" class="tab-content">
-      <div id="sportContainer"></div>
-    </div>
-
-    <!-- Графики -->
-    <div id="tab-charts" class="tab-content">
-      <div class="chart-container"><h2 style="margin-bottom:15px; color:#ccc;">📈 Obsidian Core Index (история)</h2><canvas id="indexChart" width="400" height="200"></canvas></div>
-      <div class="chart-container"><h2 style="margin-bottom:15px; color:#ccc;">🧩 Здоровье фронтов</h2><canvas id="frontsChart" width="400" height="250"></canvas></div>
-      <button class="btn" onclick="CoreApp.clearHistory()" style="margin-top:10px;">🗑️ Очистить историю</button>
-    </div>
+    <!-- Остальные вкладки (заглушки) -->
+    <div id="tab-finance" class="tab-content"><h2>💰 Финансы</h2><p>Модуль появится позже</p></div>
+    <div id="tab-sport" class="tab-content"><h2>🏃 Спорт</h2><p>Модуль появится позже</p></div>
+    <div id="tab-charts" class="tab-content"><h2>📈 Графики</h2><p>Здесь будут графики</p></div>
   </div>
 
-  <!-- Модальное окно тренировки -->
-  <div id="trainingModal" class="modal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="SportApp.closeTrainingForm()">&times;</button>
-      <h3 style="margin-bottom:15px;">Запись тренировки</h3>
-      <div id="exerciseList"></div>
-      <button class="btn" onclick="SportApp.addExerciseField()" style="margin-bottom:10px;">+ Добавить упражнение</button>
-      <div style="margin:10px 0;">Боль в локте (0-5): <span id="painValue">0</span></div>
-      <div class="pain-slider">
-        <button class="pain-btn" onclick="SportApp.setPain(0)">0</button><button class="pain-btn" onclick="SportApp.setPain(1)">1</button><button class="pain-btn" onclick="SportApp.setPain(2)">2</button><button class="pain-btn" onclick="SportApp.setPain(3)">3</button><button class="pain-btn" onclick="SportApp.setPain(4)">4</button><button class="pain-btn" onclick="SportApp.setPain(5)">5</button>
-      </div>
-      <div style="margin:10px 0;"><label><input type="checkbox" id="isRestDay"> Разгрузочный день</label><label style="margin-left:10px;"><input type="checkbox" id="isTestDay"> Тест на максимум</label></div>
-      <textarea id="trainingNotes" placeholder="Заметки" style="width:100%; margin-bottom:10px;"></textarea>
-      <button class="btn primary" onclick="SportApp.saveTraining()">💾 Сохранить тренировку</button>
-    </div>
-  </div>  <script>
+  <script>
     // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
     let currentData = null;
-    let financeData = null;
-    let sportData = null;
-
     const MANUAL_CYCLE = ['нейтрально', 'плохо', 'среднее', 'хорошо'];
-    let indexChartInstance = null, frontsChartInstance = null, volumeChartInstance = null;
 
     // Переключение вкладок
     function switchTab(tabName) {
@@ -283,11 +259,7 @@
       const target = document.getElementById('tab-' + tabName);
       if (target) target.classList.add('active');
       event.target.classList.add('active');
-
       if (tabName === 'overview') CoreApp.renderAll();
-      else if (tabName === 'finance') FinanceApp.render();
-      else if (tabName === 'sport') SportApp.render();
-      else if (tabName === 'charts') CoreApp.renderCharts();
     }
 
     // ========== МОДУЛЬ CORE (обзор) ==========
@@ -297,12 +269,28 @@
         const saved = localStorage.getItem('obsidian_core');
         if (saved) { try { currentData = JSON.parse(saved); } catch(e){} }
         if (!currentData) {
-          try { fetch('data.json').then(r=>r.json()).then(d=>{ currentData = d; if(!currentData.история) currentData.история = []; if(!currentData.серии) currentData.серии = {сон:0,питание:0,активность:0,тело:0}; this.convertOldStatuses(); this.ensureAllStatuses(); this.syncAllAutoStatuses(); this.renderAll(); }); return; } catch(e){}
+          // попытка загрузить data.json
+          try {
+            fetch('data.json')
+              .then(r => r.json())
+              .then(d => {
+                currentData = d;
+                if (!currentData.история) currentData.история = [];
+                if (!currentData.серии) currentData.серии = { сон:0, питание:0, активность:0, тело:0 };
+                this.convertOldStatuses();
+                this.ensureAllStatuses();
+                this.syncAllAutoStatuses();
+                this.renderAll();
+              });
+            return;
+          } catch(e) {}
           currentData = this.getEmptyStructure();
         }
         if (!currentData.история) currentData.история = [];
         if (!currentData.серии) currentData.серии = { сон:0, питание:0, активность:0, тело:0 };
-        this.convertOldStatuses(); this.ensureAllStatuses(); this.syncAllAutoStatuses();
+        this.convertOldStatuses();
+        this.ensureAllStatuses();
+        this.syncAllAutoStatuses();
         this.renderAll();
       },
       getEmptyStructure() {
@@ -310,33 +298,59 @@
           дата: new Date().toISOString().slice(0,10),
           серии: { сон: 0, питание: 0, активность: 0, тело: 0 },
           фронты: [
-            { название: "0.4 — ЦНС и тело", параметры: [
-              { имя: "Сон", sleep_bed: "23:30", sleep_wake: "07:00" },
-              { имя: "Питание", nutrition_level: 2 },
-              { имя: "Физнагрузка", workout_desc: "", workout_streak: 0, workout_note: "", статус: "среднее" },
-              { имя: "Общее ЦНС", уровень: 4.5, cns_note: "" } ] },
-            { название: "1 — Магазин / Студия", параметры: [
-              { имя: "Магазин «СКИФ»", статус: "плохо", состояние: "" },
-              { имя: "Студия автосвета", статус: "среднее", состояние: "" } ] },
-            { название: "0.1 — Капитал", параметры: [
-              { имя: "Баланс", capital_balance: 65000 },
-              { имя: "Цель", capital_goal: 100000, статус: "среднее" },
-              { имя: "Доход за месяц", capital_income: 0 } ] },
-            { название: "2 — Учёба", параметры: [
-              { имя: "Статус учёбы", статус: "нейтрально", состояние: "Каникулы" },
-              { имя: "Несданных долгов", debts_count: 0 },
-              { имя: "Ближайший экзамен", состояние: "" } ] },
-            { название: "3 — Социум / Отношения", параметры: [
-              { имя: "Вероника", статус: "нейтрально", состояние: "" },
-              { имя: "Максы", статус: "нейтрально", состояние: "" },
-              { имя: "Брат", статус: "нейтрально", состояние: "" },
-              { имя: "Общий фон", статус: "нейтрально", состояние: "" } ] },
-            { название: "4 — Хобби / Творчество", параметры: [
-              { имя: "Канал автосвета", статус: "среднее", состояние: "" },
-              { имя: "Obsidian Core версия", состояние: "v2.0" },
-              { имя: "Что изучал", состояние: "" } ] }
+            {
+              название: "0.4 — ЦНС и тело",
+              параметры: [
+                { имя: "Сон", sleep_bed: "23:30", sleep_wake: "07:00" },
+                { имя: "Питание", nutrition_level: 2 },
+                { имя: "Физнагрузка", workout_desc: "", workout_streak: 0, workout_note: "", статус: "среднее" },
+                { имя: "Общее ЦНС", уровень: 4.5, cns_note: "" }
+              ]
+            },
+            {
+              название: "1 — Магазин / Студия",
+              параметры: [
+                { имя: "Магазин «СКИФ»", статус: "плохо", состояние: "" },
+                { имя: "Студия автосвета", статус: "среднее", состояние: "" }
+              ]
+            },
+            {
+              название: "0.1 — Капитал",
+              параметры: [
+                { имя: "Баланс", capital_balance: 65000 },
+                { имя: "Цель", capital_goal: 100000, статус: "среднее" },
+                { имя: "Доход за месяц", capital_income: 0 }
+              ]
+            },
+            {
+              название: "2 — Учёба",
+              параметры: [
+                { имя: "Статус учёбы", статус: "нейтрально", состояние: "Каникулы" },
+                { имя: "Несданных долгов", debts_count: 0 },
+                { имя: "Ближайший экзамен", состояние: "" }
+              ]
+            },
+            {
+              название: "3 — Социум / Отношения",
+              параметры: [
+                { имя: "Вероника", статус: "нейтрально", состояние: "" },
+                { имя: "Максы", статус: "нейтрально", состояние: "" },
+                { имя: "Брат", статус: "нейтрально", состояние: "" },
+                { имя: "Общий фон", статус: "нейтрально", состояние: "" }
+              ]
+            },
+            {
+              название: "4 — Хобби / Творчество",
+              параметры: [
+                { имя: "Канал автосвета", статус: "среднее", состояние: "" },
+                { имя: "Obsidian Core версия", состояние: "v2.0" },
+                { имя: "Что изучал", состояние: "" }
+              ]
+            }
           ],
-          протоколы: "", цели: ["Вода, завтрак, подход", "Одно действие по магазину/студии", "Вечерний отчёт"], история: []
+          протоколы: "",
+          цели: ["Вода, завтрак, подход", "Одно действие по магазину/студии", "Вечерний отчёт"],
+          история: []
         };
       },
       escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); },
@@ -438,7 +452,7 @@
       updateAllMiniBars() { const cards = document.querySelectorAll('.card'); let scores = []; currentData.фронты.forEach((f, fi) => { const { score, max } = this.calcFrontHealth(f); scores.push(score/max); const pct = Math.round((score/max)*100); const card = cards[fi]; if(card){ const fill = card.querySelector('.mini-bar-fill'); const label = card.querySelector('.mini-bar-label'); if(fill) fill.style.width = pct+'%'; if(label) label.textContent = pct+'%'; } }); this.updateCoreRing(scores); },
       updateCoreRing(scores) { const avg = scores.reduce((a,b)=>a+b,0)/scores.length; const pct = Math.round(avg*100); document.getElementById('corePercent').textContent = pct+'%'; const circle = document.getElementById('coreRing'); const circ = 2*Math.PI*34; circle.style.strokeDashoffset = circ - (avg*circ); circle.style.stroke = avg<0.4?'#e05a5a':avg<0.7?'#f0a060':'#888'; },
       calcOverallIndex() { let sum = 0; currentData.фронты.forEach(f => { const { score, max } = this.calcFrontHealth(f); sum += score/max; }); return sum/currentData.фронты.length; },
-      async saveAll() { this.syncAllAutoStatuses(); const today = new Date().toISOString().slice(0,10); const snap = { дата: today, индекс: this.calcOverallIndex(), фронты: currentData.фронты.map(f => ({ название: f.название, здоровье: this.calcFrontHealth(f).score/this.calcFrontHealth(f).max })) }; if(!currentData.история) currentData.история = []; const idx = currentData.история.findIndex(i => i.дата === today); if(idx !== -1) currentData.история[idx] = snap; else currentData.история.push(snap); localStorage.setItem('obsidian_core', JSON.stringify(currentData)); this.updateJsonPreview(); this.updateSystemSummary(); const token = localStorage.getItem('github_token'); if(token){ try { await this.uploadStateToGitHub(token); alert('✅ Сохранено и отправлено в GitHub.'); } catch(e) { alert('✅ Сохранено локально. Ошибка загрузки state.txt.'); } } else { const newToken = prompt('Введите GitHub токен (права repo) для авто-загрузки state.txt:'); if(newToken) { localStorage.setItem('github_token', newToken); try { await this.uploadStateToGitHub(newToken); alert('✅ Сохранено и отправлено в GitHub.'); } catch(e) { alert('✅ Сохранено локально. Ошибка загрузки.'); } } else alert('✅ Сохранено локально (без state.txt).'); } },
+      async saveAll() { this.syncAllAutoStatuses(); const today = new Date().toISOString().slice(0,10); const snap = { дата: today, индекс: this.calcOverallIndex(), фронты: currentData.фронты.map(f => ({ название: f.название, здоровье: this.calcFrontHealth(f).score/this.calcFrontHealth(f).max })) }; if(!currentData.история) currentData.история = []; const idx = currentData.история.findIndex(i => i.дата === today); if(idx !== -1) currentData.история[idx] = snap; else currentData.история.push(snap); localStorage.setItem('obsidian_core', JSON.stringify(currentData)); this.updateJsonPreview(); this.updateSystemSummary(); alert('✅ Сохранено локально.'); },
       updateJsonPreview() { document.getElementById('jsonPreview').textContent = JSON.stringify(currentData, null, 2); },
       toggleJson() { const prev = document.getElementById('jsonPreview'); if(prev.style.display === 'block') prev.style.display = 'none'; else { this.updateJsonPreview(); prev.style.display = 'block'; } },
       resetToJson() { if(confirm('Сбросить до версии из data.json? Все локальные данные будут потеряны.')) { localStorage.removeItem('obsidian_core'); location.reload(); } },
@@ -446,341 +460,8 @@
       toggleGoal(i) { let g = currentData.цели[i]; currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓'+g; },
       updateGoal(i, text) { const checked = currentData.цели[i].startsWith('✓'); currentData.цели[i] = checked ? '✓'+text : text; },
       addGoal() { currentData.цели.push(''); this.renderAll(); },
-      renderCharts() { const history = currentData.история || []; if(history.length === 0) { alert('Нет истории.'); return; } const labels = history.map(h => h.дата); const indexData = history.map(h => Math.round(h.индекс*100)); const ctx1 = document.getElementById('indexChart').getContext('2d'); if(indexChartInstance) indexChartInstance.destroy(); indexChartInstance = new Chart(ctx1, { type:'line', data:{ labels, datasets:[{ label:'Obsidian Core Index (%)', data:indexData, borderColor:'#888', backgroundColor:'rgba(136,136,136,0.1)', fill:true, tension:0.3 }] }, options:{ responsive:true, scales:{ y:{ min:0, max:100, ticks:{ color:'#aaa' } }, x:{ ticks:{ color:'#aaa' } } }, plugins:{ legend:{ labels:{ color:'#aaa' } } } } }); const ctx2 = document.getElementById('frontsChart').getContext('2d'); if(frontsChartInstance) frontsChartInstance.destroy(); const names = currentData.фронты.map(f => f.название); const colors = ['#e05a5a','#5fa88d','#f0a060','#a0a0a0','#888','#666']; const datasets = names.map((name, idx) => ({ label:name, data:history.map(h => { const f = h.фронты.find(fr => fr.название === name); return f ? Math.round(f.здоровье*100) : 0; }), borderColor:colors[idx%colors.length], backgroundColor:'transparent', tension:0.3 })); frontsChartInstance = new Chart(ctx2, { type:'line', data:{ labels, datasets }, options:{ responsive:true, scales:{ y:{ min:0, max:100, ticks:{ color:'#aaa' } }, x:{ ticks:{ color:'#aaa' } } }, plugins:{ legend:{ labels:{ color:'#aaa' } } } }); },
-      clearHistory() { if(confirm('Удалить всю историю графиков?')) { currentData.история = []; localStorage.setItem('obsidian_core', JSON.stringify(currentData)); if(indexChartInstance) indexChartInstance.destroy(); if(frontsChartInstance) frontsChartInstance.destroy(); alert('История очищена.'); this.updateSystemSummary(); } },
       generateStateText() { this.syncAllAutoStatuses(); const today = new Date().toLocaleDateString('ru-RU'); const idx = Math.round(this.calcOverallIndex()*100); let status = ''; if(idx<40) status='Критический'; else if(idx<60) status='Нестабильный'; else if(idx<80) status='Стабильный'; else status='Оптимальный'; let text = `# Состояние системы Obsidian Core на ${today}\n\n## Obsidian Core Index: ${idx}% (${status})\n`; const hist = currentData.история||[]; if(hist.length>=2) { const prev = hist[hist.length-2], last = hist[hist.length-1]; const diff = Math.round(last.индекс*100)-Math.round(prev.индекс*100); let trend = ''; if(diff>0) trend=`↗️ Растёт (+${diff}%)`; else if(diff<0) trend=`↘️ Падает (${diff}%)`; else trend='↔️ Стабильно'; text += `Тренд за 2 дня: ${trend} (было ${Math.round(prev.индекс*100)}%)\n`; } else if(hist.length===1) text += `Тренд: недостаточно данных\n`; text += '\n'; const crit = []; currentData.фронты.forEach(f => f.параметры.forEach(p => { if(p.статус==='плохо') { let v = ''; if(p.имя==='Сон') v = `${p.sleep_bed} → ${p.sleep_wake} (${this.calcSleepDuration(p.sleep_bed,p.sleep_wake)})`; else if(p.имя==='Питание') v = `${p.nutrition_level} приёмов`; else if(p.имя==='Физнагрузка') v = p.workout_desc||'отсутствует'; else if(p.имя==='Общее ЦНС') v = `Уровень ${p.уровень}/10`; else if(p.имя==='Баланс') v = `${p.capital_balance} ₽`; else if(p.имя==='Цель') v = `${p.capital_goal} ₽`; else if(p.имя==='Доход за месяц') v = `${p.capital_income} ₽`; else if(p.имя==='Несданных долгов') v = p.debts_count; else v = p.состояние||'—'; crit.push(`- ${p.имя}: ${v} (плохо)`); } })); if(crit.length>0) { text += `## 🚨 Критические точки\n`; crit.forEach(i => text += i+'\n'); text += '\n'; } else text += `## 🚨 Критические точки\n✅ Критических точек нет\n\n`; text += `## 🔥 Серии\n`; const series = currentData.серии||{}; text += `- 🌙 Сон: ${series.сон||0} дн.\n- 🍏 Питание: ${series.питание||0} дн.\n- ⚡ Активность: ${series.активность||0} дн.\n- 💪 Тело: ${series.тело||0} дн.\n\n`; currentData.фронты.forEach(f => { const { score, max } = this.calcFrontHealth(f); const health = Math.round((score/max)*100); text += `### ${f.название} (здоровье: ${health}%)\n`; f.параметры.forEach(p => { let v = ''; if(p.имя==='Сон') { const dur = this.calcSleepDuration(p.sleep_bed,p.sleep_wake); v = `${p.sleep_bed} → ${p.sleep_wake} (${dur}, ${p.статус||'нейтрально'})`; } else if(p.имя==='Питание') v = `${p.nutrition_level} приёмов (${p.статус||'нейтрально'})`; else if(p.имя==='Физнагрузка') { v = `${p.workout_desc||'—'} (стрик ${p.workout_streak} дн.)`; if(p.workout_note) v += ` — ${p.workout_note}`; v += ` (${p.статус||'нейтрально'})`; } else if(p.имя==='Общее ЦНС') { v = `Уровень ${p.уровень}/10 (${p.статус||'нейтрально'})`; if(p.cns_note) v += ` — ${p.cns_note}`; } else if(p.имя==='Баланс') v = `${p.capital_balance} ₽ (${p.статус||'нейтрально'})`; else if(p.имя==='Цель') { const bal = f.параметры.find(x => x.имя==='Баланс')?.capital_balance||0; const goal = p.capital_goal||0; const prog = goal>0?Math.round((bal/goal)*100):0; v = `${goal} ₽ (прогресс ${prog}%) (${p.статус||'нейтрально'})`; } else if(p.имя==='Доход за месяц') v = `${p.capital_income} ₽ (${p.статус||'нейтрально'})`; else if(p.имя==='Несданных долгов') v = `${p.debts_count} (${p.статус||'нейтрально'})`; else v = `${p.состояние||'—'} (${p.статус||'нейтрально'})`; text += `- **${p.имя}**: ${v}\n`; }); text += '\n'; }); if(currentData.протоколы) text += `## Протоколы\n${currentData.протоколы}\n\n`; if(currentData.цели && currentData.цели.length>0) { text += `## Ежедневные действия\n`; currentData.цели.forEach((g,i) => { const done = g.startsWith('✓')?'✅':'⬜'; text += `${done} ${g.replace('✓','')}\n`; }); text += '\n'; } if(hist.length>0) { const last = hist[hist.length-1]; text += `## Последнее сохранение: ${last.дата}, индекс ${Math.round(last.индекс*100)}%\n`; } return text; },
       copyStateToClipboard() { const text = this.generateStateText(); navigator.clipboard.writeText(text).then(() => { alert('✅ Состояние скопировано!'); document.getElementById('jsonPreview').textContent = text; document.getElementById('jsonPreview').style.display = 'block'; }).catch(() => { alert('Не удалось скопировать.'); document.getElementById('jsonPreview').textContent = text; document.getElementById('jsonPreview').style.display = 'block'; }); },
-      async uploadStateToGitHub(token) { const text = this.generateStateText(); const repo = 'imamutdinovaroslav-prog/Obsidian'; const path = 'state.txt'; const url = `https://api.github.com/repos/${repo}/contents/${path}`; let sha = null; try { const getRes = await fetch(url, { headers:{ Authorization:`token ${token}` } }); if(getRes.ok) { const data = await getRes.json(); sha = data.sha; } } catch(e) {} const body = { message:'Обновление state через дашборд', content:btoa(unescape(encodeURIComponent(text))), ...(sha && { sha }) }; const res = await fetch(url, { method:'PUT', headers:{ Authorization:`token ${token}`, 'Content-Type':'application/json' }, body:JSON.stringify(body) }); if(!res.ok) { const err = await res.json(); throw new Error(err.message); } },
-    };
-
-    // ========== МОДУЛЬ ФИНАНСОВ (FinanceApp) ==========
-    const FinanceApp = {
-      data: null,
-      load() {
-        const saved = localStorage.getItem('obsidian_finance');
-        if (saved) { try { this.data = JSON.parse(saved); } catch(e){} }
-        if (!this.data) this.data = this.getDefault();
-        financeData = this.data;
-      },
-      getDefault() {
-        return {
-          дата_последнего_расчёта: "2026-06-04",
-          счета: {
-            железный: { баланс: 50000, ставка: 13.68, открыт: "2026-04-24", погашение: "2026-10-24" },
-            крепость: { баланс: 11931.95, ставка: 9, цель: 24000, минимум: 5000 },
-            живой: { баланс: 0, ставка: 10, субсчета: { мотоцикл: 0, акции: 0, дом: 0, подарки: 0, реклама: 0, душа: 0, обслуживание: 0 } },
-            жизнь: { баланс: 0 },
-            долг: { баланс: 0 }
-          },
-          фаза: "Фаза 1 Накопление",
-          цель_мотоцикл: { бюджет: 200000, срок: "2027-11" },
-          доход_будущий_мес_брутто: 40000,
-          налог_ставка: 4,
-          операции: []
-        };
-      },
-      save() { localStorage.setItem('obsidian_finance', JSON.stringify(this.data)); financeData = this.data; },
-      accrueInterest() {
-        const f = this.data;
-        const today = new Date().toISOString().slice(0,10);
-        if (f.дата_последнего_расчёта === today) return;
-        const prev = new Date(f.дата_последнего_расчёта);
-        const curr = new Date(today);
-        const days = Math.floor((curr - prev) / (1000 * 60 * 60 * 24));
-        if (days <= 0) return;
-        f.счета.железный.баланс += f.счета.железный.баланс * (f.счета.железный.ставка/100) * (days/365);
-        f.счета.крепость.баланс += f.счета.крепость.баланс * (f.счета.крепость.ставка/100) * (days/365);
-        f.счета.живой.баланс += f.счета.живой.баланс * (f.счета.живой.ставка/100) * (days/365);
-        f.дата_последнего_расчёта = today;
-      },
-      updatePhase() {
-        const f = this.data;
-        const total = f.счета.железный.баланс + (f.счета.живой.субсчета?.мотоцикл || 0) + Math.max(0, f.счета.крепость.баланс - f.счета.крепость.минимум);
-        const goal = f.цель_мотоцикл.бюджет;
-        const now = new Date();
-        const deadline = new Date(f.цель_мотоцикл.срок);
-        if (total >= goal && now <= deadline) f.фаза = 'Фаза 2 Покупка';
-        else if (f.счета.долг.баланс > 0 && f.доход_будущий_мес_брутто > 0) f.фаза = 'Фаза 3 Восстановление';
-        else if (f.счета.крепость.баланс >= f.счета.крепость.цель && f.счета.железный.баланс >= 50000) f.фаза = 'Стандартный режим';
-        else f.фаза = 'Фаза 1 Накопление';
-      },
-      render() {
-        this.load();
-        this.accrueInterest();
-        this.updatePhase();
-        const f = this.data;
-        const container = document.getElementById('financeContainer');
-        let html = '';
-
-        const totalForMoto = f.счета.железный.баланс + (f.счета.живой.субсчета?.мотоцикл || 0) + Math.max(0, f.счета.крепость.баланс - f.счета.крепость.минимум);
-        const motoProgress = Math.min(100, Math.round((totalForMoto / f.цель_мотоцикл.бюджет) * 100));
-        html += `<div class="finance-card"><h3>📊 Фаза: <span class="phase-badge">${f.фаза}</span></h3><div>Цель «Мотоцикл»: ${motoProgress}% (${totalForMoto.toFixed(0)} / ${f.цель_мотоцикл.бюджет} ₽)</div><div class="progress-finance"><div class="progress-finance-fill" style="width:${motoProgress}%"></div></div></div>`;
-
-        const accounts = [
-          { key: 'железный', icon: '⚛️', name: 'Железный Реактор', balance: f.счета.железный.баланс, info: `Ставка ${f.счета.железный.ставка}%, погашение ${f.счета.железный.погашение}` },
-          { key: 'крепость', icon: '🖤', name: 'Крепость', balance: f.счета.крепость.баланс, info: `Цель ${f.счета.крепость.цель} ₽` },
-          { key: 'живой', icon: '💰', name: 'Живой Реактор', balance: f.счета.живой.баланс, info: `Ставка ${f.счета.живой.ставка}%` },
-          { key: 'жизнь', icon: '💸', name: 'Жизнь', balance: f.счета.жизнь.баланс, info: 'Операционные' },
-          { key: 'долг', icon: '🔴', name: 'Долг', balance: f.счета.долг.баланс, info: 'Перед родителями' }
-        ];
-        accounts.forEach(acc => {
-          html += `<div class="finance-card"><div class="balance-row"><span>${acc.icon} ${acc.name}</span><span>${acc.balance.toFixed(2)} ₽</span></div><div style="font-size:0.8rem; color:#aaa;">${acc.info}</div>`;
-          if (acc.key === 'крепость') {
-            const prog = Math.min(100, (acc.balance / f.счета.крепость.цель) * 100);
-            html += `<div class="progress-finance"><div class="progress-finance-fill" style="width:${prog}%"></div></div>`;
-          }
-          if (acc.key === 'живой') {
-            html += `<div class="sub-account">Субсчета:</div>`;
-            for (const [sub, bal] of Object.entries(f.счета.живой.субсчета)) {
-              html += `<div class="balance-row sub-account"><span>📌 ${sub}</span><span>${bal.toFixed(2)} ₽</span></div>`;
-            }
-          }
-          html += `</div>`;
-        });
-
-        html += `<div style="display:flex; gap:10px; margin-bottom:15px;">
-          <button class="btn small-btn" onclick="FinanceApp.addOperation('income')">+ Доход</button>
-          <button class="btn small-btn" onclick="FinanceApp.addOperation('expense')">- Расход</button>
-          <button class="btn small-btn" onclick="FinanceApp.transferFunds()">↔️ Перевод</button>
-          <button class="btn small-btn" onclick="FinanceApp.exportProtocol()">📋 Протокол</button>
-        </div>`;
-
-        html += `<div class="finance-card"><h4>Последние операции</h4><div class="operation-list">`;
-        const ops = f.операции.slice(-10).reverse();
-        ops.forEach(op => {
-          html += `<div class="operation-item"><span>${op.date} ${op.desc}</span><span class="${op.amount > 0 ? 'positive' : 'negative'}">${op.amount > 0 ? '+' : ''}${op.amount.toFixed(2)} ₽</span></div>`;
-        });
-        html += `</div></div>`;
-        container.innerHTML = html;
-      },
-      addOperation(type) {
-        const amount = parseFloat(prompt('Сумма:'));
-        if (isNaN(amount) || amount <= 0) return;
-        const desc = prompt('Описание:') || type;
-        const today = new Date().toISOString().slice(0,10);
-        if (type === 'income') {
-          if (this.data.фаза === 'Фаза 1 Накопление') this.data.счета.живой.субсчета.мотоцикл += amount;
-          else this.data.счета.жизнь.баланс += amount;
-          this.data.операции.push({ date: today, desc: `Доход: ${desc}`, amount });
-        } else if (type === 'expense') {
-          this.data.счета.жизнь.баланс -= amount;
-          this.data.операции.push({ date: today, desc: `Расход: ${desc}`, amount: -amount });
-        }
-        this.updatePhase();
-        this.save();
-        this.render();
-      },
-      transferFunds() {
-        const f = this.data;
-        const from = prompt('Из какого счёта перевести? (жизнь, крепость, живой, долг, железный):');
-        if (!from) return;
-        const to = prompt('В какой счёт зачислить?');
-        if (!to) return;
-        const amount = parseFloat(prompt('Сумма:'));
-        if (isNaN(amount) || amount <= 0) return;
-        const fromKey = from.trim().toLowerCase();
-        const toKey = to.trim().toLowerCase();
-        if (!f.счета[fromKey] || !f.счета[toKey]) { alert('Неверное имя счёта'); return; }
-        if (f.счета[fromKey].баланс < amount) { alert('Недостаточно средств'); return; }
-        f.счета[fromKey].баланс -= amount;
-        if (toKey === 'живой') {
-          f.счета.живой.баланс += amount;
-          const sub = prompt('На какой субсчёт зачислить?') || 'мотоцикл';
-          if (f.счета.живой.субсчета[sub] !== undefined) f.счета.живой.субсчета[sub] += amount;
-          else f.счета.живой.субсчета.мотоцикл += amount;
-        } else {
-          f.счета[toKey].баланс += amount;
-        }
-        const today = new Date().toISOString().slice(0,10);
-        f.операции.push({ date: today, desc: `Перевод: ${from} → ${to}`, amount });
-        this.updatePhase();
-        this.save();
-        this.render();
-      },
-      exportProtocol() {
-        const f = this.data;
-        let text = `=== Протокол финансовой системы v8.1.1 ===\nДата: ${new Date().toLocaleDateString('ru-RU')}\nФаза: ${f.фаза}\nЦель Мотоцикл: ${f.цель_мотоцикл.бюджет} ₽ (срок ${f.цель_мотоцикл.срок})\n\nСчета:\n`;
-        text += `⚛️ Железный: ${f.счета.железный.баланс.toFixed(2)} ₽ (ставка ${f.счета.железный.ставка}%)\n`;
-        text += `🖤 Крепость: ${f.счета.крепость.баланс.toFixed(2)} ₽ (цель ${f.счета.крепость.цель})\n`;
-        text += `💰 Живой: ${f.счета.живой.баланс.toFixed(2)} ₽\n`;
-        for (const [sub, bal] of Object.entries(f.счета.живой.субсчета)) text += `   📌 ${sub}: ${bal.toFixed(2)} ₽\n`;
-        text += `💸 Жизнь: ${f.счета.жизнь.баланс.toFixed(2)} ₽\n`;
-        text += `🔴 Долг: ${f.счета.долг.баланс.toFixed(2)} ₽\n`;
-        navigator.clipboard.writeText(text).then(() => alert('Протокол скопирован!'));
-      }
-    };
-
-    // ========== МОДУЛЬ СПОРТА (SportApp) ==========
-    const SportApp = {
-      data: null,
-      tempExercises: [{}],
-      tempPain: 0,
-      load() {
-        const saved = localStorage.getItem('obsidian_sport');
-        if (saved) { try { this.data = JSON.parse(saved); } catch(e){} }
-        if (!this.data) this.data = { тренировки: [] };
-        sportData = this.data;
-      },
-      save() { localStorage.setItem('obsidian_sport', JSON.stringify(this.data)); sportData = this.data; },
-      openTrainingForm() {
-        document.getElementById('trainingModal').classList.add('active');
-        this.tempExercises = [{}];
-        this.renderExerciseFields();
-        this.setPain(0);
-        document.getElementById('trainingNotes').value = '';
-        document.getElementById('isRestDay').checked = false;
-        document.getElementById('isTestDay').checked = false;
-      },
-      closeTrainingForm() { document.getElementById('trainingModal').classList.remove('active'); },
-      renderExerciseFields() {
-        const container = document.getElementById('exerciseList');
-        let html = '';
-        this.tempExercises.forEach((ex, i) => {
-          html += `<div class="exercise-row">
-            <select onchange="SportApp.tempExercises[${i}].name = this.value">
-              <option value="pushups" ${ex.name==='pushups'?'selected':''}>Отжимания</option>
-              <option value="pullups" ${ex.name==='pullups'?'selected':''}>Подтягивания</option>
-              <option value="squats" ${ex.name==='squats'?'selected':''}>Приседания</option>
-              <option value="toe_raises" ${ex.name==='toe_raises'?'selected':''}>Носки</option>
-              <option value="rows" ${ex.name==='rows'?'selected':''}>Тяга</option>
-            </select>
-            <input type="number" placeholder="Подходы" value="${ex.sets||1}" onchange="SportApp.tempExercises[${i}].sets=parseInt(this.value)">
-            <input type="number" placeholder="Повторы" value="${ex.reps||0}" onchange="SportApp.tempExercises[${i}].reps=parseInt(this.value)">
-            <input type="text" placeholder="Техника" value="${ex.technique||''}" onchange="SportApp.tempExercises[${i}].technique=this.value">
-            <button class="delete-btn" onclick="SportApp.tempExercises.splice(${i},1);SportApp.renderExerciseFields();">✕</button>
-          </div>`;
-        });
-        container.innerHTML = html;
-      },
-      addExerciseField() { this.tempExercises.push({ name: 'pushups', sets: 1, reps: 0 }); this.renderExerciseFields(); },
-      setPain(val) {
-        this.tempPain = val;
-        document.getElementById('painValue').textContent = val;
-        document.querySelectorAll('.pain-btn').forEach((b, i) => b.classList.toggle('active', i === val));
-      },
-      saveTraining() {
-        const today = new Date().toISOString().slice(0,10);
-        const exercises = this.tempExercises.filter(e => e.name && e.reps > 0);
-        const training = {
-          date: today,
-          exercises: exercises.map(e => ({ name: e.name, sets: e.sets||1, reps: e.reps, technique: e.technique||'' })),
-          painScore: this.tempPain,
-          notes: document.getElementById('trainingNotes').value,
-          isRestDay: document.getElementById('isRestDay').checked,
-          isTestDay: document.getElementById('isTestDay').checked
-        };
-        const exist = this.data.тренировки.findIndex(t => t.date === today);
-        if (exist !== -1) this.data.тренировки[exist] = training;
-        else this.data.тренировки.push(training);
-        this.data.тренировки.sort((a,b) => b.date.localeCompare(a.date));
-        this.save();
-        this.closeTrainingForm();
-        this.render();
-      },
-      getActiveStreak() {
-        const trainings = this.data.тренировки.filter(t => !t.isRestDay && t.exercises.length > 0);
-        if (trainings.length === 0) return { count: 0, start: '' };
-        let streak = 0, startDate = '';
-        const today = new Date();
-        for (let i = 0; i < trainings.length; i++) {
-          const d = new Date(trainings[i].date);
-          const diff = Math.floor((today - d) / (1000 * 60 * 60 * 24));
-          if (diff === streak) { streak++; startDate = trainings[i].date; }
-          else break;
-        }
-        return { count: streak, start: startDate };
-      },
-      getTodayTraining() {
-        const today = new Date().toISOString().slice(0,10);
-        return this.data.тренировки.find(t => t.date === today);
-      },
-      getAdvice() {
-        const recent = this.data.тренировки.filter(t => !t.isRestDay && t.exercises.length > 0).slice(0,7);
-        if (recent.length === 0) return "Начни тренировку!";
-        const avgVol = recent.reduce((s,t) => s + t.exercises.reduce((a,e) => a + e.sets*e.reps, 0), 0) / recent.length;
-        const today = this.getTodayTraining();
-        const todayVol = today && !today.isRestDay ? today.exercises.reduce((a,e) => a + e.sets*e.reps, 0) : 0;
-        const painDays = recent.filter(t => t.painScore > 0).length;
-        if (painDays >= 2) return "⚠️ Боль в локте повторяется. Снизь нагрузку.";
-        const heavyDays = recent.filter(t => { const v = t.exercises.reduce((a,e) => a + e.sets*e.reps, 0); return v > avgVol * 1.3; }).length;
-        if (heavyDays >= 5) return "Много тяжёлых дней. Запланируй разгрузку.";
-        if (todayVol > 0) return "Отлично, сегодня позанимался!";
-        return "Сделай лесенку 1-6-1.";
-      },
-      render() {
-        this.load();
-        const container = document.getElementById('sportContainer');
-        if (!container) return;
-        const streak = this.getActiveStreak();
-        const today = this.getTodayTraining();
-        let html = `<div class="system-summary">
-          <div style="font-size:1.2rem;">🔥 Серия: ${streak.count} дней${streak.start ? ' (с '+streak.start+')' : ''}</div>
-          <div style="margin-top:8px;">Сегодня: ${today ? '✅ Тренировка записана' : '❌ Нет записи'}</div>
-          <div style="margin-top:5px; color:#f0a060;">💡 ${this.getAdvice()}</div>
-        </div>`;
-        html += `<div style="display:flex; gap:12px; margin-bottom:20px;"><button class="btn primary" onclick="SportApp.openTrainingForm()">✏️ Записать тренировку</button></div>`;
-
-        html += `<div class="card"><h3>Последние тренировки</h3>`;
-        const recent = this.data.тренировки.slice(0, 5);
-        recent.forEach(t => {
-          const exSummary = t.exercises.map(e => `${e.name} ${e.sets}x${e.reps}`).join(', ');
-          html += `<div class="history-item"><strong>${t.date}</strong> ${t.isRestDay ? '(разгрузка)' : exSummary} Боль: ${t.painScore}/5 ${t.isTestDay ? '🏆 Тест' : ''} <button class="delete-btn" onclick="SportApp.deleteTraining('${t.date}')">✕</button></div>`;
-        });
-        html += `<button class="btn" onclick="SportApp.loadMoreHistory()" style="margin-top:5px;">Показать ещё</button></div>`;
-
-        html += `<div class="chart-container"><h3>📊 Объём за 7 дней</h3><canvas id="volumeChart" width="400" height="200"></canvas></div>`;
-        const records = {};
-        this.data.тренировки.forEach(t => {
-          if (t.isRestDay) return;
-          t.exercises.forEach(e => {
-            if (!records[e.name] || e.reps > records[e.name].reps) records[e.name] = { date: t.date, reps: e.reps };
-          });
-        });
-        html += `<div class="card"><h3>🏆 Личные рекорды</h3>`;
-        for (const [name, rec] of Object.entries(records)) html += `<div>${name}: ${rec.reps} раз (${rec.date})</div>`;
-        html += `</div>`;
-        container.innerHTML = html;
-
-        const last7 = this.getLast7Volume();
-        const ctx = document.getElementById('volumeChart').getContext('2d');
-        if (window.volumeChartInstance) window.volumeChartInstance.destroy();
-        window.volumeChartInstance = new Chart(ctx, {
-          type: 'bar',
-          data: { labels: last7.map(d => d.date.slice(5)), datasets: [{ label: 'Объём', data: last7.map(d => d.volume), backgroundColor: '#5fa88d' }] },
-          options: { responsive: true, scales: { y: { beginAtZero: true } } }
-        });
-      },
-      getLast7Volume() {
-        const today = new Date();
-        const volumes = [];
-        for (let i = 6; i >= 0; i--) {
-          const d = new Date(today); d.setDate(d.getDate() - i);
-          const dateStr = d.toISOString().slice(0,10);
-          const t = this.data.тренировки.find(t => t.date === dateStr);
-          if (t && !t.isRestDay) volumes.push({ date: dateStr, volume: t.exercises.reduce((s,e) => s + e.sets*e.reps, 0) });
-          else volumes.push({ date: dateStr, volume: 0 });
-        }
-        return volumes;
-      },
-      deleteTraining(dateStr) {
-        if (confirm('Удалить тренировку за ' + dateStr + '?')) {
-          this.data.тренировки = this.data.тренировки.filter(t => t.date !== dateStr);
-          this.save();
-          this.render();
-        }
-      },
-      loadMoreHistory() {
-        const histEl = document.getElementById('trainingHistory');
-        if (!histEl) return;
-        const more = this.data.тренировки.slice(histEl.children.length, histEl.children.length + 5);
-        more.forEach(t => {
-          const exSummary = t.exercises.map(e => `${e.name} ${e.sets}x${e.reps}`).join(', ');
-          const div = document.createElement('div');
-          div.className = 'history-item';
-          div.innerHTML = `<strong>${t.date}</strong> ${t.isRestDay ? '(разгрузка)' : exSummary} Боль: ${t.painScore}/5 ${t.isTestDay ? '🏆 Тест' : ''} <button class="delete-btn" onclick="SportApp.deleteTraining('${t.date}')">✕</button>`;
-          histEl.appendChild(div);
-        });
-      }
     };
 
     // Запуск
