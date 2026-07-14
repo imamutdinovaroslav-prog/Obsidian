@@ -3,44 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Obsidian Core | Тест вкладок</title>
-  <style>
-    body { background: #0a0a0a; color: #e0e0e0; font-family: sans-serif; padding: 20px; }
-    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-    .tab-btn { padding: 10px 20px; background: #333; color: #ccc; border: none; border-radius: 8px; cursor: pointer; }
-    .tab-btn.active { background: #555; color: #fff; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-  </style>
-</head>
-<body>
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('overview')">📊 Обзор</button>
-    <button class="tab-btn" onclick="switchTab('finance')">💰 Финансы</button>
-    <button class="tab-btn" onclick="switchTab('sport')">🏃 Спорт</button>
-    <button class="tab-btn" onclick="switchTab('charts')">📈 Графики</button>
-  </div>
-
-  <div id="tab-overview" class="tab-content active"><h2>Обзор</h2><p>Здесь будет дашборд</p></div>
-  <div id="tab-finance" class="tab-content"><h2>Финансы</h2><p>Здесь будет финансовый модуль</p></div>
-  <div id="tab-sport" class="tab-content"><h2>Спорт</h2><p>Здесь будет спортивный модуль</p></div>
-  <div id="tab-charts" class="tab-content"><h2>Графики</h2><p>Здесь будут графики</p></div>
-
-  <script>
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-      document.getElementById('tab-' + tabName).classList.add('active');
-      event.target.classList.add('active');
-    }
-  </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Obsidian Core | Обзор</title>
+  <title>Obsidian Core | Дашборд</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -64,7 +27,7 @@
       text-shadow: 0 0 12px rgba(180, 180, 180, 0.3);
       margin-bottom: 5px;
     }
-    .tabs { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
     .tab-btn {
       padding: 8px 20px; border: 1px solid rgba(150, 150, 150, 0.3);
       background: rgba(150, 150, 150, 0.1); color: #bbb;
@@ -106,7 +69,14 @@
       border: 1px solid rgba(150, 150, 150, 0.15);
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
-    .system-status { font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .system-status {
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
     .system-status .dot { width: 14px; height: 14px; border-radius: 50%; }
     .trend-text { color: #aaa; margin-bottom: 10px; font-size: 0.9rem; }
     .critical-list { list-style: none; padding-left: 0; margin-top: 5px; }
@@ -115,9 +85,15 @@
     .no-critical { color: #5fa88d; font-weight: 500; }
     .streaks-row { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
     .streak-pill {
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(150,150,150,0.2);
-      border-radius: 12px; padding: 8px 14px; display: flex; align-items: center; gap: 8px;
-      font-size: 0.9rem; color: #ccc;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(150,150,150,0.2);
+      border-radius: 12px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: #ccc;
     }
     .streak-pill span { font-weight: 600; color: #f0f0f0; }
     .series-card {
@@ -125,15 +101,22 @@
       border-radius: 16px; padding: 24px; margin-bottom: 20px;
       border: 1px solid rgba(150, 150, 150, 0.12);
       box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-      display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 15px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
     }
     .series-item { text-align: center; }
     .series-circle {
-      width: 80px; height: 80px; border-radius: 50%; background: #2a2a2a;
+      width: 80px; height: 80px; border-radius: 50%;
+      background: #2a2a2a;
       display: flex; align-items: center; justify-content: center;
       font-size: 1.8rem; font-weight: 700; color: #fff;
       cursor: pointer; transition: all 0.2s;
-      border: 3px solid #444; box-shadow: 0 0 15px rgba(0,0,0,0.5); margin: 0 auto 8px;
+      border: 3px solid #444;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      margin: 0 auto 8px;
     }
     .series-circle:hover { transform: scale(1.05); border-color: #888; }
     .series-circle.low { background: #3a3a3a; border-color: #666; }
@@ -211,8 +194,6 @@
     <h1>⚡ Obsidian Core v2.0</h1>
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('overview')">📊 Обзор</button>
-      <button class="tab-btn" onclick="switchTab('finance')">💰 Финансы</button>
-      <button class="tab-btn" onclick="switchTab('sport')">🏃 Спорт</button>
       <button class="tab-btn" onclick="switchTab('charts')">📈 Графики</button>
     </div>
     <p class="subtitle"><span id="currentDate"></span><span class="blinking-dot"></span></p>
@@ -241,56 +222,38 @@
       <div id="jsonPreview" class="json-preview"></div>
     </div>
 
-    <!-- Остальные вкладки (заглушки) -->
-    <div id="tab-finance" class="tab-content"><h2>💰 Финансы</h2><p>Модуль появится позже</p></div>
-    <div id="tab-sport" class="tab-content"><h2>🏃 Спорт</h2><p>Модуль появится позже</p></div>
-    <div id="tab-charts" class="tab-content"><h2>📈 Графики</h2><p>Здесь будут графики</p></div>
-  </div>
-
-  <script>
-    // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+    <!-- Графики -->
+    <div id="tab-charts" class="tab-content">
+      <div class="chart-container"><h2 style="margin-bottom:15px; color:#ccc;">📈 Obsidian Core Index (история)</h2><canvas id="indexChart" width="400" height="200"></canvas></div>
+      <div class="chart-container"><h2 style="margin-bottom:15px; color:#ccc;">🧩 Здоровье фронтов</h2><canvas id="frontsChart" width="400" height="250"></canvas></div>
+      <button class="btn" onclick="CoreApp.clearHistory()" style="margin-top:10px;">🗑️ Очистить историю</button>
+    </div>
+  </div>  <script>
     let currentData = null;
     const MANUAL_CYCLE = ['нейтрально', 'плохо', 'среднее', 'хорошо'];
+    let indexChartInstance = null, frontsChartInstance = null;
 
-    // Переключение вкладок
     function switchTab(tabName) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-      const target = document.getElementById('tab-' + tabName);
-      if (target) target.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
       event.target.classList.add('active');
       if (tabName === 'overview') CoreApp.renderAll();
+      else if (tabName === 'charts') CoreApp.renderCharts();
     }
 
-    // ========== МОДУЛЬ CORE (обзор) ==========
     const CoreApp = {
       init() {
         document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', { weekday:'short', year:'numeric', month:'long', day:'numeric' });
         const saved = localStorage.getItem('obsidian_core');
         if (saved) { try { currentData = JSON.parse(saved); } catch(e){} }
         if (!currentData) {
-          // попытка загрузить data.json
-          try {
-            fetch('data.json')
-              .then(r => r.json())
-              .then(d => {
-                currentData = d;
-                if (!currentData.история) currentData.история = [];
-                if (!currentData.серии) currentData.серии = { сон:0, питание:0, активность:0, тело:0 };
-                this.convertOldStatuses();
-                this.ensureAllStatuses();
-                this.syncAllAutoStatuses();
-                this.renderAll();
-              });
-            return;
-          } catch(e) {}
+          try { fetch('data.json').then(r=>r.json()).then(d=>{ currentData = d; if(!currentData.история) currentData.история = []; if(!currentData.серии) currentData.серии = {сон:0,питание:0,активность:0,тело:0}; this.convertOldStatuses(); this.ensureAllStatuses(); this.syncAllAutoStatuses(); this.renderAll(); }); return; } catch(e){}
           currentData = this.getEmptyStructure();
         }
         if (!currentData.история) currentData.история = [];
         if (!currentData.серии) currentData.серии = { сон:0, питание:0, активность:0, тело:0 };
-        this.convertOldStatuses();
-        this.ensureAllStatuses();
-        this.syncAllAutoStatuses();
+        this.convertOldStatuses(); this.ensureAllStatuses(); this.syncAllAutoStatuses();
         this.renderAll();
       },
       getEmptyStructure() {
@@ -298,59 +261,33 @@
           дата: new Date().toISOString().slice(0,10),
           серии: { сон: 0, питание: 0, активность: 0, тело: 0 },
           фронты: [
-            {
-              название: "0.4 — ЦНС и тело",
-              параметры: [
-                { имя: "Сон", sleep_bed: "23:30", sleep_wake: "07:00" },
-                { имя: "Питание", nutrition_level: 2 },
-                { имя: "Физнагрузка", workout_desc: "", workout_streak: 0, workout_note: "", статус: "среднее" },
-                { имя: "Общее ЦНС", уровень: 4.5, cns_note: "" }
-              ]
-            },
-            {
-              название: "1 — Магазин / Студия",
-              параметры: [
-                { имя: "Магазин «СКИФ»", статус: "плохо", состояние: "" },
-                { имя: "Студия автосвета", статус: "среднее", состояние: "" }
-              ]
-            },
-            {
-              название: "0.1 — Капитал",
-              параметры: [
-                { имя: "Баланс", capital_balance: 65000 },
-                { имя: "Цель", capital_goal: 100000, статус: "среднее" },
-                { имя: "Доход за месяц", capital_income: 0 }
-              ]
-            },
-            {
-              название: "2 — Учёба",
-              параметры: [
-                { имя: "Статус учёбы", статус: "нейтрально", состояние: "Каникулы" },
-                { имя: "Несданных долгов", debts_count: 0 },
-                { имя: "Ближайший экзамен", состояние: "" }
-              ]
-            },
-            {
-              название: "3 — Социум / Отношения",
-              параметры: [
-                { имя: "Вероника", статус: "нейтрально", состояние: "" },
-                { имя: "Максы", статус: "нейтрально", состояние: "" },
-                { имя: "Брат", статус: "нейтрально", состояние: "" },
-                { имя: "Общий фон", статус: "нейтрально", состояние: "" }
-              ]
-            },
-            {
-              название: "4 — Хобби / Творчество",
-              параметры: [
-                { имя: "Канал автосвета", статус: "среднее", состояние: "" },
-                { имя: "Obsidian Core версия", состояние: "v2.0" },
-                { имя: "Что изучал", состояние: "" }
-              ]
-            }
+            { название: "0.4 — ЦНС и тело", параметры: [
+              { имя: "Сон", sleep_bed: "23:30", sleep_wake: "07:00" },
+              { имя: "Питание", nutrition_level: 2 },
+              { имя: "Физнагрузка", workout_desc: "", workout_streak: 0, workout_note: "", статус: "среднее" },
+              { имя: "Общее ЦНС", уровень: 4.5, cns_note: "" } ] },
+            { название: "1 — Магазин / Студия", параметры: [
+              { имя: "Магазин «СКИФ»", статус: "плохо", состояние: "" },
+              { имя: "Студия автосвета", статус: "среднее", состояние: "" } ] },
+            { название: "0.1 — Капитал", параметры: [
+              { имя: "Баланс", capital_balance: 65000 },
+              { имя: "Цель", capital_goal: 100000, статус: "среднее" },
+              { имя: "Доход за месяц", capital_income: 0 } ] },
+            { название: "2 — Учёба", параметры: [
+              { имя: "Статус учёбы", статус: "нейтрально", состояние: "Каникулы" },
+              { имя: "Несданных долгов", debts_count: 0 },
+              { имя: "Ближайший экзамен", состояние: "" } ] },
+            { название: "3 — Социум / Отношения", параметры: [
+              { имя: "Вероника", статус: "нейтрально", состояние: "" },
+              { имя: "Максы", статус: "нейтрально", состояние: "" },
+              { имя: "Брат", статус: "нейтрально", состояние: "" },
+              { имя: "Общий фон", статус: "нейтрально", состояние: "" } ] },
+            { название: "4 — Хобби / Творчество", параметры: [
+              { имя: "Канал автосвета", статус: "среднее", состояние: "" },
+              { имя: "Obsidian Core версия", состояние: "v2.0" },
+              { имя: "Что изучал", состояние: "" } ] }
           ],
-          протоколы: "",
-          цели: ["Вода, завтрак, подход", "Одно действие по магазину/студии", "Вечерний отчёт"],
-          история: []
+          протоколы: "", цели: ["Вода, завтрак, подход", "Одно действие по магазину/студии", "Вечерний отчёт"], история: []
         };
       },
       escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); },
@@ -452,7 +389,7 @@
       updateAllMiniBars() { const cards = document.querySelectorAll('.card'); let scores = []; currentData.фронты.forEach((f, fi) => { const { score, max } = this.calcFrontHealth(f); scores.push(score/max); const pct = Math.round((score/max)*100); const card = cards[fi]; if(card){ const fill = card.querySelector('.mini-bar-fill'); const label = card.querySelector('.mini-bar-label'); if(fill) fill.style.width = pct+'%'; if(label) label.textContent = pct+'%'; } }); this.updateCoreRing(scores); },
       updateCoreRing(scores) { const avg = scores.reduce((a,b)=>a+b,0)/scores.length; const pct = Math.round(avg*100); document.getElementById('corePercent').textContent = pct+'%'; const circle = document.getElementById('coreRing'); const circ = 2*Math.PI*34; circle.style.strokeDashoffset = circ - (avg*circ); circle.style.stroke = avg<0.4?'#e05a5a':avg<0.7?'#f0a060':'#888'; },
       calcOverallIndex() { let sum = 0; currentData.фронты.forEach(f => { const { score, max } = this.calcFrontHealth(f); sum += score/max; }); return sum/currentData.фронты.length; },
-      async saveAll() { this.syncAllAutoStatuses(); const today = new Date().toISOString().slice(0,10); const snap = { дата: today, индекс: this.calcOverallIndex(), фронты: currentData.фронты.map(f => ({ название: f.название, здоровье: this.calcFrontHealth(f).score/this.calcFrontHealth(f).max })) }; if(!currentData.история) currentData.история = []; const idx = currentData.история.findIndex(i => i.дата === today); if(idx !== -1) currentData.история[idx] = snap; else currentData.история.push(snap); localStorage.setItem('obsidian_core', JSON.stringify(currentData)); this.updateJsonPreview(); this.updateSystemSummary(); alert('✅ Сохранено локально.'); },
+      async saveAll() { this.syncAllAutoStatuses(); const today = new Date().toISOString().slice(0,10); const snap = { дата: today, индекс: this.calcOverallIndex(), фронты: currentData.фронты.map(f => ({ название: f.название, здоровье: this.calcFrontHealth(f).score/this.calcFrontHealth(f).max })) }; if(!currentData.история) currentData.история = []; const idx = currentData.история.findIndex(i => i.дата === today); if(idx !== -1) currentData.история[idx] = snap; else currentData.история.push(snap); localStorage.setItem('obsidian_core', JSON.stringify(currentData)); this.updateJsonPreview(); this.updateSystemSummary(); const token = localStorage.getItem('github_token'); if(token){ try { await this.uploadStateToGitHub(token); alert('✅ Сохранено и отправлено в GitHub.'); } catch(e) { alert('✅ Сохранено локально. Ошибка загрузки state.txt.'); } } else { const newToken = prompt('Введите GitHub токен (права repo) для авто-загрузки state.txt:'); if(newToken) { localStorage.setItem('github_token', newToken); try { await this.uploadStateToGitHub(newToken); alert('✅ Сохранено и отправлено в GitHub.'); } catch(e) { alert('✅ Сохранено локально. Ошибка загрузки.'); } } else alert('✅ Сохранено локально (без state.txt).'); } },
       updateJsonPreview() { document.getElementById('jsonPreview').textContent = JSON.stringify(currentData, null, 2); },
       toggleJson() { const prev = document.getElementById('jsonPreview'); if(prev.style.display === 'block') prev.style.display = 'none'; else { this.updateJsonPreview(); prev.style.display = 'block'; } },
       resetToJson() { if(confirm('Сбросить до версии из data.json? Все локальные данные будут потеряны.')) { localStorage.removeItem('obsidian_core'); location.reload(); } },
@@ -460,14 +397,14 @@
       toggleGoal(i) { let g = currentData.цели[i]; currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓'+g; },
       updateGoal(i, text) { const checked = currentData.цели[i].startsWith('✓'); currentData.цели[i] = checked ? '✓'+text : text; },
       addGoal() { currentData.цели.push(''); this.renderAll(); },
+      renderCharts() { const history = currentData.история || []; if(history.length === 0) { alert('Нет истории.'); return; } const labels = history.map(h => h.дата); const indexData = history.map(h => Math.round(h.индекс*100)); const ctx1 = document.getElementById('indexChart').getContext('2d'); if(indexChartInstance) indexChartInstance.destroy(); indexChartInstance = new Chart(ctx1, { type:'line', data:{ labels, datasets:[{ label:'Obsidian Core Index (%)', data:indexData, borderColor:'#888', backgroundColor:'rgba(136,136,136,0.1)', fill:true, tension:0.3 }] }, options:{ responsive:true, scales:{ y:{ min:0, max:100, ticks:{ color:'#aaa' } }, x:{ ticks:{ color:'#aaa' } } }, plugins:{ legend:{ labels:{ color:'#aaa' } } } } }); const ctx2 = document.getElementById('frontsChart').getContext('2d'); if(frontsChartInstance) frontsChartInstance.destroy(); const names = currentData.фронты.map(f => f.название); const colors = ['#e05a5a','#5fa88d','#f0a060','#a0a0a0','#888','#666']; const datasets = names.map((name, idx) => ({ label:name, data:history.map(h => { const f = h.фронты.find(fr => fr.название === name); return f ? Math.round(f.здоровье*100) : 0; }), borderColor:colors[idx%colors.length], backgroundColor:'transparent', tension:0.3 })); frontsChartInstance = new Chart(ctx2, { type:'line', data:{ labels, datasets }, options:{ responsive:true, scales:{ y:{ min:0, max:100, ticks:{ color:'#aaa' } }, x:{ ticks:{ color:'#aaa' } } }, plugins:{ legend:{ labels:{ color:'#aaa' } } } }); },
+      clearHistory() { if(confirm('Удалить всю историю графиков?')) { currentData.история = []; localStorage.setItem('obsidian_core', JSON.stringify(currentData)); if(indexChartInstance) indexChartInstance.destroy(); if(frontsChartInstance) frontsChartInstance.destroy(); alert('История очищена.'); this.updateSystemSummary(); } },
       generateStateText() { this.syncAllAutoStatuses(); const today = new Date().toLocaleDateString('ru-RU'); const idx = Math.round(this.calcOverallIndex()*100); let status = ''; if(idx<40) status='Критический'; else if(idx<60) status='Нестабильный'; else if(idx<80) status='Стабильный'; else status='Оптимальный'; let text = `# Состояние системы Obsidian Core на ${today}\n\n## Obsidian Core Index: ${idx}% (${status})\n`; const hist = currentData.история||[]; if(hist.length>=2) { const prev = hist[hist.length-2], last = hist[hist.length-1]; const diff = Math.round(last.индекс*100)-Math.round(prev.индекс*100); let trend = ''; if(diff>0) trend=`↗️ Растёт (+${diff}%)`; else if(diff<0) trend=`↘️ Падает (${diff}%)`; else trend='↔️ Стабильно'; text += `Тренд за 2 дня: ${trend} (было ${Math.round(prev.индекс*100)}%)\n`; } else if(hist.length===1) text += `Тренд: недостаточно данных\n`; text += '\n'; const crit = []; currentData.фронты.forEach(f => f.параметры.forEach(p => { if(p.статус==='плохо') { let v = ''; if(p.имя==='Сон') v = `${p.sleep_bed} → ${p.sleep_wake} (${this.calcSleepDuration(p.sleep_bed,p.sleep_wake)})`; else if(p.имя==='Питание') v = `${p.nutrition_level} приёмов`; else if(p.имя==='Физнагрузка') v = p.workout_desc||'отсутствует'; else if(p.имя==='Общее ЦНС') v = `Уровень ${p.уровень}/10`; else if(p.имя==='Баланс') v = `${p.capital_balance} ₽`; else if(p.имя==='Цель') v = `${p.capital_goal} ₽`; else if(p.имя==='Доход за месяц') v = `${p.capital_income} ₽`; else if(p.имя==='Несданных долгов') v = p.debts_count; else v = p.состояние||'—'; crit.push(`- ${p.имя}: ${v} (плохо)`); } })); if(crit.length>0) { text += `## 🚨 Критические точки\n`; crit.forEach(i => text += i+'\n'); text += '\n'; } else text += `## 🚨 Критические точки\n✅ Критических точек нет\n\n`; text += `## 🔥 Серии\n`; const series = currentData.серии||{}; text += `- 🌙 Сон: ${series.сон||0} дн.\n- 🍏 Питание: ${series.питание||0} дн.\n- ⚡ Активность: ${series.активность||0} дн.\n- 💪 Тело: ${series.тело||0} дн.\n\n`; currentData.фронты.forEach(f => { const { score, max } = this.calcFrontHealth(f); const health = Math.round((score/max)*100); text += `### ${f.название} (здоровье: ${health}%)\n`; f.параметры.forEach(p => { let v = ''; if(p.имя==='Сон') { const dur = this.calcSleepDuration(p.sleep_bed,p.sleep_wake); v = `${p.sleep_bed} → ${p.sleep_wake} (${dur}, ${p.статус||'нейтрально'})`; } else if(p.имя==='Питание') v = `${p.nutrition_level} приёмов (${p.статус||'нейтрально'})`; else if(p.имя==='Физнагрузка') { v = `${p.workout_desc||'—'} (стрик ${p.workout_streak} дн.)`; if(p.workout_note) v += ` — ${p.workout_note}`; v += ` (${p.статус||'нейтрально'})`; } else if(p.имя==='Общее ЦНС') { v = `Уровень ${p.уровень}/10 (${p.статус||'нейтрально'})`; if(p.cns_note) v += ` — ${p.cns_note}`; } else if(p.имя==='Баланс') v = `${p.capital_balance} ₽ (${p.статус||'нейтрально'})`; else if(p.имя==='Цель') { const bal = f.параметры.find(x => x.имя==='Баланс')?.capital_balance||0; const goal = p.capital_goal||0; const prog = goal>0?Math.round((bal/goal)*100):0; v = `${goal} ₽ (прогресс ${prog}%) (${p.статус||'нейтрально'})`; } else if(p.имя==='Доход за месяц') v = `${p.capital_income} ₽ (${p.статус||'нейтрально'})`; else if(p.имя==='Несданных долгов') v = `${p.debts_count} (${p.статус||'нейтрально'})`; else v = `${p.состояние||'—'} (${p.статус||'нейтрально'})`; text += `- **${p.имя}**: ${v}\n`; }); text += '\n'; }); if(currentData.протоколы) text += `## Протоколы\n${currentData.протоколы}\n\n`; if(currentData.цели && currentData.цели.length>0) { text += `## Ежедневные действия\n`; currentData.цели.forEach((g,i) => { const done = g.startsWith('✓')?'✅':'⬜'; text += `${done} ${g.replace('✓','')}\n`; }); text += '\n'; } if(hist.length>0) { const last = hist[hist.length-1]; text += `## Последнее сохранение: ${last.дата}, индекс ${Math.round(last.индекс*100)}%\n`; } return text; },
       copyStateToClipboard() { const text = this.generateStateText(); navigator.clipboard.writeText(text).then(() => { alert('✅ Состояние скопировано!'); document.getElementById('jsonPreview').textContent = text; document.getElementById('jsonPreview').style.display = 'block'; }).catch(() => { alert('Не удалось скопировать.'); document.getElementById('jsonPreview').textContent = text; document.getElementById('jsonPreview').style.display = 'block'; }); },
+      async uploadStateToGitHub(token) { const text = this.generateStateText(); const repo = 'imamutdinovaroslav-prog/Obsidian'; const path = 'state.txt'; const url = `https://api.github.com/repos/${repo}/contents/${path}`; let sha = null; try { const getRes = await fetch(url, { headers:{ Authorization:`token ${token}` } }); if(getRes.ok) { const data = await getRes.json(); sha = data.sha; } } catch(e) {} const body = { message:'Обновление state через дашборд', content:btoa(unescape(encodeURIComponent(text))), ...(sha && { sha }) }; const res = await fetch(url, { method:'PUT', headers:{ Authorization:`token ${token}`, 'Content-Type':'application/json' }, body:JSON.stringify(body) }); if(!res.ok) { const err = await res.json(); throw new Error(err.message); } },
     };
 
-    // Запуск
-    window.onload = () => {
-      CoreApp.init();
-    };
+    window.onload = () => { CoreApp.init(); };
   </script>
 </body>
 </html>
