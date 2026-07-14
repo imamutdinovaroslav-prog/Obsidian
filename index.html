@@ -270,6 +270,64 @@
       border-radius: 16px; padding: 20px; margin-bottom: 20px;
       border: 1px solid rgba(150, 150, 150, 0.12);
     }
+
+    /* Спортивный модуль */
+    .modal {
+      display: none;
+      position: fixed; z-index: 100;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      align-items: center; justify-content: center;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: #1e1e24;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 500px;
+      width: 90%;
+      border: 1px solid rgba(150,150,150,0.3);
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 10px; right: 15px;
+      background: none; border: none; color: #aaa; font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .exercise-row {
+      display: flex; gap: 8px; align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .exercise-row input, .exercise-row select {
+      flex: 1; min-width: 80px;
+    }
+    .pain-slider {
+      display: flex; gap: 5px; align-items: center;
+    }
+    .pain-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(150,150,150,0.3);
+      color: #ccc;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .pain-btn.active { background: #e05a5a; color: #fff; border-color: #e05a5a; }
+    .history-item {
+      background: rgba(255,255,255,0.03);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+    }
+    .delete-btn {
+      background: none; border: none; color: #e05a5a; cursor: pointer;
+      margin-left: 10px;
+    }
   </style>
 </head>
 <body>
@@ -279,9 +337,11 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Дашборд</button>
       <button class="tab-btn" onclick="switchTab('charts')">📈 Графики</button>
+      <button class="tab-btn" onclick="switchTab('sport')">🏋️ Спорт</button>
     </div>
     <p class="subtitle"><span id="currentDate"></span><span class="blinking-dot"></span></p>
 
+    <!-- Дашборд -->
     <div id="tab-dashboard" class="tab-content active">
       <div class="core-index">
         <div class="ring">
@@ -307,6 +367,7 @@
       <div id="jsonPreview" class="json-preview"></div>
     </div>
 
+    <!-- Графики -->
     <div id="tab-charts" class="tab-content">
       <div class="chart-container">
         <h2 style="margin-bottom:15px; color:#ccc;">📈 Obsidian Core Index (история)</h2>
@@ -317,6 +378,45 @@
         <canvas id="frontsChart" width="400" height="250"></canvas>
       </div>
       <button class="btn" onclick="clearHistory()" style="margin-top:10px;">🗑️ Очистить историю</button>
+    </div>
+
+    <!-- Спорт -->
+    <div id="tab-sport" class="tab-content">
+      <div class="system-summary" id="sportStatus"></div>
+      <div style="display:flex; gap:12px; margin-bottom:20px;">
+        <button class="btn primary" onclick="openTrainingForm()">✏️ Записать тренировку</button>
+      </div>
+      <div id="trainingHistory"></div>
+      <div class="chart-container" style="margin-top:20px;">
+        <h3 style="color:#ccc;">📊 Объём за 7 дней</h3>
+        <canvas id="volumeChart" width="400" height="200"></canvas>
+      </div>
+      <div id="recordsTable" class="card"></div>
+    </div>
+  </div>
+
+  <!-- Модальное окно тренировки -->
+  <div id="trainingModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeTrainingForm()">&times;</button>
+      <h3 style="margin-bottom:15px;">Запись тренировки</h3>
+      <div id="exerciseList"></div>
+      <button class="btn" onclick="addExerciseField()" style="margin-bottom:10px;">+ Добавить упражнение</button>
+      <div style="margin:10px 0;">Боль в локте (0-5): <span id="painValue">0</span></div>
+      <div class="pain-slider">
+        <button class="pain-btn" onclick="setPain(0)">0</button>
+        <button class="pain-btn" onclick="setPain(1)">1</button>
+        <button class="pain-btn" onclick="setPain(2)">2</button>
+        <button class="pain-btn" onclick="setPain(3)">3</button>
+        <button class="pain-btn" onclick="setPain(4)">4</button>
+        <button class="pain-btn" onclick="setPain(5)">5</button>
+      </div>
+      <div style="margin:10px 0;">
+        <label><input type="checkbox" id="isRestDay"> Разгрузочный день</label>
+        <label style="margin-left:10px;"><input type="checkbox" id="isTestDay"> Тест на максимум</label>
+      </div>
+      <textarea id="trainingNotes" placeholder="Заметки" style="width:100%; margin-bottom:10px;"></textarea>
+      <button class="btn primary" onclick="saveTraining()">💾 Сохранить тренировку</button>
     </div>
   </div>
 
@@ -332,6 +432,7 @@
       document.getElementById('tab-' + tabName).classList.add('active');
       event.target.classList.add('active');
       if (tabName === 'charts') renderCharts();
+      else if (tabName === 'sport') renderSportTab();
     }
 
     window.onload = async () => {
@@ -349,6 +450,7 @@
       if (!currentData) currentData = getEmptyStructure();
       if (!currentData.история) currentData.история = [];
       if (!currentData.серии) currentData.серии = { сон:0, питание:0, активность:0, тело:0 };
+      if (!currentData.тренировки) currentData.тренировки = [];
       convertOldStatuses();
       ensureAllStatuses();
       syncAllAutoStatuses();
@@ -359,6 +461,7 @@
       return {
         дата: new Date().toISOString().slice(0,10),
         серии: { сон: 0, питание: 0, активность: 0, тело: 0 },
+        тренировки: [],
         фронты: [
           {
             название: "0.4 — ЦНС и тело",
@@ -1224,6 +1327,225 @@
         const err = await res.json();
         throw new Error(err.message);
       }
+    }
+
+    // ===================== СПОРТИВНЫЙ МОДУЛЬ =====================
+    let tempExercises = [{}];
+    let tempPain = 0;
+
+    function openTrainingForm() {
+      document.getElementById('trainingModal').classList.add('active');
+      tempExercises = [{}];
+      renderExerciseFields();
+      setPain(0);
+      document.getElementById('trainingNotes').value = '';
+      document.getElementById('isRestDay').checked = false;
+      document.getElementById('isTestDay').checked = false;
+    }
+
+    function closeTrainingForm() {
+      document.getElementById('trainingModal').classList.remove('active');
+    }
+
+    function renderExerciseFields() {
+      const container = document.getElementById('exerciseList');
+      let html = '';
+      tempExercises.forEach((ex, i) => {
+        html += `<div class="exercise-row">
+          <select onchange="tempExercises[${i}].name = this.value">
+            <option value="pushups" ${ex.name === 'pushups' ? 'selected' : ''}>Отжимания</option>
+            <option value="pullups" ${ex.name === 'pullups' ? 'selected' : ''}>Подтягивания</option>
+            <option value="squats" ${ex.name === 'squats' ? 'selected' : ''}>Приседания</option>
+            <option value="toe_raises" ${ex.name === 'toe_raises' ? 'selected' : ''}>Носки</option>
+            <option value="rows" ${ex.name === 'rows' ? 'selected' : ''}>Тяга</option>
+          </select>
+          <input type="number" placeholder="Подходы" value="${ex.sets||1}" onchange="tempExercises[${i}].sets=parseInt(this.value)">
+          <input type="number" placeholder="Повторы" value="${ex.reps||0}" onchange="tempExercises[${i}].reps=parseInt(this.value)">
+          <input type="text" placeholder="Техника" value="${ex.technique||''}" onchange="tempExercises[${i}].technique=this.value">
+          <button class="delete-btn" onclick="tempExercises.splice(${i},1); renderExerciseFields();">✕</button>
+        </div>`;
+      });
+      container.innerHTML = html;
+    }
+
+    function addExerciseField() {
+      tempExercises.push({ name: 'pushups', sets: 1, reps: 0 });
+      renderExerciseFields();
+    }
+
+    function setPain(val) {
+      tempPain = val;
+      document.getElementById('painValue').textContent = val;
+      document.querySelectorAll('.pain-btn').forEach((b, i) => b.classList.toggle('active', i === val));
+    }
+
+    function saveTraining() {
+      const today = new Date().toISOString().slice(0,10);
+      const exercises = tempExercises.filter(e => e.name && e.reps > 0);
+      const training = {
+        date: today,
+        exercises: exercises.map(e => ({
+          name: e.name,
+          sets: e.sets || 1,
+          reps: e.reps,
+          technique: e.technique || ''
+        })),
+        painScore: tempPain,
+        notes: document.getElementById('trainingNotes').value,
+        isRestDay: document.getElementById('isRestDay').checked,
+        isTestDay: document.getElementById('isTestDay').checked
+      };
+
+      const existing = currentData.тренировки.findIndex(t => t.date === today);
+      if (existing !== -1) currentData.тренировки[existing] = training;
+      else currentData.тренировки.push(training);
+
+      currentData.тренировки.sort((a,b) => b.date.localeCompare(a.date));
+      localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
+      closeTrainingForm();
+      renderSportTab();
+    }
+
+    function getActiveStreak() {
+      const trainings = currentData.тренировки.filter(t => !t.isRestDay && t.exercises.length > 0);
+      if (trainings.length === 0) return { count: 0, start: '' };
+      let streak = 0;
+      let startDate = '';
+      const today = new Date();
+      for (let i = 0; i < trainings.length; i++) {
+        const d = new Date(trainings[i].date);
+        const diffDays = Math.floor((today - d) / (1000 * 60 * 60 * 24));
+        if (diffDays === streak) {
+          streak++;
+          startDate = trainings[i].date;
+        } else break;
+      }
+      return { count: streak, start: startDate };
+    }
+
+    function getTodayTraining() {
+      const today = new Date().toISOString().slice(0,10);
+      return currentData.тренировки.find(t => t.date === today);
+    }
+
+    function getLast7Volume() {
+      const today = new Date();
+      const volumes = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().slice(0,10);
+        const t = currentData.тренировки.find(t => t.date === dateStr);
+        if (t && !t.isRestDay) {
+          const vol = t.exercises.reduce((sum, e) => sum + (e.sets * e.reps), 0);
+          volumes.push({ date: dateStr, volume: vol, pain: t.painScore, isRest: false });
+        } else {
+          volumes.push({ date: dateStr, volume: 0, pain: 0, isRest: true });
+        }
+      }
+      return volumes;
+    }
+
+    function getAdvice() {
+      const last7 = getLast7Volume();
+      const recentTrainings = currentData.тренировки.filter(t => !t.isRestDay && t.exercises.length > 0).slice(0, 7);
+      if (recentTrainings.length === 0) return "Начни тренировку! Даже лёгкая разминка засчитывается.";
+
+      const avgVolume = recentTrainings.reduce((sum, t) => sum + t.exercises.reduce((s, e) => s + e.sets*e.reps, 0), 0) / recentTrainings.length;
+      const today = getTodayTraining();
+      const todayVolume = today && !today.isRestDay ? today.exercises.reduce((s,e) => s + e.sets*e.reps, 0) : 0;
+
+      const painDays = recentTrainings.filter(t => t.painScore > 0).length;
+      if (painDays >= 2) return "⚠️ Боль в локте повторяется. Снизь нагрузку на руки, сделай разгрузку.";
+
+      const heavyDays = recentTrainings.filter(t => {
+        const vol = t.exercises.reduce((s,e) => s + e.sets*e.reps, 0);
+        return vol > avgVolume * 1.3;
+      }).length;
+      if (heavyDays >= 5) return "Ты делаешь много тяжёлых тренировок. Запланируй разгрузочный день (снизь объём на 30-50%).";
+
+      if (todayVolume > 0) return "Отлично, сегодня уже позанимался! Следи за локтем.";
+      return "Сегодня ещё нет записи. Сделай лесенку 1-6-1, если чувствуешь себя хорошо.";
+    }
+
+    function renderSportTab() {
+      const streak = getActiveStreak();
+      const today = getTodayTraining();
+      const statusEl = document.getElementById('sportStatus');
+      let html = `<div style="font-size:1.2rem;">🔥 Серия: ${streak.count} дней`;
+      if (streak.start) html += ` (с ${streak.start})`;
+      html += `</div>`;
+      html += `<div style="margin-top:8px;">Сегодня: ${today ? '✅ Тренировка записана' : '❌ Нет записи'}</div>`;
+      html += `<div style="margin-top:5px; color:#f0a060;">💡 ${getAdvice()}</div>`;
+      statusEl.innerHTML = html;
+
+      const historyEl = document.getElementById('trainingHistory');
+      let histHtml = '<h3 style="color:#ccc; margin-bottom:10px;">Последние тренировки</h3>';
+      const recent = currentData.тренировки.slice(0, 5);
+      recent.forEach(t => {
+        const exSummary = t.exercises.map(e => `${e.name} ${e.sets}x${e.reps}`).join(', ');
+        histHtml += `<div class="history-item">
+          <strong>${t.date}</strong> ${t.isRestDay ? '(разгрузка)' : exSummary} 
+          Боль: ${t.painScore}/5 ${t.isTestDay ? '🏆 Тест' : ''}
+          <button class="delete-btn" onclick="deleteTraining('${t.date}')">✕</button>
+        </div>`;
+      });
+      histHtml += '<button class="btn" onclick="loadMoreHistory()" style="margin-top:5px;">Показать ещё</button>';
+      historyEl.innerHTML = histHtml;
+
+      const last7 = getLast7Volume();
+      const ctx = document.getElementById('volumeChart').getContext('2d');
+      if (window.volumeChartInstance) window.volumeChartInstance.destroy();
+      window.volumeChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: last7.map(d => d.date.slice(5)),
+          datasets: [{
+            label: 'Объём',
+            data: last7.map(d => d.volume),
+            backgroundColor: '#5fa88d'
+          }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+
+      const records = {};
+      currentData.тренировки.forEach(t => {
+        if (t.isRestDay) return;
+        t.exercises.forEach(e => {
+          const key = e.name;
+          if (!records[key] || e.reps > records[key].reps) records[key] = { date: t.date, reps: e.reps };
+        });
+      });
+      let recHtml = '<h3 style="color:#ccc;">🏆 Личные рекорды</h3>';
+      for (const [name, rec] of Object.entries(records)) {
+        recHtml += `<div>${name}: ${rec.reps} раз (${rec.date})</div>`;
+      }
+      document.getElementById('recordsTable').innerHTML = recHtml;
+    }
+
+    function deleteTraining(dateStr) {
+      if (confirm('Удалить тренировку за ' + dateStr + '?')) {
+        currentData.тренировки = currentData.тренировки.filter(t => t.date !== dateStr);
+        localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
+        renderSportTab();
+      }
+    }
+
+    let historyOffset = 5;
+    function loadMoreHistory() {
+      const historyEl = document.getElementById('trainingHistory');
+      const more = currentData.тренировки.slice(historyOffset, historyOffset + 5);
+      more.forEach(t => {
+        const exSummary = t.exercises.map(e => `${e.name} ${e.sets}x${e.reps}`).join(', ');
+        const div = document.createElement('div');
+        div.className = 'history-item';
+        div.innerHTML = `<strong>${t.date}</strong> ${t.isRestDay ? '(разгрузка)' : exSummary} 
+          Боль: ${t.painScore}/5 ${t.isTestDay ? '🏆 Тест' : ''}
+          <button class="delete-btn" onclick="deleteTraining('${t.date}')">✕</button>`;
+        historyEl.appendChild(div);
+      });
+      historyOffset += 5;
     }
   </script>
 </body>
