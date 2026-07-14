@@ -27,7 +27,7 @@
       text-shadow: 0 0 12px rgba(180, 180, 180, 0.3);
       margin-bottom: 5px;
     }
-    .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+    .tabs { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
     .tab-btn {
       padding: 8px 20px; border: 1px solid rgba(150, 150, 150, 0.3);
       background: rgba(150, 150, 150, 0.1); color: #bbb;
@@ -80,34 +80,12 @@
     .system-status .dot {
       width: 14px; height: 14px; border-radius: 50%;
     }
-    .trend-text {
-      color: #aaa;
-      margin-bottom: 10px;
-      font-size: 0.9rem;
-    }
-    .critical-list {
-      list-style: none;
-      padding-left: 0;
-      margin-top: 5px;
-    }
-    .critical-list li {
-      padding: 4px 0;
-      font-size: 0.9rem;
-      color: #e05a5a;
-    }
-    .critical-list li::before {
-      content: "⚠️ ";
-    }
-    .no-critical {
-      color: #5fa88d;
-      font-weight: 500;
-    }
-    .streaks-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
+    .trend-text { color: #aaa; margin-bottom: 10px; font-size: 0.9rem; }
+    .critical-list { list-style: none; padding-left: 0; margin-top: 5px; }
+    .critical-list li { padding: 4px 0; font-size: 0.9rem; color: #e05a5a; }
+    .critical-list li::before { content: "⚠️ "; }
+    .no-critical { color: #5fa88d; font-weight: 500; }
+    .streaks-row { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
     .streak-pill {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(150,150,150,0.2);
@@ -119,10 +97,7 @@
       font-size: 0.9rem;
       color: #ccc;
     }
-    .streak-pill span {
-      font-weight: 600;
-      color: #f0f0f0;
-    }
+    .streak-pill span { font-weight: 600; color: #f0f0f0; }
     .series-card {
       background: rgba(20, 20, 20, 0.75);
       backdrop-filter: blur(12px);
@@ -137,38 +112,22 @@
       flex-wrap: wrap;
       gap: 15px;
     }
-    .series-item {
-      text-align: center;
-    }
+    .series-item { text-align: center; }
     .series-circle {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
+      width: 80px; height: 80px; border-radius: 50%;
       background: #2a2a2a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #fff;
-      cursor: pointer;
-      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; font-weight: 700; color: #fff;
+      cursor: pointer; transition: all 0.2s;
       border: 3px solid #444;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
       margin: 0 auto 8px;
     }
-    .series-circle:hover {
-      transform: scale(1.05);
-      border-color: #888;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7);
-    }
+    .series-circle:hover { transform: scale(1.05); border-color: #888; }
     .series-circle.low { background: #3a3a3a; border-color: #666; }
     .series-circle.mid { background: #5a4a30; border-color: #f0a060; }
     .series-circle.high { background: #2a4a3a; border-color: #5fa88d; }
-    .series-label {
-      font-size: 0.85rem;
-      color: #aaa;
-    }
+    .series-label { font-size: 0.85rem; color: #aaa; }
 
     .card {
       background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(12px);
@@ -179,45 +138,17 @@
       opacity: 0; animation: fadeIn 0.5s ease forwards;
     }
     @keyframes fadeIn { to { opacity: 1; } }
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(180, 180, 180, 0.3);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.7), 0 0 18px rgba(120,120,120,0.2);
-    }
-    .card-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 18px; flex-wrap: wrap; gap: 10px;
-    }
-    .card-header h2 {
-      font-size: 1.1rem; font-weight: 600; color: #ccc;
-      letter-spacing: 0.02em; margin: 0;
-    }
+    .card:hover { transform: translateY(-4px); border-color: rgba(180, 180, 180, 0.3); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+    .card-header h2 { font-size: 1.1rem; font-weight: 600; color: #ccc; letter-spacing: 0.02em; margin: 0; }
     .mini-bar { display: flex; align-items: center; gap: 8px; min-width: 120px; }
-    .mini-bar-track {
-      flex: 1; height: 6px; background: rgba(150, 150, 150, 0.15);
-      border-radius: 3px; overflow: hidden;
-    }
-    .mini-bar-fill {
-      height: 100%; border-radius: 3px;
-      background: linear-gradient(90deg, #666, #999);
-      transition: width 0.5s;
-    }
+    .mini-bar-track { flex: 1; height: 6px; background: rgba(150, 150, 150, 0.15); border-radius: 3px; overflow: hidden; }
+    .mini-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #666, #999); transition: width 0.5s; }
     .mini-bar-label { font-size: 0.8rem; color: #999; width: 40px; text-align: right; }
-    .field {
-      display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
-      margin-bottom: 16px; padding-bottom: 12px;
-      border-bottom: 1px solid rgba(150, 150, 150, 0.08);
-    }
+    .field { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(150, 150, 150, 0.08); }
     .field:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .field label {
-      width: 120px; font-size: 0.9rem; color: #999;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .status-dot {
-      width: 12px; height: 12px; border-radius: 50%;
-      display: inline-block; box-shadow: 0 0 10px currentColor;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
+    .field label { width: 120px; font-size: 0.9rem; color: #999; display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px currentColor; transition: transform 0.15s, box-shadow 0.15s; }
     .status-dot.manual { cursor: pointer; }
     .status-dot.manual:hover { transform: scale(1.3); }
     .status-плохо { background: #e05a5a; color: #e05a5a; }
@@ -230,20 +161,10 @@
       font-size: 0.9rem; font-family: inherit;
       border: 1px solid rgba(150, 150, 150, 0.15);
     }
-    input:focus, select:focus, textarea:focus {
-      background: rgba(150, 150, 150, 0.2); outline: none;
-      border-color: #888;
-    }
+    input:focus, select:focus, textarea:focus { background: rgba(150, 150, 150, 0.2); outline: none; border-color: #888; }
     textarea { resize: vertical; min-height: 50px; }
-    .progress-bar {
-      width: 100%; height: 8px; background: rgba(150, 150, 150, 0.15);
-      border-radius: 10px; margin-top: 8px; overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%; border-radius: 10px;
-      background: linear-gradient(90deg, #666, #999);
-      transition: width 0.4s;
-    }
+    .progress-bar { width: 100%; height: 8px; background: rgba(150, 150, 150, 0.15); border-radius: 10px; margin-top: 8px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, #666, #999); transition: width 0.4s; }
     .checklist { list-style: none; padding: 0; }
     .checklist li { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
     .checklist input[type="checkbox"] { width: 18px; height: 18px; accent-color: #888; }
@@ -271,63 +192,33 @@
       border: 1px solid rgba(150, 150, 150, 0.12);
     }
 
-    /* Спортивный модуль */
-    .modal {
-      display: none;
-      position: fixed; z-index: 100;
-      left: 0; top: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      align-items: center; justify-content: center;
-    }
+    /* Спорт */
+    .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
     .modal.active { display: flex; }
-    .modal-content {
-      background: #1e1e24;
-      border-radius: 16px;
-      padding: 24px;
-      max-width: 500px;
-      width: 90%;
-      border: 1px solid rgba(150,150,150,0.3);
-      max-height: 80vh;
-      overflow-y: auto;
-      position: relative;
-    }
-    .modal-close {
-      position: absolute; top: 10px; right: 15px;
-      background: none; border: none; color: #aaa; font-size: 1.5rem;
-      cursor: pointer;
-    }
-    .exercise-row {
-      display: flex; gap: 8px; align-items: center;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-    .exercise-row input, .exercise-row select {
-      flex: 1; min-width: 80px;
-    }
-    .pain-slider {
-      display: flex; gap: 5px; align-items: center;
-    }
-    .pain-btn {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(150,150,150,0.3);
-      color: #ccc;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
+    .modal-content { background: #1e1e24; border-radius: 16px; padding: 24px; max-width: 500px; width: 90%; border: 1px solid rgba(150,150,150,0.3); max-height: 80vh; overflow-y: auto; position: relative; }
+    .modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; }
+    .exercise-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .exercise-row input, .exercise-row select { flex: 1; min-width: 80px; }
+    .pain-slider { display: flex; gap: 5px; align-items: center; }
+    .pain-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid rgba(150,150,150,0.3); color: #ccc; cursor: pointer; font-size: 0.9rem; }
     .pain-btn.active { background: #e05a5a; color: #fff; border-color: #e05a5a; }
-    .history-item {
-      background: rgba(255,255,255,0.03);
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 0.85rem;
-    }
-    .delete-btn {
-      background: none; border: none; color: #e05a5a; cursor: pointer;
-      margin-left: 10px;
-    }
+    .history-item { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 0.85rem; }
+    .delete-btn { background: none; border: none; color: #e05a5a; cursor: pointer; margin-left: 10px; }
+
+    /* Финансы */
+    .finance-card { background: rgba(20, 20, 20, 0.75); backdrop-filter: blur(12px); border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(150,150,150,0.12); }
+    .finance-card h3 { font-size: 1rem; color: #ccc; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .balance-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .balance-row:last-child { border-bottom: none; }
+    .sub-account { padding-left: 20px; font-size: 0.9rem; color: #aaa; }
+    .phase-badge { background: #f0a060; color: #000; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+    .progress-finance { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 5px 0; }
+    .progress-finance-fill { height: 100%; border-radius: 4px; background: #5fa88d; }
+    .operation-list { max-height: 200px; overflow-y: auto; margin-top: 10px; }
+    .operation-item { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .positive { color: #5fa88d; }
+    .negative { color: #e05a5a; }
+    .small-btn { padding: 5px 12px; font-size: 0.8rem; margin: 2px; }
   </style>
 </head>
 <body>
@@ -338,6 +229,7 @@
       <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Дашборд</button>
       <button class="tab-btn" onclick="switchTab('charts')">📈 Графики</button>
       <button class="tab-btn" onclick="switchTab('sport')">🏋️ Спорт</button>
+      <button class="tab-btn" onclick="switchTab('finance')">💰 Финансы</button>
     </div>
     <p class="subtitle"><span id="currentDate"></span><span class="blinking-dot"></span></p>
 
@@ -347,14 +239,12 @@
         <div class="ring">
           <svg width="80" height="80" viewBox="0 0 80 80">
             <circle class="bg-circle" cx="40" cy="40" r="34"/>
-            <circle id="coreRing" class="fg-circle" cx="40" cy="40" r="34"
-                    stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+            <circle id="coreRing" class="fg-circle" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
           </svg>
           <div class="percent" id="corePercent">0%</div>
         </div>
         <span style="color:#999;">Obsidian Core Index</span>
       </div>
-
       <div id="systemSummary" class="system-summary"></div>
       <div id="seriesContainer"></div>
       <div id="frontsContainer"></div>
@@ -369,29 +259,23 @@
 
     <!-- Графики -->
     <div id="tab-charts" class="tab-content">
-      <div class="chart-container">
-        <h2 style="margin-bottom:15px; color:#ccc;">📈 Obsidian Core Index (история)</h2>
-        <canvas id="indexChart" width="400" height="200"></canvas>
-      </div>
-      <div class="chart-container">
-        <h2 style="margin-bottom:15px; color:#ccc;">🧩 Здоровье фронтов</h2>
-        <canvas id="frontsChart" width="400" height="250"></canvas>
-      </div>
+      <div class="chart-container"><h2 style="margin-bottom:15px; color:#ccc;">📈 Obsidian Core Index (история)</h2><canvas id="indexChart" width="400" height="200"></canvas></div>
+      <div class="chart-container"><h2 style="margin-bottom:15px; color:#ccc;">🧩 Здоровье фронтов</h2><canvas id="frontsChart" width="400" height="250"></canvas></div>
       <button class="btn" onclick="clearHistory()" style="margin-top:10px;">🗑️ Очистить историю</button>
     </div>
 
     <!-- Спорт -->
     <div id="tab-sport" class="tab-content">
       <div class="system-summary" id="sportStatus"></div>
-      <div style="display:flex; gap:12px; margin-bottom:20px;">
-        <button class="btn primary" onclick="openTrainingForm()">✏️ Записать тренировку</button>
-      </div>
+      <div style="display:flex; gap:12px; margin-bottom:20px;"><button class="btn primary" onclick="openTrainingForm()">✏️ Записать тренировку</button></div>
       <div id="trainingHistory"></div>
-      <div class="chart-container" style="margin-top:20px;">
-        <h3 style="color:#ccc;">📊 Объём за 7 дней</h3>
-        <canvas id="volumeChart" width="400" height="200"></canvas>
-      </div>
+      <div class="chart-container" style="margin-top:20px;"><h3 style="color:#ccc;">📊 Объём за 7 дней</h3><canvas id="volumeChart" width="400" height="200"></canvas></div>
       <div id="recordsTable" class="card"></div>
+    </div>
+
+    <!-- Финансы -->
+    <div id="tab-finance" class="tab-content">
+      <div id="financeContainer"></div>
     </div>
   </div>
 
@@ -404,27 +288,16 @@
       <button class="btn" onclick="addExerciseField()" style="margin-bottom:10px;">+ Добавить упражнение</button>
       <div style="margin:10px 0;">Боль в локте (0-5): <span id="painValue">0</span></div>
       <div class="pain-slider">
-        <button class="pain-btn" onclick="setPain(0)">0</button>
-        <button class="pain-btn" onclick="setPain(1)">1</button>
-        <button class="pain-btn" onclick="setPain(2)">2</button>
-        <button class="pain-btn" onclick="setPain(3)">3</button>
-        <button class="pain-btn" onclick="setPain(4)">4</button>
-        <button class="pain-btn" onclick="setPain(5)">5</button>
+        <button class="pain-btn" onclick="setPain(0)">0</button><button class="pain-btn" onclick="setPain(1)">1</button><button class="pain-btn" onclick="setPain(2)">2</button><button class="pain-btn" onclick="setPain(3)">3</button><button class="pain-btn" onclick="setPain(4)">4</button><button class="pain-btn" onclick="setPain(5)">5</button>
       </div>
-      <div style="margin:10px 0;">
-        <label><input type="checkbox" id="isRestDay"> Разгрузочный день</label>
-        <label style="margin-left:10px;"><input type="checkbox" id="isTestDay"> Тест на максимум</label>
-      </div>
+      <div style="margin:10px 0;"><label><input type="checkbox" id="isRestDay"> Разгрузочный день</label><label style="margin-left:10px;"><input type="checkbox" id="isTestDay"> Тест на максимум</label></div>
       <textarea id="trainingNotes" placeholder="Заметки" style="width:100%; margin-bottom:10px;"></textarea>
       <button class="btn primary" onclick="saveTraining()">💾 Сохранить тренировку</button>
     </div>
-  </div>
-
-  <script>
+  </div>  <script>
     let currentData = null;
     const MANUAL_CYCLE = ['нейтрально', 'плохо', 'среднее', 'хорошо'];
-    let indexChartInstance = null;
-    let frontsChartInstance = null;
+    let indexChartInstance = null, frontsChartInstance = null, volumeChartInstance = null;
 
     function switchTab(tabName) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -433,27 +306,23 @@
       event.target.classList.add('active');
       if (tabName === 'charts') renderCharts();
       else if (tabName === 'sport') renderSportTab();
+      else if (tabName === 'finance') renderFinanceTab();
     }
 
     window.onload = async () => {
-      document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', {
-        weekday:'short', year:'numeric', month:'long', day:'numeric'
-      });
+      document.getElementById('currentDate').textContent = new Date().toLocaleDateString('ru-RU', { weekday:'short', year:'numeric', month:'long', day:'numeric' });
       const saved = localStorage.getItem('obsidian_hybrid');
       if (saved) { try { currentData = JSON.parse(saved); } catch(e){} }
       if (!currentData) {
-        try {
-          const res = await fetch('data.json');
-          if (res.ok) currentData = await res.json();
-        } catch(e){}
+        try { const res = await fetch('data.json'); if (res.ok) currentData = await res.json(); } catch(e){}
       }
       if (!currentData) currentData = getEmptyStructure();
       if (!currentData.история) currentData.история = [];
       if (!currentData.серии) currentData.серии = { сон:0, питание:0, активность:0, тело:0 };
       if (!currentData.тренировки) currentData.тренировки = [];
-      convertOldStatuses();
-      ensureAllStatuses();
-      syncAllAutoStatuses();
+      if (!currentData.финансы) currentData.финансы = getDefaultFinance();
+      accrueInterest();
+      convertOldStatuses(); ensureAllStatuses(); syncAllAutoStatuses();
       renderAll();
     };
 
@@ -462,1091 +331,101 @@
         дата: new Date().toISOString().slice(0,10),
         серии: { сон: 0, питание: 0, активность: 0, тело: 0 },
         тренировки: [],
+        финансы: getDefaultFinance(),
         фронты: [
-          {
-            название: "0.4 — ЦНС и тело",
-            параметры: [
-              { имя: "Сон", sleep_bed: "23:30", sleep_wake: "07:00" },
-              { имя: "Питание", nutrition_level: 2 },
+          { название: "0.4 — ЦНС и тело", параметры: [
+              { имя: "Сон", sleep_bed: "23:30", sleep_wake: "07:00" }, { имя: "Питание", nutrition_level: 2 },
               { имя: "Физнагрузка", workout_desc: "", workout_streak: 0, workout_note: "", статус: "среднее" },
-              { имя: "Общее ЦНС", уровень: 4.5, cns_note: "" }
-            ]
-          },
-          {
-            название: "1 — Магазин / Студия",
-            параметры: [
-              { имя: "Магазин «СКИФ»", статус: "плохо", состояние: "" },
-              { имя: "Студия автосвета", статус: "среднее", состояние: "" }
-            ]
-          },
-          {
-            название: "0.1 — Капитал",
-            параметры: [
-              { имя: "Баланс", capital_balance: 65000 },
-              { имя: "Цель", capital_goal: 100000, статус: "среднее" },
-              { имя: "Доход за месяц", capital_income: 0 }
-            ]
-          },
-          {
-            название: "2 — Учёба",
-            параметры: [
-              { имя: "Статус учёбы", статус: "нейтрально", состояние: "Каникулы" },
-              { имя: "Несданных долгов", debts_count: 0 },
-              { имя: "Ближайший экзамен", состояние: "" }
-            ]
-          },
-          {
-            название: "3 — Социум / Отношения",
-            параметры: [
-              { имя: "Вероника", статус: "нейтрально", состояние: "" },
-              { имя: "Максы", статус: "нейтрально", состояние: "" },
-              { имя: "Брат", статус: "нейтрально", состояние: "" },
-              { имя: "Общий фон", статус: "нейтрально", состояние: "" }
-            ]
-          },
-          {
-            название: "4 — Хобби / Творчество",
-            параметры: [
-              { имя: "Канал автосвета", статус: "среднее", состояние: "" },
-              { имя: "Obsidian Core версия", состояние: "v2.0" },
-              { имя: "Что изучал", состояние: "" }
-            ]
-          }
+              { имя: "Общее ЦНС", уровень: 4.5, cns_note: "" } ] },
+          { название: "1 — Магазин / Студия", параметры: [
+              { имя: "Магазин «СКИФ»", статус: "плохо", состояние: "" }, { имя: "Студия автосвета", статус: "среднее", состояние: "" } ] },
+          { название: "0.1 — Капитал", параметры: [
+              { имя: "Баланс", capital_balance: 65000 }, { имя: "Цель", capital_goal: 100000, статус: "среднее" },
+              { имя: "Доход за месяц", capital_income: 0 } ] },
+          { название: "2 — Учёба", параметры: [
+              { имя: "Статус учёбы", статус: "нейтрально", состояние: "Каникулы" }, { имя: "Несданных долгов", debts_count: 0 },
+              { имя: "Ближайший экзамен", состояние: "" } ] },
+          { название: "3 — Социум / Отношения", параметры: [
+              { имя: "Вероника", статус: "нейтрально", состояние: "" }, { имя: "Максы", статус: "нейтрально", состояние: "" },
+              { имя: "Брат", статус: "нейтрально", состояние: "" }, { имя: "Общий фон", статус: "нейтрально", состояние: "" } ] },
+          { название: "4 — Хобби / Творчество", параметры: [
+              { имя: "Канал автосвета", статус: "среднее", состояние: "" }, { имя: "Obsidian Core версия", состояние: "v2.0" },
+              { имя: "Что изучал", состояние: "" } ] }
         ],
-        протоколы: "",
-        цели: ["Вода, завтрак, подход", "Одно действие по магазину/студии", "Вечерний отчёт"],
-        история: []
+        протоколы: "", цели: ["Вода, завтрак, подход", "Одно действие по магазину/студии", "Вечерний отчёт"], история: []
       };
     }
 
-    function escapeHtml(t) {
-      return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
+    function escapeHtml(t) { return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function sleepStatus(bed, wake) { if(!bed||!wake) return 'нейтрально'; const [bh,bm]=bed.split(':').map(Number); const [wh,wm]=wake.split(':').map(Number); let bedMins=bh*60+bm, wakeMins=wh*60+wm; if(wakeMins<=bedMins) wakeMins+=24*60; const d=(wakeMins-bedMins)/60; if(d<6)return'плохо'; if(d<7)return'среднее'; if(d<=9)return'хорошо'; return'нейтрально'; }
+    function nutritionStatus(l) { if(l<=0)return'плохо'; if(l===1)return'среднее'; return'хорошо'; }
+    function cnsStatus(l) { if(l<=3)return'плохо'; if(l<=6)return'среднее'; return'хорошо'; }
+    function balanceStatus(bal,goal) { if(!goal||goal===0)return'нейтрально'; const p=bal/goal; if(p>=.8)return'хорошо'; if(p>=.5)return'среднее'; return'плохо'; }
+    function incomeStatus(inc) { return inc>0?'хорошо':'плохо'; }
+    function debtsStatus(c) { if(c===0)return'хорошо'; if(c<=2)return'среднее'; return'плохо'; }
+    function calcSleepDuration(bed, wake) { if(!bed||!wake)return'(не указано)'; const [bh,bm]=bed.split(':').map(Number); const [wh,wm]=wake.split(':').map(Number); let bedMins=bh*60+bm, wakeMins=wh*60+wm; if(wakeMins<=bedMins) wakeMins+=24*60; const diff=wakeMins-bedMins; if(diff===0)return'(не указано)'; const h=Math.floor(diff/60), m=diff%60; return `${h}ч ${m}м`; }
+    function convertOldStatuses() { const map={'критично':'плохо','нет':'плохо','держится':'хорошо','сохранён':'хорошо','угасла':'среднее','пауза':'среднее','хрупкое':'среднее','нейтрально':'нейтрально'}; currentData.фронты.forEach(f=>f.параметры.forEach(p=>{if(p.статус&&map[p.статус])p.статус=map[p.статус]})); }
+    function ensureAllStatuses() { currentData.фронты.forEach(f=>f.параметры.forEach(p=>{if(!p.статус){if(p.уровень!==undefined)p.статус=cnsStatus(p.уровень);else if(p.sleep_bed!==undefined)p.статус=sleepStatus(p.sleep_bed,p.sleep_wake);else if(p.nutrition_level!==undefined)p.статус=nutritionStatus(p.nutrition_level);else if(p.capital_balance!==undefined){const g=f.параметры.find(x=>x.имя==='Цель')?.capital_goal||0;p.статус=balanceStatus(p.capital_balance,g);}else if(p.capital_income!==undefined)p.статус=incomeStatus(p.capital_income);else if(p.debts_count!==undefined)p.статус=debtsStatus(p.debts_count);else p.статус='нейтрально';}})); }
+    function syncAllAutoStatuses() { currentData.фронты.forEach(f=>{let bal=null,g=null;if(f.название==="0.1 — Капитал"){f.параметры.forEach(p=>{if(p.имя==="Баланс")bal=p.capital_balance;if(p.имя==="Цель")g=p.capital_goal;});} f.параметры.forEach(p=>{if(p.имя==='Сон')p.статус=sleepStatus(p.sleep_bed,p.sleep_wake);else if(p.имя==='Питание')p.статус=nutritionStatus(p.nutrition_level);else if(p.имя==='Общее ЦНС')p.статус=cnsStatus(p.уровень);else if(p.имя==='Баланс')p.статус=balanceStatus(p.capital_balance,g);else if(p.имя==='Доход за месяц')p.статус=incomeStatus(p.capital_income);});}); }
+    function calcFrontHealth(front) { let total=0,count=0; const ss={'хорошо':8,'нейтрально':6,'среднее':4,'плохо':1}; front.параметры.forEach(p=>{if(p.уровень!==undefined){total+=p.уровень;count++;}else if(p.имя==='Сон'){total+=ss[p.статус]||5;count++;}else if(p.имя==='Питание'){total+=ss[p.статус]||5;count++;}else if(p.имя==='Баланс'){total+=ss[p.статус]||5;count++;}else if(p.имя==='Цель'){total+=5;count++;}else if(p.имя==='Доход за месяц'){total+=ss[p.статус]||5;count++;}else if(p.имя==='Несданных долгов'){total+=ss[p.статус]||5;count++;}else{total+=ss[p.статус]||5;count++;}}); return {score:total, max:count*10}; }
+    function updateSystemSummary() { const el=document.getElementById('systemSummary'); if(!el)return; const idx=Math.round(calcOverallIndex()*100); let status='',col=''; if(idx<40){status='Критический';col='#e05a5a';}else if(idx<60){status='Нестабильный';col='#f0a060';}else if(idx<80){status='Стабильный';col='#5fa88d';}else{status='Оптимальный';col='#888';} let html=`<div class="system-status"><span class="dot" style="background:${col};"></span> ${status} (${idx}%)</div>`; const hist=currentData.история||[]; if(hist.length>=2){const prev=hist[hist.length-2],last=hist[hist.length-1];const diff=Math.round(last.индекс*100)-Math.round(prev.индекс*100);let trend='';if(diff>0)trend=`↗️ Растёт (+${diff}%)`;else if(diff<0)trend=`↘️ Падает (${diff}%)`;else trend='↔️ Стабильно';html+=`<div class="trend-text">Тренд: ${trend} (было ${Math.round(prev.индекс*100)}%)</div>`;}else if(hist.length===1)html+=`<div class="trend-text">Тренд: недостаточно данных</div>`; const crit=[]; currentData.фронты.forEach(f=>f.параметры.forEach(p=>{if(p.статус==='плохо'){let v='';if(p.имя==='Сон')v=`${p.sleep_bed} → ${p.sleep_wake} (${calcSleepDuration(p.sleep_bed,p.sleep_wake)})`;else if(p.имя==='Питание')v=`${p.nutrition_level} приёмов`;else if(p.имя==='Физнагрузка')v=p.workout_desc||'отсутствует';else if(p.имя==='Общее ЦНС')v=`Уровень ${p.уровень}/10`;else if(p.имя==='Баланс')v=`${p.capital_balance} ₽`;else if(p.имя==='Цель')v=`${p.capital_goal} ₽`;else if(p.имя==='Доход за месяц')v=`${p.capital_income} ₽`;else if(p.имя==='Несданных долгов')v=p.debts_count;else v=p.состояние||'—';crit.push(`${p.имя}: ${v}`);}})); if(crit.length>0){html+=`<div style="margin-top:8px; font-weight:600; color:#e05a5a;">🚨 Критические точки</div><ul class="critical-list">`;crit.forEach(i=>html+=`<li>${i}</li>`);html+=`</ul>`;}else html+=`<div class="no-critical" style="margin-top:8px;">✅ Критических точек нет</div>`; const series=currentData.серии||{}; html+=`<div class="streaks-row">`; [{key:'сон',icon:'🌙',label:'Сон'},{key:'питание',icon:'🍏',label:'Питание'},{key:'активность',icon:'⚡',label:'Активность'},{key:'тело',icon:'💪',label:'Тело'}].forEach(i=>html+=`<div class="streak-pill">${i.icon} ${i.label}: <span>${series[i.key]||0} дн.</span></div>`); html+=`</div>`; el.innerHTML=html; }
+    function renderSeries() { const el=document.getElementById('seriesContainer'); if(!el)return; const s=currentData.серии||{сон:0,питание:0,активность:0,тело:0}; const circleClass=v=>v>=7?'high':v>=3?'mid':'low'; const items=[{key:'сон',icon:'🌙',label:'Сон'},{key:'питание',icon:'🍏',label:'Питание'},{key:'активность',icon:'⚡',label:'Активность'},{key:'тело',icon:'💪',label:'Тело'}]; let html='<div class="series-card">'; items.forEach(i=>{const v=s[i.key]||0; html+=`<div class="series-item"><div class="series-circle ${circleClass(v)}" onclick="editSeries('${i.key}')">${v}</div><div class="series-label">${i.icon} ${i.label}</div></div>`;}); html+='</div>'; el.innerHTML=html; }
+    function editSeries(key) { const v=prompt(`Новое значение для "${key}":`,currentData.серии[key]); if(v!==null){const n=parseInt(v); if(!isNaN(n)&&n>=0){currentData.серии[key]=n; renderSeries(); updateSystemSummary();}} }
+    function renderAll() { syncAllAutoStatuses(); updateSystemSummary(); renderSeries(); const container=document.getElementById('frontsContainer'); let html=''; let scores=[]; currentData.фронты.forEach((f,fi)=>{const {score,max}=calcFrontHealth(f); scores.push(score/max); const pct=Math.round((score/max)*100); html+=`<div class="card" style="animation-delay:${fi*0.1}s"><div class="card-header"><h2>${f.название}</h2><div class="mini-bar"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%"></div></div><span class="mini-bar-label">${pct}%</span></div></div>`; f.параметры.forEach((p,pi)=>html+=renderParameter(fi,pi,p,f)); html+=`</div>`;}); html+=`<div class="card" style="animation-delay:${currentData.фронты.length*0.1}s"><h2>📋 Протоколы</h2><div class="field"><textarea onchange="updateGlobal('протоколы',this.value)">${escapeHtml(currentData.протоколы||'')}</textarea></div></div>`; html+=`<div class="card" style="animation-delay:${currentData.фронты.length*0.1+0.1}s"><h2>✅ Ежедневные необсуждаемые действия</h2><ul class="checklist">`; (currentData.цели||[]).forEach((g,i)=>html+=`<li><input type="checkbox" ${g.startsWith('✓')?'checked':''} onchange="toggleGoal(${i})"><input type="text" value="${escapeHtml(g.replace('✓',''))}" onchange="updateGoal(${i},this.value)"></li>`); html+=`<li><button class="btn" onclick="addGoal()">+ Добавить цель</button></li></ul></div>`; container.innerHTML=html; updateCoreRing(scores); }
+    function renderParameter(fi,pi,p,front) { let h=''; const status=p.статус||'нейтрально'; const isAuto=['Сон','Питание','Общее ЦНС','Баланс','Доход за месяц'].includes(p.имя); const click=isAuto?'':`onclick="cycleStatus(${fi},${pi})"`; h+=`<div class="field"><label><span class="status-dot status-${status} ${isAuto?'':'manual'}" ${click} title="${isAuto?'Авто: '+status:status}"></span>${p.имя}</label>`; if(p.имя==='Сон'){ h+=`<input type="time" value="${p.sleep_bed||''}" onchange="updateSleep(${fi},${pi},'sleep_bed',this.value)" style="width:100px;">`; h+=`<span style="color:#999;margin:0 4px;">→</span>`; h+=`<input type="time" value="${p.sleep_wake||''}" onchange="updateSleep(${fi},${pi},'sleep_wake',this.value)" style="width:100px;">`; h+=`<span style="margin-left:8px;color:#999;">${calcSleepDuration(p.sleep_bed,p.sleep_wake)}</span>`; } else if(p.имя==='Питание') h+=`<input type="number" min="0" max="3" value="${p.nutrition_level||0}" oninput="updateNutrition(${fi},${pi},this.value)" style="width:80px;">`; else if(p.имя==='Физнагрузка'){ h+=`<input type="text" placeholder="Что сделал" value="${escapeHtml(p.workout_desc||'')}" onchange="updateWorkout(${fi},${pi},'workout_desc',this.value)" style="flex:2;">`; h+=`<input type="number" placeholder="Дней подряд" value="${p.workout_streak||0}" onchange="updateWorkout(${fi},${pi},'workout_streak',parseInt(this.value)||0)" style="width:80px;">`; h+=`<textarea placeholder="Заметка" onchange="updateWorkout(${fi},${pi},'workout_note',this.value)">${escapeHtml(p.workout_note||'')}</textarea>`; } else if(p.имя==='Общее ЦНС'){ h+=`<input type="number" min="0" max="10" step="0.1" value="${p.уровень||0}" oninput="updateCns(${fi},${pi},this.value)" style="width:80px;">`; h+=`<textarea placeholder="Самочувствие" onchange="updateCnsNote(${fi},${pi},this.value)">${escapeHtml(p.cns_note||'')}</textarea>`; h+=`<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${p.уровень*10}%"></div></div>`; } else if(p.имя==='Баланс'){ h+=`<input type="number" value="${p.capital_balance||0}" oninput="updateBalance(${fi},${pi},this.value)" style="width:120px;"> ₽`; const goal=front.параметры.find(x=>x.имя==='Цель')?.capital_goal||0; const prog=goal?Math.min(100,Math.round(p.capital_balance/goal*100)):0; h+=`<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${prog}%"></div></div>`; } else if(p.имя==='Цель') h+=`<input type="number" value="${p.capital_goal||0}" oninput="updateGoalCapital(${fi},${pi},this.value)" style="width:120px;"> ₽`; else if(p.имя==='Доход за месяц') h+=`<input type="number" value="${p.capital_income||0}" oninput="updateIncome(${fi},${pi},this.value)" style="width:120px;"> ₽`; else if(p.имя==='Несданных долгов') h+=`<input type="number" min="0" value="${p.debts_count||0}" oninput="updateDebts(${fi},${pi},this.value)" style="width:80px;">`; else h+=`<input type="text" value="${escapeHtml(p.состояние||'')}" onchange="updateText(${fi},${pi},this.value)">`; h+=`</div>`; return h; }
+    function cycleStatus(fi,pi){const p=currentData.фронты[fi].параметры[pi];if(!p.статус)p.статус='нейтрально';const idx=MANUAL_CYCLE.indexOf(p.статус);const next=MANUAL_CYCLE[(idx+1)%MANUAL_CYCLE.length];p.статус=next;const card=document.querySelectorAll('.card')[fi];if(card){const dots=card.querySelectorAll('.status-dot');if(dots[pi]){dots[pi].className=`status-dot manual status-${next}`;dots[pi].title=next;}}updateAllMiniBars();updateSystemSummary();}
+    function updateSleep(fi,pi,key,value){currentData.фронты[fi].параметры[pi][key]=value;const p=currentData.фронты[fi].параметры[pi];p.статус=sleepStatus(p.sleep_bed,p.sleep_wake);const card=document.querySelectorAll('.card')[fi];if(card){const fields=card.querySelectorAll('.field');const field=fields[pi];if(field){const durSpan=field.querySelector('span[style*="color: rgb(153, 153, 153)"]');if(durSpan)durSpan.textContent=calcSleepDuration(p.sleep_bed,p.sleep_wake);}const dots=card.querySelectorAll('.status-dot');if(dots[pi]){dots[pi].className=`status-dot status-${p.статус}`;dots[pi].title='Авто: '+p.статус;}}updateAllMiniBars();updateSystemSummary();}
+    function updateNutrition(fi,pi,value){const level=parseInt(value)||0;currentData.фронты[fi].параметры[pi].nutrition_level=Math.min(3,Math.max(0,level));currentData.фронты[fi].параметры[pi].статус=nutritionStatus(level);refreshFieldDot(fi,pi);updateAllMiniBars();updateSystemSummary();}
+    function updateWorkout(fi,pi,key,value){currentData.фронты[fi].параметры[pi][key]=value;}
+    function updateCns(fi,pi,value){const val=parseFloat(value)||0;currentData.фронты[fi].параметры[pi].уровень=Math.min(10,Math.max(0,val));currentData.фронты[fi].параметры[pi].статус=cnsStatus(val);refreshFieldDot(fi,pi);updateAllMiniBars();updateSystemSummary();}
+    function updateCnsNote(fi,pi,value){currentData.фронты[fi].параметры[pi].cns_note=value;}
+    function updateBalance(fi,pi,value){const num=parseFloat(value)||0;currentData.фронты[fi].параметры[pi].capital_balance=num;const front=currentData.фронты[fi];const goalParam=front.параметры.find(p=>p.имя==='Цель');const goal=goalParam?goalParam.capital_goal:0;currentData.фронты[fi].параметры[pi].статус=balanceStatus(num,goal);refreshFieldDot(fi,pi);updateAllMiniBars();updateSystemSummary();}
+    function updateGoalCapital(fi,pi,value){const num=parseFloat(value)||0;currentData.фронты[fi].параметры[pi].capital_goal=num;const front=currentData.фронты[fi];const balParam=front.параметры.find(p=>p.имя==='Баланс');if(balParam){const bal=balParam.capital_balance||0;balParam.статус=balanceStatus(bal,num);refreshFieldDot(fi,front.параметры.indexOf(balParam));}updateAllMiniBars();updateSystemSummary();}
+    function updateIncome(fi,pi,value){const num=parseFloat(value)||0;currentData.фронты[fi].параметры[pi].capital_income=num;currentData.фронты[fi].параметры[pi].статус=incomeStatus(num);refreshFieldDot(fi,pi);updateAllMiniBars();updateSystemSummary();}
+    function updateDebts(fi,pi,value){currentData.фронты[fi].параметры[pi].debts_count=Math.max(0,parseInt(value)||0);}
+    function updateText(fi,pi,value){currentData.фронты[fi].параметры[pi].состояние=value;}
+    function refreshFieldDot(fi,pi){const card=document.querySelectorAll('.card')[fi];if(!card)return;const dots=card.querySelectorAll('.status-dot');if(dots[pi]){const newStatus=currentData.фронты[fi].параметры[pi].статус;dots[pi].className=`status-dot ${dots[pi].classList.contains('manual')?'manual':''} status-${newStatus}`;dots[pi].title=newStatus;}}
+    function updateAllMiniBars(){const cards=document.querySelectorAll('.card');let scores=[];currentData.фронты.forEach((f,fi)=>{const{score,max}=calcFrontHealth(f);scores.push(score/max);const pct=Math.round((score/max)*100);const card=cards[fi];if(card){const fill=card.querySelector('.mini-bar-fill');const label=card.querySelector('.mini-bar-label');if(fill)fill.style.width=pct+'%';if(label)label.textContent=pct+'%';}});updateCoreRing(scores);}
+    function updateCoreRing(scores){const avg=scores.reduce((a,b)=>a+b,0)/scores.length;const pct=Math.round(avg*100);document.getElementById('corePercent').textContent=pct+'%';const circle=document.getElementById('coreRing');const circ=2*Math.PI*34;circle.style.strokeDashoffset=circ-(avg*circ);circle.style.stroke=avg<0.4?'#e05a5a':avg<0.7?'#f0a060':'#888';}
+    function calcOverallIndex(){let sum=0;currentData.фронты.forEach(f=>{const{score,max}=calcFrontHealth(f);sum+=score/max;});return sum/currentData.фронты.length;}
+    async function saveAll(){syncAllAutoStatuses();const today=new Date().toISOString().slice(0,10);const snap={дата:today,индекс:calcOverallIndex(),фронты:currentData.фронты.map(f=>({название:f.название,здоровье:calcFrontHealth(f).score/calcFrontHealth(f).max}))};if(!currentData.история)currentData.история=[];const idx=currentData.история.findIndex(i=>i.дата===today);if(idx!==-1)currentData.история[idx]=snap;else currentData.история.push(snap);localStorage.setItem('obsidian_hybrid',JSON.stringify(currentData));updateJsonPreview();updateSystemSummary();const token=localStorage.getItem('github_token');if(token){try{await uploadStateToGitHub(token);alert('✅ Сохранено и отправлено в GitHub.');}catch(e){alert('✅ Сохранено локально. Ошибка загрузки state.txt.');}}else{const newToken=prompt('Введите GitHub токен (права repo) для авто-загрузки state.txt:');if(newToken){localStorage.setItem('github_token',newToken);try{await uploadStateToGitHub(newToken);alert('✅ Сохранено и отправлено в GitHub.');}catch(e){alert('✅ Сохранено локально. Ошибка загрузки.');}}else alert('✅ Сохранено локально (без state.txt).');}}
+    function updateJsonPreview(){document.getElementById('jsonPreview').textContent=JSON.stringify(currentData,null,2);}
+    function toggleJson(){const prev=document.getElementById('jsonPreview');if(prev.style.display==='block')prev.style.display='none';else{updateJsonPreview();prev.style.display='block';}}
+    function resetToJson(){if(confirm('Сбросить до версии из data.json? Все локальные данные будут потеряны.')){localStorage.removeItem('obsidian_hybrid');location.reload();}}
+    function updateGlobal(key,value){currentData[key]=value;}
+    function toggleGoal(i){let g=currentData.цели[i];currentData.цели[i]=g.startsWith('✓')?g.substring(1):'✓'+g;}
+    function updateGoal(i,text){const checked=currentData.цели[i].startsWith('✓');currentData.цели[i]=checked?'✓'+text:text;}
+    function addGoal(){currentData.цели.push('');renderAll();}
+    function renderCharts(){const history=currentData.история||[];if(history.length===0){alert('Нет истории.');return;}const labels=history.map(h=>h.дата);const indexData=history.map(h=>Math.round(h.индекс*100));const ctx1=document.getElementById('indexChart').getContext('2d');if(indexChartInstance)indexChartInstance.destroy();indexChartInstance=new Chart(ctx1,{type:'line',data:{labels,datasets:[{label:'Obsidian Core Index (%)',data:indexData,borderColor:'#888',backgroundColor:'rgba(136,136,136,0.1)',fill:true,tension:0.3}]},options:{responsive:true,scales:{y:{min:0,max:100,ticks:{color:'#aaa'}},x:{ticks:{color:'#aaa'}}},plugins:{legend:{labels:{color:'#aaa'}}}}});const ctx2=document.getElementById('frontsChart').getContext('2d');if(frontsChartInstance)frontsChartInstance.destroy();const names=currentData.фронты.map(f=>f.название);const colors=['#e05a5a','#5fa88d','#f0a060','#a0a0a0','#888','#666'];const datasets=names.map((name,idx)=>({label:name,data:history.map(h=>{const f=h.фронты.find(fr=>fr.название===name);return f?Math.round(f.здоровье*100):0;}),borderColor:colors[idx%colors.length],backgroundColor:'transparent',tension:0.3}));frontsChartInstance=new Chart(ctx2,{type:'line',data:{labels,datasets},options:{responsive:true,scales:{y:{min:0,max:100,ticks:{color:'#aaa'}},x:{ticks:{color:'#aaa'}}},plugins:{legend:{labels:{color:'#aaa'}}}}});}
+    function clearHistory(){if(confirm('Удалить всю историю графиков?')){currentData.история=[];localStorage.setItem('obsidian_hybrid',JSON.stringify(currentData));if(indexChartInstance)indexChartInstance.destroy();if(frontsChartInstance)frontsChartInstance.destroy();alert('История очищена.');updateSystemSummary();}}
+    function generateStateText(){syncAllAutoStatuses();const today=new Date().toLocaleDateString('ru-RU');const idx=Math.round(calcOverallIndex()*100);let status='';if(idx<40)status='Критический';else if(idx<60)status='Нестабильный';else if(idx<80)status='Стабильный';else status='Оптимальный';let text=`# Состояние системы Obsidian Core на ${today}\n\n## Obsidian Core Index: ${idx}% (${status})\n`;const hist=currentData.история||[];if(hist.length>=2){const prev=hist[hist.length-2],last=hist[hist.length-1];const diff=Math.round(last.индекс*100)-Math.round(prev.индекс*100);let trend='';if(diff>0)trend=`↗️ Растёт (+${diff}%)`;else if(diff<0)trend=`↘️ Падает (${diff}%)`;else trend='↔️ Стабильно';text+=`Тренд за 2 дня: ${trend} (было ${Math.round(prev.индекс*100)}%)\n`;}else if(hist.length===1)text+=`Тренд: недостаточно данных\n`;text+='\n';const crit=[];currentData.фронты.forEach(f=>f.параметры.forEach(p=>{if(p.статус==='плохо'){let v='';if(p.имя==='Сон')v=`${p.sleep_bed} → ${p.sleep_wake} (${calcSleepDuration(p.sleep_bed,p.sleep_wake)})`;else if(p.имя==='Питание')v=`${p.nutrition_level} приёмов`;else if(p.имя==='Физнагрузка')v=p.workout_desc||'отсутствует';else if(p.имя==='Общее ЦНС')v=`Уровень ${p.уровень}/10`;else if(p.имя==='Баланс')v=`${p.capital_balance} ₽`;else if(p.имя==='Цель')v=`${p.capital_goal} ₽`;else if(p.имя==='Доход за месяц')v=`${p.capital_income} ₽`;else if(p.имя==='Несданных долгов')v=p.debts_count;else v=p.состояние||'—';crit.push(`- ${p.имя}: ${v} (плохо)`);}}));if(crit.length>0){text+=`## 🚨 Критические точки\n`;crit.forEach(i=>text+=i+'\n');text+='\n';}else text+=`## 🚨 Критические точки\n✅ Критических точек нет\n\n`;text+=`## 🔥 Серии\n`;const series=currentData.серии||{};text+=`- 🌙 Сон: ${series.сон||0} дн.\n- 🍏 Питание: ${series.питание||0} дн.\n- ⚡ Активность: ${series.активность||0} дн.\n- 💪 Тело: ${series.тело||0} дн.\n\n`;currentData.фронты.forEach(f=>{const{score,max}=calcFrontHealth(f);const health=Math.round((score/max)*100);text+=`### ${f.название} (здоровье: ${health}%)\n`;f.параметры.forEach(p=>{let v='';if(p.имя==='Сон'){const dur=calcSleepDuration(p.sleep_bed,p.sleep_wake);v=`${p.sleep_bed} → ${p.sleep_wake} (${dur}, ${p.статус||'нейтрально'})`;}else if(p.имя==='Питание')v=`${p.nutrition_level} приёмов (${p.статус||'нейтрально'})`;else if(p.имя==='Физнагрузка'){v=`${p.workout_desc||'—'} (стрик ${p.workout_streak} дн.)`;if(p.workout_note)v+=` — ${p.workout_note}`;v+=` (${p.статус||'нейтрально'})`;}else if(p.имя==='Общее ЦНС'){v=`Уровень ${p.уровень}/10 (${p.статус||'нейтрально'})`;if(p.cns_note)v+=` — ${p.cns_note}`;}else if(p.имя==='Баланс')v=`${p.capital_balance} ₽ (${p.статус||'нейтрально'})`;else if(p.имя==='Цель'){const bal=f.параметры.find(x=>x.имя==='Баланс')?.capital_balance||0;const goal=p.capital_goal||0;const prog=goal>0?Math.round((bal/goal)*100):0;v=`${goal} ₽ (прогресс ${prog}%) (${p.статус||'нейтрально'})`;}else if(p.имя==='Доход за месяц')v=`${p.capital_income} ₽ (${p.статус||'нейтрально'})`;else if(p.имя==='Несданных долгов')v=`${p.debts_count} (${p.статус||'нейтрально'})`;else v=`${p.состояние||'—'} (${p.статус||'нейтрально'})`;text+=`- **${p.имя}**: ${v}\n`;});text+='\n';});if(currentData.протоколы)text+=`## Протоколы\n${currentData.протоколы}\n\n`;if(currentData.цели&&currentData.цели.length>0){text+=`## Ежедневные действия\n`;currentData.цели.forEach((g,i)=>{const done=g.startsWith('✓')?'✅':'⬜';text+=`${done} ${g.replace('✓','')}\n`;});text+='\n';}if(hist.length>0){const last=hist[hist.length-1];text+=`## Последнее сохранение: ${last.дата}, индекс ${Math.round(last.индекс*100)}%\n`;}return text;}
+    function copyStateToClipboard(){const text=generateStateText();navigator.clipboard.writeText(text).then(()=>{alert('✅ Состояние скопировано!');document.getElementById('jsonPreview').textContent=text;document.getElementById('jsonPreview').style.display='block';}).catch(()=>{alert('Не удалось скопировать.');document.getElementById('jsonPreview').textContent=text;document.getElementById('jsonPreview').style.display='block';});}
+    async function uploadStateToGitHub(token){const text=generateStateText();const repo='imamutdinovaroslav-prog/Obsidian';const path='state.txt';const url=`https://api.github.com/repos/${repo}/contents/${path}`;let sha=null;try{const getRes=await fetch(url,{headers:{Authorization:`token ${token}`}});if(getRes.ok){const data=await getRes.json();sha=data.sha;}}catch(e){}const body={message:'Обновление state через дашборд',content:btoa(unescape(encodeURIComponent(text))),...(sha&&{sha})};const res=await fetch(url,{method:'PUT',headers:{Authorization:`token ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)});if(!res.ok){const err=await res.json();throw new Error(err.message);}}
 
-    // ---------- Функции статусов ----------
-    function sleepStatus(bed, wake) {
-      if (!bed || !wake) return 'нейтрально';
-      const [bh, bm] = bed.split(':').map(Number);
-      const [wh, wm] = wake.split(':').map(Number);
-      let bedMins = bh * 60 + bm;
-      let wakeMins = wh * 60 + wm;
-      if (wakeMins <= bedMins) wakeMins += 24 * 60;
-      const duration = (wakeMins - bedMins) / 60;
-      if (duration < 6) return 'плохо';
-      if (duration < 7) return 'среднее';
-      if (duration <= 9) return 'хорошо';
-      return 'нейтрально';
-    }
-
-    function nutritionStatus(level) {
-      if (level <= 0) return 'плохо';
-      if (level === 1) return 'среднее';
-      return 'хорошо';
-    }
-
-    function cnsStatus(level) {
-      if (level <= 3) return 'плохо';
-      if (level <= 6) return 'среднее';
-      return 'хорошо';
-    }
-
-    function balanceStatus(balance, goal) {
-      if (!goal || goal === 0) return 'нейтрально';
-      const pct = balance / goal;
-      if (pct >= 0.8) return 'хорошо';
-      if (pct >= 0.5) return 'среднее';
-      return 'плохо';
-    }
-
-    function incomeStatus(income) { return income > 0 ? 'хорошо' : 'плохо'; }
-    function debtsStatus(count) {
-      if (count === 0) return 'хорошо';
-      if (count <= 2) return 'среднее';
-      return 'плохо';
-    }
-
-    function calcSleepDuration(bed, wake) {
-      if (!bed || !wake) return '(не указано)';
-      const [bh, bm] = bed.split(':').map(Number);
-      const [wh, wm] = wake.split(':').map(Number);
-      let bedMins = bh * 60 + bm;
-      let wakeMins = wh * 60 + wm;
-      if (wakeMins <= bedMins) wakeMins += 24 * 60;
-      const diff = wakeMins - bedMins;
-      if (diff === 0) return '(не указано)';
-      const h = Math.floor(diff / 60);
-      const m = diff % 60;
-      return `${h}ч ${m}м`;
-    }
-
-    // ---------- Синхронизация статусов ----------
-    function convertOldStatuses() {
-      const map = {
-        'критично': 'плохо',
-        'нет': 'плохо',
-        'держится': 'хорошо',
-        'сохранён': 'хорошо',
-        'угасла': 'среднее',
-        'пауза': 'среднее',
-        'хрупкое': 'среднее',
-        'нейтрально': 'нейтрально'
-      };
-      currentData.фронты.forEach(front => {
-        front.параметры.forEach(p => {
-          if (p.статус && map[p.статус]) p.статус = map[p.статус];
-        });
-      });
-    }
-
-    function ensureAllStatuses() {
-      currentData.фронты.forEach(front => {
-        front.параметры.forEach(p => {
-          if (!p.статус) {
-            if (p.уровень !== undefined) p.статус = cnsStatus(p.уровень);
-            else if (p.sleep_bed !== undefined) p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
-            else if (p.nutrition_level !== undefined) p.статус = nutritionStatus(p.nutrition_level);
-            else if (p.capital_balance !== undefined) {
-              const goal = front.параметры.find(par => par.имя === 'Цель')?.capital_goal || 0;
-              p.статус = balanceStatus(p.capital_balance, goal);
-            }
-            else if (p.capital_income !== undefined) p.статус = incomeStatus(p.capital_income);
-            else if (p.debts_count !== undefined) p.статус = debtsStatus(p.debts_count);
-            else p.статус = 'нейтрально';
-          }
-        });
-      });
-    }
-
-    function syncAllAutoStatuses() {
-      currentData.фронты.forEach(front => {
-        let balance = null, goal = null;
-        if (front.название === "0.1 — Капитал") {
-          front.параметры.forEach(p => {
-            if (p.имя === "Баланс") balance = p.capital_balance;
-            if (p.имя === "Цель") goal = p.capital_goal;
-          });
-        }
-        front.параметры.forEach(p => {
-          if (p.имя === 'Сон') p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
-          else if (p.имя === 'Питание') p.статус = nutritionStatus(p.nutrition_level);
-          else if (p.имя === 'Общее ЦНС') p.статус = cnsStatus(p.уровень);
-          else if (p.имя === 'Баланс') p.статус = balanceStatus(p.capital_balance, goal);
-          else if (p.имя === 'Доход за месяц') p.статус = incomeStatus(p.capital_income);
-        });
-      });
-    }
-
-    // ---------- Отрисовка и обработка ----------
-    function calcFrontHealth(front) {
-      let total = 0, count = 0;
-      const statusScore = {
-        'хорошо': 8,
-        'нейтрально': 6,
-        'среднее': 4,
-        'плохо': 1
-      };
-      front.параметры.forEach(p => {
-        if (p.уровень !== undefined) { total += p.уровень; count++; }
-        else if (p.имя === 'Сон') { total += statusScore[p.статус] || 5; count++; }
-        else if (p.имя === 'Питание') { total += statusScore[p.статус] || 5; count++; }
-        else if (p.имя === 'Баланс') { total += statusScore[p.статус] || 5; count++; }
-        else if (p.имя === 'Цель') { total += 5; count++; }
-        else if (p.имя === 'Доход за месяц') { total += statusScore[p.статус] || 5; count++; }
-        else if (p.имя === 'Несданных долгов') { total += statusScore[p.статус] || 5; count++; }
-        else { total += statusScore[p.статус] || 5; count++; }
-      });
-      return { score: total, max: count * 10 };
-    }
-
-    function updateSystemSummary() {
-      const summaryEl = document.getElementById('systemSummary');
-      if (!summaryEl) return;
-
-      const indexPercent = Math.round(calcOverallIndex() * 100);
-      let статус = '', цвет = '';
-      if (indexPercent < 40) { статус = 'Критический'; цвет = '#e05a5a'; }
-      else if (indexPercent < 60) { статус = 'Нестабильный'; цвет = '#f0a060'; }
-      else if (indexPercent < 80) { статус = 'Стабильный'; цвет = '#5fa88d'; }
-      else { статус = 'Оптимальный'; цвет = '#888'; }
-
-      let html = `<div class="system-status"><span class="dot" style="background:${цвет};"></span> ${статус} (${indexPercent}%)</div>`;
-
-      const история = currentData.история || [];
-      if (история.length >= 2) {
-        const prev = история[история.length - 2];
-        const last = история[история.length - 1];
-        const prevIndex = Math.round(prev.индекс * 100);
-        const lastIndex = Math.round(last.индекс * 100);
-        const diff = lastIndex - prevIndex;
-        let тренд = '';
-        if (diff > 0) тренд = `↗️ Растёт (+${diff}%)`;
-        else if (diff < 0) тренд = `↘️ Падает (${diff}%)`;
-        else тренд = `↔️ Стабильно`;
-        html += `<div class="trend-text">Тренд: ${тренд} (было ${prevIndex}%)</div>`;
-      } else if (история.length === 1) {
-        html += `<div class="trend-text">Тренд: недостаточно данных</div>`;
-      }
-
-      // Критические точки
-      const критические = [];
-      currentData.фронты.forEach(front => {
-        front.параметры.forEach(p => {
-          if (p.статус === 'плохо') {
-            let значение = '';
-            if (p.имя === 'Сон') {
-              const duration = calcSleepDuration(p.sleep_bed, p.sleep_wake);
-              значение = `${p.sleep_bed} → ${p.sleep_wake} (${duration})`;
-            } else if (p.имя === 'Питание') {
-              значение = `${p.nutrition_level} приёмов пищи`;
-            } else if (p.имя === 'Физнагрузка') {
-              значение = p.workout_desc || 'отсутствует';
-              if (p.workout_streak) значение += ` (стрик ${p.workout_streak} дн.)`;
-            } else if (p.имя === 'Общее ЦНС') {
-              значение = `Уровень ${p.уровень}/10`;
-            } else if (p.имя === 'Баланс') {
-              значение = `${p.capital_balance} ₽`;
-            } else if (p.имя === 'Цель') {
-              значение = `${p.capital_goal} ₽`;
-            } else if (p.имя === 'Доход за месяц') {
-              значение = `${p.capital_income} ₽`;
-            } else if (p.имя === 'Несданных долгов') {
-              значение = p.debts_count;
-            } else {
-              значение = p.состояние || '—';
-            }
-            критические.push(`${p.имя}: ${значение}`);
-          }
-        });
-      });
-
-      if (критические.length > 0) {
-        html += `<div style="margin-top:8px; font-weight:600; color:#e05a5a;">🚨 Критические точки</div><ul class="critical-list">`;
-        критические.forEach(item => html += `<li>${item}</li>`);
-        html += `</ul>`;
-      } else {
-        html += `<div class="no-critical" style="margin-top:8px;">✅ Критических точек нет</div>`;
-      }
-
-      // Стрики (кратко)
-      const series = currentData.серии || {};
-      html += `<div class="streaks-row">`;
-      const items = [
-        { key: 'сон', icon: '🌙', label: 'Сон' },
-        { key: 'питание', icon: '🍏', label: 'Питание' },
-        { key: 'активность', icon: '⚡', label: 'Активность' },
-        { key: 'тело', icon: '💪', label: 'Тело' }
-      ];
-      items.forEach(item => {
-        html += `<div class="streak-pill">${item.icon} ${item.label}: <span>${series[item.key] || 0} дн.</span></div>`;
-      });
-      html += `</div>`;
-
-      summaryEl.innerHTML = html;
-    }
-
-    function renderSeries() {
-      const container = document.getElementById('seriesContainer');
-      if (!container) return;
-      const series = currentData.серии || { сон:0, питание:0, активность:0, тело:0 };
-
-      function circleClass(val) {
-        if (val >= 7) return 'high';
-        if (val >= 3) return 'mid';
-        return 'low';
-      }
-
-      const items = [
-        { key: 'сон', icon: '🌙', label: 'Сон' },
-        { key: 'питание', icon: '🍏', label: 'Питание' },
-        { key: 'активность', icon: '⚡', label: 'Активность' },
-        { key: 'тело', icon: '💪', label: 'Тело' }
-      ];
-
-      let html = '<div class="series-card">';
-      items.forEach(item => {
-        const val = series[item.key] || 0;
-        html += `
-          <div class="series-item">
-            <div class="series-circle ${circleClass(val)}" onclick="editSeries('${item.key}')" title="Кликни для редактирования">
-              ${val}
-            </div>
-            <div class="series-label">${item.icon} ${item.label}</div>
-          </div>`;
-      });
-      html += '</div>';
-      container.innerHTML = html;
-    }
-
-    function editSeries(key) {
-      const newVal = prompt(`Введи новое значение для серии "${key}":`, currentData.серии[key]);
-      if (newVal !== null) {
-        const num = parseInt(newVal);
-        if (!isNaN(num) && num >= 0) {
-          currentData.серии[key] = num;
-          renderSeries();
-          updateSystemSummary();
-        }
-      }
-    }
-
-    function renderAll() {
-      syncAllAutoStatuses();
-      updateSystemSummary();
-      renderSeries();
-      const container = document.getElementById('frontsContainer');
-      let html = '';
-      let allScores = [];
-      currentData.фронты.forEach((фронт, fi) => {
-        const { score, max } = calcFrontHealth(фронт);
-        allScores.push(score / max);
-        const pct = Math.round((score / max) * 100);
-        html += `<div class="card" style="animation-delay:${fi*0.1}s">`;
-        html += `<div class="card-header"><h2>${фронт.название}</h2>
-          <div class="mini-bar"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${pct}%"></div></div>
-          <span class="mini-bar-label">${pct}%</span></div></div>`;
-        фронт.параметры.forEach((param, pi) => { html += renderParameter(fi, pi, param, фронт); });
-        html += `</div>`;
-      });
-      html += `<div class="card" style="animation-delay:${currentData.фронты.length*0.1}s">
-        <h2>📋 Протоколы</h2>
-        <div class="field"><textarea onchange="updateGlobal('протоколы', this.value)">${escapeHtml(currentData.протоколы||'')}</textarea></div>
-      </div>`;
-      html += `<div class="card" style="animation-delay:${currentData.фронты.length*0.1+0.1}s">
-        <h2>✅ Ежедневные необсуждаемые действия</h2><ul class="checklist">`;
-      (currentData.цели||[]).forEach((goal,i) => {
-        html += `<li><input type="checkbox" ${goal.startsWith('✓')?'checked':''} onchange="toggleGoal(${i})">
-          <input type="text" value="${escapeHtml(goal.replace('✓',''))}" onchange="updateGoal(${i}, this.value)"></li>`;
-      });
-      html += `<li><button class="btn" onclick="addGoal()">+ Добавить цель</button></li></ul></div>`;
-      container.innerHTML = html;
-      updateCoreRing(allScores);
-    }
-
-    function renderParameter(fi, pi, p, front) {
-      let h = '';
-      const status = p.статус || 'нейтрально';
-      const isAuto = ['Сон', 'Питание', 'Общее ЦНС', 'Баланс', 'Доход за месяц'].includes(p.имя);
-      const isManual = !isAuto;
-      const clickHandler = isManual ? `onclick="cycleStatus(${fi},${pi})"` : '';
-      h += `<div class="field"><label><span class="status-dot status-${status} ${isManual ? 'manual' : ''}" ${clickHandler} title="${isManual ? status : 'Авто: ' + status}"></span>${p.имя}</label>`;
-      if (p.имя === 'Сон') {
-        h += `<input type="time" value="${p.sleep_bed||''}" onchange="updateSleep(${fi},${pi},'sleep_bed',this.value)" style="width:100px;">`;
-        h += `<span style="color:#999;margin:0 4px;">→</span>`;
-        h += `<input type="time" value="${p.sleep_wake||''}" onchange="updateSleep(${fi},${pi},'sleep_wake',this.value)" style="width:100px;">`;
-        const dur = calcSleepDuration(p.sleep_bed, p.sleep_wake);
-        h += `<span style="margin-left:8px;color:#999;">${dur}</span>`;
-      } else if (p.имя === 'Питание') {
-        h += `<input type="number" min="0" max="3" value="${p.nutrition_level||0}" oninput="updateNutrition(${fi},${pi},this.value)" style="width:80px;">`;
-      } else if (p.имя === 'Физнагрузка') {
-        h += `<input type="text" placeholder="Что сделал" value="${escapeHtml(p.workout_desc||'')}" onchange="updateWorkout(${fi},${pi},'workout_desc',this.value)" style="flex:2;">`;
-        h += `<input type="number" placeholder="Дней подряд" value="${p.workout_streak||0}" onchange="updateWorkout(${fi},${pi},'workout_streak',parseInt(this.value)||0)" style="width:80px;">`;
-        h += `<textarea placeholder="Заметка" onchange="updateWorkout(${fi},${pi},'workout_note',this.value)">${escapeHtml(p.workout_note||'')}</textarea>`;
-      } else if (p.имя === 'Общее ЦНС') {
-        h += `<input type="number" min="0" max="10" step="0.1" value="${p.уровень||0}" oninput="updateCns(${fi},${pi},this.value)" style="width:80px;">`;
-        h += `<textarea placeholder="Самочувствие" onchange="updateCnsNote(${fi},${pi},this.value)">${escapeHtml(p.cns_note||'')}</textarea>`;
-        h += `<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${p.уровень*10}%"></div></div>`;
-      } else if (p.имя === 'Баланс') {
-        h += `<input type="number" value="${p.capital_balance||0}" oninput="updateBalance(${fi},${pi},this.value)" style="width:120px;"> ₽`;
-        const goalParam = front.параметры.find(par => par.имя === 'Цель');
-        const goal = goalParam ? goalParam.capital_goal : 0;
-        const progressPct = goal ? Math.min(100, Math.round(p.capital_balance / goal * 100)) : 0;
-        h += `<div class="progress-bar" style="flex-basis:100%;"><div class="progress-fill" style="width:${progressPct}%"></div></div>`;
-      } else if (p.имя === 'Цель') {
-        h += `<input type="number" value="${p.capital_goal||0}" oninput="updateGoalCapital(${fi},${pi},this.value)" style="width:120px;"> ₽`;
-      } else if (p.имя === 'Доход за месяц') {
-        h += `<input type="number" value="${p.capital_income||0}" oninput="updateIncome(${fi},${pi},this.value)" style="width:120px;"> ₽`;
-      } else if (p.имя === 'Несданных долгов') {
-        h += `<input type="number" min="0" value="${p.debts_count||0}" oninput="updateDebts(${fi},${pi},this.value)" style="width:80px;">`;
-      } else {
-        h += `<input type="text" value="${escapeHtml(p.состояние||'')}" onchange="updateText(${fi},${pi}, this.value)">`;
-      }
-      h += `</div>`;
-      return h;
-    }
-
-    function cycleStatus(fi, pi) {
-      const p = currentData.фронты[fi].параметры[pi];
-      if (!p.статус) p.статус = 'нейтрально';
-      const idx = MANUAL_CYCLE.indexOf(p.статус);
-      const next = MANUAL_CYCLE[(idx + 1) % MANUAL_CYCLE.length];
-      p.статус = next;
-      const card = document.querySelectorAll('.card')[fi];
-      if (card) {
-        const dots = card.querySelectorAll('.status-dot');
-        if (dots[pi]) {
-          dots[pi].className = `status-dot manual status-${next}`;
-          dots[pi].title = next;
-        }
-      }
-      updateAllMiniBars();
-      updateSystemSummary();
-    }
-
-    function updateSleep(fi, pi, key, value) {
-      currentData.фронты[fi].параметры[pi][key] = value;
-      const p = currentData.фронты[fi].параметры[pi];
-      p.статус = sleepStatus(p.sleep_bed, p.sleep_wake);
-      const card = document.querySelectorAll('.card')[fi];
-      if (card) {
-        const fields = card.querySelectorAll('.field');
-        const field = fields[pi];
-        if (field) {
-          const durSpan = field.querySelector('span[style*="color: rgb(153, 153, 153)"]');
-          if (durSpan) durSpan.textContent = calcSleepDuration(p.sleep_bed, p.sleep_wake);
-        }
-        const dots = card.querySelectorAll('.status-dot');
-        if (dots[pi]) {
-          dots[pi].className = `status-dot status-${p.статус}`;
-          dots[pi].title = 'Авто: ' + p.статус;
-        }
-      }
-      updateAllMiniBars();
-      updateSystemSummary();
-    }
-    function updateNutrition(fi, pi, value) {
-      const level = parseInt(value) || 0;
-      currentData.фронты[fi].параметры[pi].nutrition_level = Math.min(3, Math.max(0, level));
-      currentData.фронты[fi].параметры[pi].статус = nutritionStatus(level);
-      refreshFieldDot(fi, pi);
-      updateAllMiniBars();
-      updateSystemSummary();
-    }
-    function updateWorkout(fi, pi, key, value) { currentData.фронты[fi].параметры[pi][key] = value; }
-    function updateCns(fi, pi, value) {
-      const val = parseFloat(value) || 0;
-      currentData.фронты[fi].параметры[pi].уровень = Math.min(10, Math.max(0, val));
-      currentData.фронты[fi].параметры[pi].статус = cnsStatus(val);
-      refreshFieldDot(fi, pi);
-      updateAllMiniBars();
-      updateSystemSummary();
-    }
-    function updateCnsNote(fi, pi, value) { currentData.фронты[fi].параметры[pi].cns_note = value; }
-    function updateBalance(fi, pi, value) {
-      const num = parseFloat(value) || 0;
-      currentData.фронты[fi].параметры[pi].capital_balance = num;
-      const front = currentData.фронты[fi];
-      const goalParam = front.параметры.find(p => p.имя === 'Цель');
-      const goal = goalParam ? goalParam.capital_goal : 0;
-      currentData.фронты[fi].параметры[pi].статус = balanceStatus(num, goal);
-      refreshFieldDot(fi, pi);
-      updateAllMiniBars();
-      updateSystemSummary();
-    }
-    function updateGoalCapital(fi, pi, value) {
-      const num = parseFloat(value) || 0;
-      currentData.фронты[fi].параметры[pi].capital_goal = num;
-      const front = currentData.фронты[fi];
-      const balanceParam = front.параметры.find(p => p.имя === 'Баланс');
-      if (balanceParam) {
-        const balance = balanceParam.capital_balance || 0;
-        balanceParam.статус = balanceStatus(balance, num);
-        const balanceIndex = front.параметры.indexOf(balanceParam);
-        refreshFieldDot(fi, balanceIndex);
-      }
-      updateAllMiniBars();
-      updateSystemSummary();
-    }
-    function updateIncome(fi, pi, value) {
-      const num = parseFloat(value) || 0;
-      currentData.фронты[fi].параметры[pi].capital_income = num;
-      currentData.фронты[fi].параметры[pi].статус = incomeStatus(num);
-      refreshFieldDot(fi, pi);
-      updateAllMiniBars();
-      updateSystemSummary();
-    }
-    function updateDebts(fi, pi, value) {
-      currentData.фронты[fi].параметры[pi].debts_count = Math.max(0, parseInt(value) || 0);
-    }
-    function updateText(fi, pi, value) { currentData.фронты[fi].параметры[pi].состояние = value; }
-
-    function refreshFieldDot(fi, pi) {
-      const card = document.querySelectorAll('.card')[fi];
-      if (!card) return;
-      const dots = card.querySelectorAll('.status-dot');
-      if (dots[pi]) {
-        const newStatus = currentData.фронты[fi].параметры[pi].статус;
-        dots[pi].className = `status-dot ${dots[pi].classList.contains('manual') ? 'manual' : ''} status-${newStatus}`;
-        dots[pi].title = newStatus;
-      }
-    }
-
-    function updateAllMiniBars() {
-      const cards = document.querySelectorAll('.card');
-      let allScores = [];
-      currentData.фронты.forEach((front, fi) => {
-        const { score, max } = calcFrontHealth(front);
-        allScores.push(score / max);
-        const pct = Math.round((score / max) * 100);
-        const card = cards[fi];
-        if (card) {
-          const fill = card.querySelector('.mini-bar-fill');
-          const label = card.querySelector('.mini-bar-label');
-          if (fill) fill.style.width = pct + '%';
-          if (label) label.textContent = pct + '%';
-        }
-      });
-      updateCoreRing(allScores);
-    }
-
-    function updateCoreRing(scores) {
-      const avg = scores.reduce((a,b) => a + b, 0) / scores.length;
-      const pct = Math.round(avg * 100);
-      document.getElementById('corePercent').textContent = pct + '%';
-      const circle = document.getElementById('coreRing');
-      const circumference = 2 * Math.PI * 34;
-      circle.style.strokeDashoffset = circumference - (avg * circumference);
-      circle.style.stroke = avg < 0.4 ? '#e05a5a' : avg < 0.7 ? '#f0a060' : '#888';
-    }
-
-    function calcOverallIndex() {
-      let sum = 0;
-      currentData.фронты.forEach(f => {
-        const { score, max } = calcFrontHealth(f);
-        sum += score / max;
-      });
-      return sum / currentData.фронты.length;
-    }
-
-    async function saveAll() {
-      syncAllAutoStatuses();
-      const сегодня = new Date().toISOString().slice(0,10);
-      const snapshot = {
-        дата: сегодня,
-        индекс: calcOverallIndex(),
-        фронты: currentData.фронты.map(f => ({
-          название: f.название,
-          здоровье: calcFrontHealth(f).score / calcFrontHealth(f).max
-        }))
-      };
-      if (!currentData.история) currentData.история = [];
-      
-      const existingIndex = currentData.история.findIndex(item => item.дата === сегодня);
-      if (existingIndex !== -1) {
-        currentData.история[existingIndex] = snapshot;
-      } else {
-        currentData.история.push(snapshot);
-      }
-
-      localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
-      updateJsonPreview();
-      updateSystemSummary();
-
-      const token = localStorage.getItem('github_token');
-      if (token) {
-        try {
-          await uploadStateToGitHub(token);
-          alert('✅ Сохранено и отправлено в GitHub.');
-        } catch (e) {
-          alert('✅ Сохранено локально. Не удалось загрузить state.txt (проверь токен).');
-        }
-      } else {
-        const newToken = prompt('Введите GitHub токен (с правами repo) для авто-загрузки state.txt:');
-        if (newToken) {
-          localStorage.setItem('github_token', newToken);
-          try {
-            await uploadStateToGitHub(newToken);
-            alert('✅ Сохранено и отправлено в GitHub.');
-          } catch (e) {
-            alert('✅ Сохранено локально. Ошибка загрузки.');
-          }
-        } else {
-          alert('✅ Сохранено локально (без загрузки state.txt).');
-        }
-      }
-    }
-
-    function updateJsonPreview() {
-      document.getElementById('jsonPreview').textContent = JSON.stringify(currentData, null, 2);
-    }
-
-    function toggleJson() {
-      const prev = document.getElementById('jsonPreview');
-      if (prev.style.display === 'block') prev.style.display = 'none';
-      else { updateJsonPreview(); prev.style.display = 'block'; }
-    }
-
-    function resetToJson() {
-      if (confirm('Сбросить до версии из data.json? Все локальные данные будут потеряны.')) {
-        localStorage.removeItem('obsidian_hybrid');
-        location.reload();
-      }
-    }
-
-    function updateGlobal(key, value) { currentData[key] = value; }
-
-    function toggleGoal(i) { let g = currentData.цели[i]; currentData.цели[i] = g.startsWith('✓') ? g.substring(1) : '✓' + g; }
-    function updateGoal(i, text) {
-      const checked = currentData.цели[i].startsWith('✓');
-      currentData.цели[i] = checked ? '✓' + text : text;
-    }
-    function addGoal() { currentData.цели.push(''); renderAll(); }
-
-    function renderCharts() {
-      const history = currentData.история || [];
-      if (history.length === 0) {
-        alert('Нет истории. Сохраните данные хотя бы раз на вкладке Дашборд.');
-        return;
-      }
-      const labels = history.map(h => h.дата);
-      const indexData = history.map(h => Math.round(h.индекс * 100));
-      const ctx1 = document.getElementById('indexChart').getContext('2d');
-      if (indexChartInstance) indexChartInstance.destroy();
-      indexChartInstance = new Chart(ctx1, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Obsidian Core Index (%)',
-            data: indexData,
-            borderColor: '#888',
-            backgroundColor: 'rgba(136,136,136,0.1)',
-            fill: true,
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: { y: { min: 0, max: 100, ticks: { color: '#aaa' } }, x: { ticks: { color: '#aaa' } } },
-          plugins: { legend: { labels: { color: '#aaa' } } }
-        }
-      });
-      const ctx2 = document.getElementById('frontsChart').getContext('2d');
-      if (frontsChartInstance) frontsChartInstance.destroy();
-      const frontNames = currentData.фронты.map(f => f.название);
-      const colors = ['#e05a5a','#5fa88d','#f0a060','#a0a0a0','#888','#666'];
-      const datasets = frontNames.map((name, idx) => ({
-        label: name,
-        data: history.map(h => {
-          const f = h.фронты.find(fr => fr.название === name);
-          return f ? Math.round(f.здоровье * 100) : 0;
-        }),
-        borderColor: colors[idx % colors.length],
-        backgroundColor: 'transparent',
-        tension: 0.3
-      }));
-      frontsChartInstance = new Chart(ctx2, {
-        type: 'line',
-        data: { labels, datasets },
-        options: {
-          responsive: true,
-          scales: { y: { min: 0, max: 100, ticks: { color: '#aaa' } }, x: { ticks: { color: '#aaa' } } },
-          plugins: { legend: { labels: { color: '#aaa' } } }
-        }
-      });
-    }
-
-    function clearHistory() {
-      if (confirm('Удалить всю историю графиков?')) {
-        currentData.история = [];
-        localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
-        if (indexChartInstance) indexChartInstance.destroy();
-        if (frontsChartInstance) frontsChartInstance.destroy();
-        alert('История очищена.');
-        updateSystemSummary();
-      }
-    }
-
-    function generateStateText() {
-      syncAllAutoStatuses();
-      const сегодня = new Date().toLocaleDateString('ru-RU');
-      const index = calcOverallIndex();
-      const indexPercent = Math.round(index * 100);
-
-      let статусСистемы = '';
-      if (indexPercent < 40) статусСистемы = 'Критический';
-      else if (indexPercent < 60) статусСистемы = 'Нестабильный';
-      else if (indexPercent < 80) статусСистемы = 'Стабильный';
-      else статусСистемы = 'Оптимальный';
-
-      let text = `# Состояние системы Obsidian Core на ${сегодня}\n\n`;
-      text += `## Obsidian Core Index: ${indexPercent}% (${статусСистемы})\n`;
-
-      const история = currentData.история || [];
-      if (история.length >= 2) {
-        const prev = история[история.length - 2];
-        const last = история[история.length - 1];
-        const prevIndex = Math.round(prev.индекс * 100);
-        const lastIndex = Math.round(last.индекс * 100);
-        const diff = lastIndex - prevIndex;
-        let тренд = '';
-        if (diff > 0) тренд = `↗️ Растёт (+${diff}%)`;
-        else if (diff < 0) тренд = `↘️ Падает (${diff}%)`;
-        else тренд = `↔️ Стабильно`;
-        text += `Тренд за 2 дня: ${тренд} (было ${prevIndex}%)\n`;
-      } else if (история.length === 1) {
-        text += `Тренд: недостаточно данных (нужно 2 сохранения)\n`;
-      }
-      text += '\n';
-
-      const критические = [];
-      currentData.фронты.forEach(front => {
-        front.параметры.forEach(p => {
-          if (p.статус === 'плохо') {
-            let значение = '';
-            if (p.имя === 'Сон') {
-              const duration = calcSleepDuration(p.sleep_bed, p.sleep_wake);
-              значение = `${p.sleep_bed} → ${p.sleep_wake} (${duration})`;
-            } else if (p.имя === 'Питание') {
-              значение = `${p.nutrition_level} приёмов пищи`;
-            } else if (p.имя === 'Физнагрузка') {
-              значение = p.workout_desc || 'отсутствует';
-              if (p.workout_streak) значение += ` (стрик ${p.workout_streak} дн.)`;
-            } else if (p.имя === 'Общее ЦНС') {
-              значение = `Уровень ${p.уровень}/10`;
-            } else if (p.имя === 'Баланс') {
-              значение = `${p.capital_balance} ₽`;
-            } else if (p.имя === 'Цель') {
-              значение = `${p.capital_goal} ₽`;
-            } else if (p.имя === 'Доход за месяц') {
-              значение = `${p.capital_income} ₽`;
-            } else if (p.имя === 'Несданных долгов') {
-              значение = p.debts_count;
-            } else {
-              значение = p.состояние || '—';
-            }
-            критические.push(`- ${p.имя}: ${значение} (плохо)`);
-          }
-        });
-      });
-
-      if (критические.length > 0) {
-        text += `## 🚨 Критические точки\n`;
-        критические.forEach(item => text += item + '\n');
-        text += '\n';
-      } else {
-        text += `## 🚨 Критические точки\n✅ Критических точек нет\n\n`;
-      }
-
-      text += `## 🔥 Серии\n`;
-      const series = currentData.серии || {};
-      text += `- 🌙 Сон: ${series.сон || 0} дн.\n`;
-      text += `- 🍏 Питание: ${series.питание || 0} дн.\n`;
-      text += `- ⚡ Активность: ${series.активность || 0} дн.\n`;
-      text += `- 💪 Тело: ${series.тело || 0} дн.\n\n`;
-
-      currentData.фронты.forEach(front => {
-        const { score, max } = calcFrontHealth(front);
-        const health = Math.round((score / max) * 100);
-        text += `### ${front.название} (здоровье: ${health}%)\n`;
-        front.параметры.forEach(p => {
-          let value = '';
-          if (p.имя === 'Сон') {
-            const duration = calcSleepDuration(p.sleep_bed, p.sleep_wake);
-            value = `${p.sleep_bed} → ${p.sleep_wake} (продолжительность ${duration}, ${p.статус || 'нейтрально'})`;
-          } else if (p.имя === 'Питание') {
-            value = `${p.nutrition_level} приёмов пищи (${p.статус || 'нейтрально'})`;
-          } else if (p.имя === 'Физнагрузка') {
-            value = `${p.workout_desc || '—'} (стрик ${p.workout_streak} дн.)`;
-            if (p.workout_note) value += ` — ${p.workout_note}`;
-            value += ` (${p.статус || 'нейтрально'})`;
-          } else if (p.имя === 'Общее ЦНС') {
-            value = `Уровень ${p.уровень}/10 (${p.статус || 'нейтрально'})`;
-            if (p.cns_note) value += ` — ${p.cns_note}`;
-          } else if (p.имя === 'Баланс') {
-            value = `${p.capital_balance} ₽ (${p.статус || 'нейтрально'})`;
-          } else if (p.имя === 'Цель') {
-            const balanceParam = front.параметры.find(par => par.имя === 'Баланс');
-            const balance = balanceParam ? balanceParam.capital_balance : 0;
-            const goal = p.capital_goal || 0;
-            const progress = goal > 0 ? Math.round((balance / goal) * 100) : 0;
-            value = `${goal} ₽ (прогресс ${progress}%) (${p.статус || 'нейтрально'})`;
-          } else if (p.имя === 'Доход за месяц') {
-            value = `${p.capital_income} ₽ (${p.статус || 'нейтрально'})`;
-          } else if (p.имя === 'Несданных долгов') {
-            value = `${p.debts_count} (${p.статус || 'нейтрально'})`;
-          } else {
-            value = `${p.состояние || '—'} (${p.статус || 'нейтрально'})`;
-          }
-          text += `- **${p.имя}**: ${value}\n`;
-        });
-        text += '\n';
-      });
-
-      if (currentData.протоколы) {
-        text += `## Протоколы\n${currentData.протоколы}\n\n`;
-      }
-      if (currentData.цели && currentData.цели.length > 0) {
-        text += `## Ежедневные действия\n`;
-        currentData.цели.forEach((goal, i) => {
-          const done = goal.startsWith('✓') ? '✅' : '⬜';
-          text += `${done} ${goal.replace('✓', '')}\n`;
-        });
-        text += '\n';
-      }
-      if (история.length > 0) {
-        const last = история[история.length - 1];
-        text += `## Последнее сохранение: ${last.дата}, индекс ${Math.round(last.индекс * 100)}%\n`;
-      }
-      return text;
-    }
-
-    function copyStateToClipboard() {
-      const stateText = generateStateText();
-      navigator.clipboard.writeText(stateText).then(() => {
-        alert('✅ Состояние скопировано!');
-        document.getElementById('jsonPreview').textContent = stateText;
-        document.getElementById('jsonPreview').style.display = 'block';
-      }).catch(() => {
-        alert('Не удалось скопировать. Текст отображён ниже.');
-        document.getElementById('jsonPreview').textContent = stateText;
-        document.getElementById('jsonPreview').style.display = 'block';
-      });
-    }
-
-    async function uploadStateToGitHub(token) {
-      const stateText = generateStateText();
-      const repo = 'imamutdinovaroslav-prog/Obsidian';
-      const path = 'state.txt';
-      const url = `https://api.github.com/repos/${repo}/contents/${path}`;
-
-      let sha = null;
-      try {
-        const getRes = await fetch(url, { headers: { Authorization: `token ${token}` } });
-        if (getRes.ok) {
-          const data = await getRes.json();
-          sha = data.sha;
-        }
-      } catch(e) {}
-
-      const body = {
-        message: 'Обновление state через дашборд',
-        content: btoa(unescape(encodeURIComponent(stateText))),
-        ...(sha && { sha })
-      };
-
-      const res = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          Authorization: `token ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message);
-      }
-    }
-
-    // ===================== СПОРТИВНЫЙ МОДУЛЬ =====================
+    // ===================== СПОРТ =====================
     let tempExercises = [{}];
     let tempPain = 0;
+    function openTrainingForm() { document.getElementById('trainingModal').classList.add('active'); tempExercises=[{}]; renderExerciseFields(); setPain(0); document.getElementById('trainingNotes').value=''; document.getElementById('isRestDay').checked=false; document.getElementById('isTestDay').checked=false; }
+    function closeTrainingForm() { document.getElementById('trainingModal').classList.remove('active'); }
+    function renderExerciseFields() { const container=document.getElementById('exerciseList'); let html=''; tempExercises.forEach((ex,i)=>{ html+=`<div class="exercise-row"><select onchange="tempExercises[${i}].name=this.value"><option value="pushups" ${ex.name==='pushups'?'selected':''}>Отжимания</option><option value="pullups" ${ex.name==='pullups'?'selected':''}>Подтягивания</option><option value="squats" ${ex.name==='squats'?'selected':''}>Приседания</option><option value="toe_raises" ${ex.name==='toe_raises'?'selected':''}>Носки</option><option value="rows" ${ex.name==='rows'?'selected':''}>Тяга</option></select><input type="number" placeholder="Подходы" value="${ex.sets||1}" onchange="tempExercises[${i}].sets=parseInt(this.value)"><input type="number" placeholder="Повторы" value="${ex.reps||0}" onchange="tempExercises[${i}].reps=parseInt(this.value)"><input type="text" placeholder="Техника" value="${ex.technique||''}" onchange="tempExercises[${i}].technique=this.value"><button class="delete-btn" onclick="tempExercises.splice(${i},1);renderExerciseFields();">✕</button></div>`; }); container.innerHTML=html; }
+    function addExerciseField() { tempExercises.push({name:'pushups',sets:1,reps:0}); renderExerciseFields(); }
+    function setPain(val) { tempPain=val; document.getElementById('painValue').textContent=val; document.querySelectorAll('.pain-btn').forEach((b,i)=>b.classList.toggle('active',i===val)); }
+    function saveTraining() { const today=new Date().toISOString().slice(0,10); const exercises=tempExercises.filter(e=>e.name&&e.reps>0); const training={date:today,exercises:exercises.map(e=>({name:e.name,sets:e.sets||1,reps:e.reps,technique:e.technique||''})),painScore:tempPain,notes:document.getElementById('trainingNotes').value,isRestDay:document.getElementById('isRestDay').checked,isTestDay:document.getElementById('isTestDay').checked}; const exist=currentData.тренировки.findIndex(t=>t.date===today); if(exist!==-1) currentData.тренировки[exist]=training; else currentData.тренировки.push(training); currentData.тренировки.sort((a,b)=>b.date.localeCompare(a.date)); localStorage.setItem('obsidian_hybrid',JSON.stringify(currentData)); closeTrainingForm(); renderSportTab(); }
+    function getActiveStreak() { const trainings=currentData.тренировки.filter(t=>!t.isRestDay&&t.exercises.length>0); if(trainings.length===0) return {count:0,start:''}; let streak=0,startDate=''; const today=new Date(); for(let i=0;i<trainings.length;i++){ const d=new Date(trainings[i].date); const diff=Math.floor((today-d)/(1000*60*60*24)); if(diff===streak){ streak++; startDate=trainings[i].date; }else break; } return {count:streak,start:startDate}; }
+    function getTodayTraining() { const today=new Date().toISOString().slice(0,10); return currentData.тренировки.find(t=>t.date===today); }
+    function getLast7Volume() { const today=new Date(); const volumes=[]; for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i); const dateStr=d.toISOString().slice(0,10); const t=currentData.тренировки.find(t=>t.date===dateStr); if(t&&!t.isRestDay){ const vol=t.exercises.reduce((s,e)=>s+e.sets*e.reps,0); volumes.push({date:dateStr,volume:vol,pain:t.painScore,isRest:false}); }else volumes.push({date:dateStr,volume:0,pain:0,isRest:true}); } return volumes; }
+    function getAdvice() { const recent=currentData.тренировки.filter(t=>!t.isRestDay&&t.exercises.length>0).slice(0,7); if(recent.length===0) return "Начни тренировку! Даже лёгкая разминка засчитывается."; const avgVol=recent.reduce((s,t)=>s+t.exercises.reduce((a,e)=>a+e.sets*e.reps,0),0)/recent.length; const today=getTodayTraining(); const todayVol=today&&!today.isRestDay?today.exercises.reduce((a,e)=>a+e.sets*e.reps,0):0; const painDays=recent.filter(t=>t.painScore>0).length; if(painDays>=2) return "⚠️ Боль в локте повторяется. Снизь нагрузку на руки, сделай разгрузку."; const heavyDays=recent.filter(t=>{const v=t.exercises.reduce((a,e)=>a+e.sets*e.reps,0);return v>avgVol*1.3;}).length; if(heavyDays>=5) return "Ты делаешь много тяжёлых тренировок. Запланируй разгрузочный день (снизь объём на 30-50%)."; if(todayVol>0) return "Отлично, сегодня уже позанимался! Следи за локтем."; return "Сегодня ещё нет записи. Сделай лесенку 1-6-1, если чувствуешь себя хорошо."; }
+    function renderSportTab() { const streak=getActiveStreak(); const today=getTodayTraining(); const el=document.getElementById('sportStatus'); let html=`<div style="font-size:1.2rem;">🔥 Серия: ${streak.count} дней`; if(streak.start) html+=` (с ${streak.start})`; html+=`</div><div style="margin-top:8px;">Сегодня: ${today?'✅ Тренировка записана':'❌ Нет записи'}</div><div style="margin-top:5px; color:#f0a060;">💡 ${getAdvice()}</div>`; el.innerHTML=html; const histEl=document.getElementById('trainingHistory'); let histHtml='<h3 style="color:#ccc;">Последние тренировки</h3>'; const recent=currentData.тренировки.slice(0,5); recent.forEach(t=>{ const ex=t.exercises.map(e=>`${e.name} ${e.sets}x${e.reps}`).join(', '); histHtml+=`<div class="history-item"><strong>${t.date}</strong> ${t.isRestDay?'(разгрузка)':ex} Боль: ${t.painScore}/5 ${t.isTestDay?'🏆 Тест':''} <button class="delete-btn" onclick="deleteTraining('${t.date}')">✕</button></div>`; }); histHtml+='<button class="btn" onclick="loadMoreHistory()" style="margin-top:5px;">Показать ещё</button>'; histEl.innerHTML=histHtml; const last7=getLast7Volume(); const ctx=document.getElementById('volumeChart').getContext('2d'); if(volumeChartInstance) volumeChartInstance.destroy(); volumeChartInstance=new Chart(ctx,{type:'bar',data:{labels:last7.map(d=>d.date.slice(5)),datasets:[{label:'Объём',data:last7.map(d=>d.volume),backgroundColor:'#5fa88d'}]},options:{responsive:true,scales:{y:{beginAtZero:true}}}}); const records={}; currentData.тренировки.forEach(t=>{if(t.isRestDay)return; t.exercises.forEach(e=>{const key=e.name; if(!records[key]||e.reps>records[key].reps) records[key]={date:t.date,reps:e.reps};});}); let recHtml='<h3 style="color:#ccc;">🏆 Личные рекорды</h3>'; for(const [name,rec] of Object.entries(records)) recHtml+=`<div>${name}: ${rec.reps} раз (${rec.date})</div>`; document.getElementById('recordsTable').innerHTML=recHtml; }
+    function deleteTraining(dateStr) { if(confirm('Удалить тренировку за '+dateStr+'?')){ currentData.тренировки=currentData.тренировки.filter(t=>t.date!==dateStr); localStorage.setItem('obsidian_hybrid',JSON.stringify(currentData)); renderSportTab(); } }
+    let historyOffset=5;
+    function loadMoreHistory() { const histEl=document.getElementById('trainingHistory'); const more=currentData.тренировки.slice(historyOffset,historyOffset+5); more.forEach(t=>{ const ex=t.exercises.map(e=>`${e.name} ${e.sets}x${e.reps}`).join(', '); const div=document.createElement('div'); div.className='history-item'; div.innerHTML=`<strong>${t.date}</strong> ${t.isRestDay?'(разгрузка)':ex} Боль: ${t.painScore}/5 ${t.isTestDay?'🏆 Тест':''} <button class="delete-btn" onclick="deleteTraining('${t.date}')">✕</button>`; histEl.appendChild(div); }); historyOffset+=5; }
 
-    function openTrainingForm() {
-      document.getElementById('trainingModal').classList.add('active');
-      tempExercises = [{}];
-      renderExerciseFields();
-      setPain(0);
-      document.getElementById('trainingNotes').value = '';
-      document.getElementById('isRestDay').checked = false;
-      document.getElementById('isTestDay').checked = false;
-    }
-
-    function closeTrainingForm() {
-      document.getElementById('trainingModal').classList.remove('active');
-    }
-
-    function renderExerciseFields() {
-      const container = document.getElementById('exerciseList');
-      let html = '';
-      tempExercises.forEach((ex, i) => {
-        html += `<div class="exercise-row">
-          <select onchange="tempExercises[${i}].name = this.value">
-            <option value="pushups" ${ex.name === 'pushups' ? 'selected' : ''}>Отжимания</option>
-            <option value="pullups" ${ex.name === 'pullups' ? 'selected' : ''}>Подтягивания</option>
-            <option value="squats" ${ex.name === 'squats' ? 'selected' : ''}>Приседания</option>
-            <option value="toe_raises" ${ex.name === 'toe_raises' ? 'selected' : ''}>Носки</option>
-            <option value="rows" ${ex.name === 'rows' ? 'selected' : ''}>Тяга</option>
-          </select>
-          <input type="number" placeholder="Подходы" value="${ex.sets||1}" onchange="tempExercises[${i}].sets=parseInt(this.value)">
-          <input type="number" placeholder="Повторы" value="${ex.reps||0}" onchange="tempExercises[${i}].reps=parseInt(this.value)">
-          <input type="text" placeholder="Техника" value="${ex.technique||''}" onchange="tempExercises[${i}].technique=this.value">
-          <button class="delete-btn" onclick="tempExercises.splice(${i},1); renderExerciseFields();">✕</button>
-        </div>`;
-      });
-      container.innerHTML = html;
-    }
-
-    function addExerciseField() {
-      tempExercises.push({ name: 'pushups', sets: 1, reps: 0 });
-      renderExerciseFields();
-    }
-
-    function setPain(val) {
-      tempPain = val;
-      document.getElementById('painValue').textContent = val;
-      document.querySelectorAll('.pain-btn').forEach((b, i) => b.classList.toggle('active', i === val));
-    }
-
-    function saveTraining() {
-      const today = new Date().toISOString().slice(0,10);
-      const exercises = tempExercises.filter(e => e.name && e.reps > 0);
-      const training = {
-        date: today,
-        exercises: exercises.map(e => ({
-          name: e.name,
-          sets: e.sets || 1,
-          reps: e.reps,
-          technique: e.technique || ''
-        })),
-        painScore: tempPain,
-        notes: document.getElementById('trainingNotes').value,
-        isRestDay: document.getElementById('isRestDay').checked,
-        isTestDay: document.getElementById('isTestDay').checked
-      };
-
-      const existing = currentData.тренировки.findIndex(t => t.date === today);
-      if (existing !== -1) currentData.тренировки[existing] = training;
-      else currentData.тренировки.push(training);
-
-      currentData.тренировки.sort((a,b) => b.date.localeCompare(a.date));
-      localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
-      closeTrainingForm();
-      renderSportTab();
-    }
-
-    function getActiveStreak() {
-      const trainings = currentData.тренировки.filter(t => !t.isRestDay && t.exercises.length > 0);
-      if (trainings.length === 0) return { count: 0, start: '' };
-      let streak = 0;
-      let startDate = '';
-      const today = new Date();
-      for (let i = 0; i < trainings.length; i++) {
-        const d = new Date(trainings[i].date);
-        const diffDays = Math.floor((today - d) / (1000 * 60 * 60 * 24));
-        if (diffDays === streak) {
-          streak++;
-          startDate = trainings[i].date;
-        } else break;
-      }
-      return { count: streak, start: startDate };
-    }
-
-    function getTodayTraining() {
-      const today = new Date().toISOString().slice(0,10);
-      return currentData.тренировки.find(t => t.date === today);
-    }
-
-    function getLast7Volume() {
-      const today = new Date();
-      const volumes = [];
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(d.getDate() - i);
-        const dateStr = d.toISOString().slice(0,10);
-        const t = currentData.тренировки.find(t => t.date === dateStr);
-        if (t && !t.isRestDay) {
-          const vol = t.exercises.reduce((sum, e) => sum + (e.sets * e.reps), 0);
-          volumes.push({ date: dateStr, volume: vol, pain: t.painScore, isRest: false });
-        } else {
-          volumes.push({ date: dateStr, volume: 0, pain: 0, isRest: true });
-        }
-      }
-      return volumes;
-    }
-
-    function getAdvice() {
-      const last7 = getLast7Volume();
-      const recentTrainings = currentData.тренировки.filter(t => !t.isRestDay && t.exercises.length > 0).slice(0, 7);
-      if (recentTrainings.length === 0) return "Начни тренировку! Даже лёгкая разминка засчитывается.";
-
-      const avgVolume = recentTrainings.reduce((sum, t) => sum + t.exercises.reduce((s, e) => s + e.sets*e.reps, 0), 0) / recentTrainings.length;
-      const today = getTodayTraining();
-      const todayVolume = today && !today.isRestDay ? today.exercises.reduce((s,e) => s + e.sets*e.reps, 0) : 0;
-
-      const painDays = recentTrainings.filter(t => t.painScore > 0).length;
-      if (painDays >= 2) return "⚠️ Боль в локте повторяется. Снизь нагрузку на руки, сделай разгрузку.";
-
-      const heavyDays = recentTrainings.filter(t => {
-        const vol = t.exercises.reduce((s,e) => s + e.sets*e.reps, 0);
-        return vol > avgVolume * 1.3;
-      }).length;
-      if (heavyDays >= 5) return "Ты делаешь много тяжёлых тренировок. Запланируй разгрузочный день (снизь объём на 30-50%).";
-
-      if (todayVolume > 0) return "Отлично, сегодня уже позанимался! Следи за локтем.";
-      return "Сегодня ещё нет записи. Сделай лесенку 1-6-1, если чувствуешь себя хорошо.";
-    }
-
-    function renderSportTab() {
-      const streak = getActiveStreak();
-      const today = getTodayTraining();
-      const statusEl = document.getElementById('sportStatus');
-      let html = `<div style="font-size:1.2rem;">🔥 Серия: ${streak.count} дней`;
-      if (streak.start) html += ` (с ${streak.start})`;
-      html += `</div>`;
-      html += `<div style="margin-top:8px;">Сегодня: ${today ? '✅ Тренировка записана' : '❌ Нет записи'}</div>`;
-      html += `<div style="margin-top:5px; color:#f0a060;">💡 ${getAdvice()}</div>`;
-      statusEl.innerHTML = html;
-
-      const historyEl = document.getElementById('trainingHistory');
-      let histHtml = '<h3 style="color:#ccc; margin-bottom:10px;">Последние тренировки</h3>';
-      const recent = currentData.тренировки.slice(0, 5);
-      recent.forEach(t => {
-        const exSummary = t.exercises.map(e => `${e.name} ${e.sets}x${e.reps}`).join(', ');
-        histHtml += `<div class="history-item">
-          <strong>${t.date}</strong> ${t.isRestDay ? '(разгрузка)' : exSummary} 
-          Боль: ${t.painScore}/5 ${t.isTestDay ? '🏆 Тест' : ''}
-          <button class="delete-btn" onclick="deleteTraining('${t.date}')">✕</button>
-        </div>`;
-      });
-      histHtml += '<button class="btn" onclick="loadMoreHistory()" style="margin-top:5px;">Показать ещё</button>';
-      historyEl.innerHTML = histHtml;
-
-      const last7 = getLast7Volume();
-      const ctx = document.getElementById('volumeChart').getContext('2d');
-      if (window.volumeChartInstance) window.volumeChartInstance.destroy();
-      window.volumeChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: last7.map(d => d.date.slice(5)),
-          datasets: [{
-            label: 'Объём',
-            data: last7.map(d => d.volume),
-            backgroundColor: '#5fa88d'
-          }]
-        },
-        options: { responsive: true, scales: { y: { beginAtZero: true } } }
-      });
-
-      const records = {};
-      currentData.тренировки.forEach(t => {
-        if (t.isRestDay) return;
-        t.exercises.forEach(e => {
-          const key = e.name;
-          if (!records[key] || e.reps > records[key].reps) records[key] = { date: t.date, reps: e.reps };
-        });
-      });
-      let recHtml = '<h3 style="color:#ccc;">🏆 Личные рекорды</h3>';
-      for (const [name, rec] of Object.entries(records)) {
-        recHtml += `<div>${name}: ${rec.reps} раз (${rec.date})</div>`;
-      }
-      document.getElementById('recordsTable').innerHTML = recHtml;
-    }
-
-    function deleteTraining(dateStr) {
-      if (confirm('Удалить тренировку за ' + dateStr + '?')) {
-        currentData.тренировки = currentData.тренировки.filter(t => t.date !== dateStr);
-        localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
-        renderSportTab();
-      }
-    }
-
-    let historyOffset = 5;
-    function loadMoreHistory() {
-      const historyEl = document.getElementById('trainingHistory');
-      const more = currentData.тренировки.slice(historyOffset, historyOffset + 5);
-      more.forEach(t => {
-        const exSummary = t.exercises.map(e => `${e.name} ${e.sets}x${e.reps}`).join(', ');
-        const div = document.createElement('div');
-        div.className = 'history-item';
-        div.innerHTML = `<strong>${t.date}</strong> ${t.isRestDay ? '(разгрузка)' : exSummary} 
-          Боль: ${t.painScore}/5 ${t.isTestDay ? '🏆 Тест' : ''}
-          <button class="delete-btn" onclick="deleteTraining('${t.date}')">✕</button>`;
-        historyEl.appendChild(div);
-      });
-      historyOffset += 5;
-    }
+    // ===================== ФИНАНСЫ =====================
+    function getDefaultFinance() { return { дата_последнего_расчёта: "2026-06-04", счета: { железный: { баланс: 50000, ставка: 13.68, открыт: "2026-04-24", погашение: "2026-10-24" }, крепость: { баланс: 11931.95, ставка: 9, цель: 24000, минимум: 5000 }, живой: { баланс: 0, ставка: 10, субсчета: { мотоцикл: 0, акции: 0, дом: 0, подарки: 0, реклама: 0, душа: 0, обслуживание: 0 } }, жизнь: { баланс: 0 }, долг: { баланс: 0 } }, фаза: "Фаза 1 Накопление", цель_мотоцикл: { бюджет: 200000, срок: "2027-11" }, доход_будущий_мес_брутто: 40000, налог_ставка: 4, операции: [] }; }
+    function accrueInterest() { const f=currentData.финансы; const today=new Date().toISOString().slice(0,10); if(f.дата_последнего_расчёта===today) return; const prev=new Date(f.дата_последнего_расчёта); const curr=new Date(today); const days=Math.floor((curr-prev)/(1000*60*60*24)); if(days<=0) return; f.счета.железный.баланс+=f.счета.железный.баланс*(f.счета.железный.ставка/100)*(days/365); f.счета.крепость.баланс+=f.счета.крепость.баланс*(f.счета.крепость.ставка/100)*(days/365); f.счета.живой.баланс+=f.счета.живой.баланс*(f.счета.живой.ставка/100)*(days/365); f.дата_последнего_расчёта=today; }
+    function renderFinanceTab() { const container=document.getElementById('financeContainer'); if(!container) return; accrueInterest(); const f=currentData.финансы; let html=''; const totalForMoto=f.счета.железный.баланс+(f.счета.живой.субсчета?.мотоцикл||0)+Math.max(0,f.счета.крепость.баланс-f.счета.крепость.минимум); const motoProgress=Math.min(100,Math.round((totalForMoto/f.цель_мотоцикл.бюджет)*100)); html+=`<div class="finance-card"><h3>📊 Фаза: <span class="phase-badge">${f.фаза}</span></h3><div>Цель «Мотоцикл»: ${motoProgress}% (${totalForMoto.toFixed(0)} / ${f.цель_мотоцикл.бюджет} ₽)</div><div class="progress-finance"><div class="progress-finance-fill" style="width:${motoProgress}%"></div></div></div>`; const accounts=[ {key:'железный',icon:'⚛️',name:'Железный Реактор',balance:f.счета.железный.баланс,info:`Ставка ${f.счета.железный.ставка}%, погашение ${f.счета.железный.погашение}`}, {key:'крепость',icon:'🖤',name:'Крепость',balance:f.счета.крепость.баланс,info:`Цель ${f.счета.крепость.цель} ₽`}, {key:'живой',icon:'💰',name:'Живой Реактор',balance:f.счета.живой.баланс,info:`Ставка ${f.счета.живой.ставка}%`}, {key:'жизнь',icon:'💸',name:'Жизнь',balance:f.счета.жизнь.баланс,info:'Операционные'}, {key:'долг',icon:'🔴',name:'Долг',balance:f.счета.долг.баланс,info:'Перед родителями'} ]; accounts.forEach(acc=>{ html+=`<div class="finance-card"><div class="balance-row"><span>${acc.icon} ${acc.name}</span><span>${acc.balance.toFixed(2)} ₽</span></div><div style="font-size:0.8rem; color:#aaa;">${acc.info}</div>`; if(acc.key==='крепость'){ const prog=Math.min(100,(acc.balance/f.счета.крепость.цель)*100); html+=`<div class="progress-finance"><div class="progress-finance-fill" style="width:${prog}%"></div></div>`; } if(acc.key==='живой'){ html+=`<div class="sub-account">Субсчета:</div>`; for(const [sub,bal] of Object.entries(f.счета.живой.субсчета)){ html+=`<div class="balance-row sub-account"><span>📌 ${sub}</span><span>${bal.toFixed(2)} ₽</span></div>`; } } html+=`</div>`; }); html+=`<div style="display:flex; gap:10px; margin-bottom:15px;"><button class="btn small-btn" onclick="addFinanceOperation('income')">+ Доход</button><button class="btn small-btn" onclick="addFinanceOperation('expense')">- Расход</button><button class="btn small-btn" onclick="addFinanceOperation('transfer')">↔️ Перевод</button><button class="btn small-btn" onclick="exportFinanceProtocol()">📋 Протокол</button></div>`; html+=`<div class="finance-card"><h4>Последние операции</h4><div class="operation-list">`; const ops=f.операции.slice(-10).reverse(); ops.forEach(op=>{ html+=`<div class="operation-item"><span>${op.date} ${op.desc}</span><span class="${op.amount>0?'positive':'negative'}">${op.amount>0?'+':''}${op.amount.toFixed(2)} ₽</span></div>`; }); html+=`</div></div>`; container.innerHTML=html; }
+    function addFinanceOperation(type) { const f=currentData.финансы; const amount=parseFloat(prompt('Сумма:')); if(isNaN(amount)||amount<=0) return; const desc=prompt('Описание:')||type; const today=new Date().toISOString().slice(0,10); if(type==='income'){ if(f.фаза==='Фаза 1 Накопление') f.счета.живой.субсчета.мотоцикл+=amount; else f.счета.жизнь.баланс+=amount; f.операции.push({date:today,desc:`Доход: ${desc}`,amount:amount}); } else if(type==='expense'){ f.счета.жизнь.баланс-=amount; f.операции.push({date:today,desc:`Расход: ${desc}`,amount:-amount}); } else if(type==='transfer'){ alert('Переводы будут добавлены позже'); return; } localStorage.setItem('obsidian_hybrid',JSON.stringify(currentData)); renderFinanceTab(); }
+    function exportFinanceProtocol() { const f=currentData.финансы; let text=`=== Протокол финансовой системы v8.1.1 ===\nДата: ${new Date().toLocaleDateString('ru-RU')}\nФаза: ${f.фаза}\nЦель Мотоцикл: ${f.цель_мотоцикл.бюджет} ₽ (срок ${f.цель_мотоцикл.срок})\n\nСчета:\n`; text+=`⚛️ Железный: ${f.счета.железный.баланс.toFixed(2)} ₽ (ставка ${f.счета.железный.ставка}%)\n`; text+=`🖤 Крепость: ${f.счета.крепость.баланс.toFixed(2)} ₽ (цель ${f.счета.крепость.цель})\n`; text+=`💰 Живой: ${f.счета.живой.баланс.toFixed(2)} ₽\n`; for(const [sub,bal] of Object.entries(f.счета.живой.субсчета)) text+=`   📌 ${sub}: ${bal.toFixed(2)} ₽\n`; text+=`💸 Жизнь: ${f.счета.жизнь.баланс.toFixed(2)} ₽\n`; text+=`🔴 Долг: ${f.счета.долг.баланс.toFixed(2)} ₽\n`; navigator.clipboard.writeText(text).then(()=>alert('Протокол скопирован!')); }
   </script>
 </body>
 </html>
