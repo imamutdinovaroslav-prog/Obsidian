@@ -420,12 +420,156 @@
     let historyOffset=5;
     function loadMoreHistory() { const histEl=document.getElementById('trainingHistory'); const more=currentData.тренировки.slice(historyOffset,historyOffset+5); more.forEach(t=>{ const ex=t.exercises.map(e=>`${e.name} ${e.sets}x${e.reps}`).join(', '); const div=document.createElement('div'); div.className='history-item'; div.innerHTML=`<strong>${t.date}</strong> ${t.isRestDay?'(разгрузка)':ex} Боль: ${t.painScore}/5 ${t.isTestDay?'🏆 Тест':''} <button class="delete-btn" onclick="deleteTraining('${t.date}')">✕</button>`; histEl.appendChild(div); }); historyOffset+=5; }
 
-    // ===================== ФИНАНСЫ =====================
+    // ===================== ФИНАНСЫ (обновлённые) =====================
     function getDefaultFinance() { return { дата_последнего_расчёта: "2026-06-04", счета: { железный: { баланс: 50000, ставка: 13.68, открыт: "2026-04-24", погашение: "2026-10-24" }, крепость: { баланс: 11931.95, ставка: 9, цель: 24000, минимум: 5000 }, живой: { баланс: 0, ставка: 10, субсчета: { мотоцикл: 0, акции: 0, дом: 0, подарки: 0, реклама: 0, душа: 0, обслуживание: 0 } }, жизнь: { баланс: 0 }, долг: { баланс: 0 } }, фаза: "Фаза 1 Накопление", цель_мотоцикл: { бюджет: 200000, срок: "2027-11" }, доход_будущий_мес_брутто: 40000, налог_ставка: 4, операции: [] }; }
     function accrueInterest() { const f=currentData.финансы; const today=new Date().toISOString().slice(0,10); if(f.дата_последнего_расчёта===today) return; const prev=new Date(f.дата_последнего_расчёта); const curr=new Date(today); const days=Math.floor((curr-prev)/(1000*60*60*24)); if(days<=0) return; f.счета.железный.баланс+=f.счета.железный.баланс*(f.счета.железный.ставка/100)*(days/365); f.счета.крепость.баланс+=f.счета.крепость.баланс*(f.счета.крепость.ставка/100)*(days/365); f.счета.живой.баланс+=f.счета.живой.баланс*(f.счета.живой.ставка/100)*(days/365); f.дата_последнего_расчёта=today; }
-    function renderFinanceTab() { const container=document.getElementById('financeContainer'); if(!container) return; accrueInterest(); const f=currentData.финансы; let html=''; const totalForMoto=f.счета.железный.баланс+(f.счета.живой.субсчета?.мотоцикл||0)+Math.max(0,f.счета.крепость.баланс-f.счета.крепость.минимум); const motoProgress=Math.min(100,Math.round((totalForMoto/f.цель_мотоцикл.бюджет)*100)); html+=`<div class="finance-card"><h3>📊 Фаза: <span class="phase-badge">${f.фаза}</span></h3><div>Цель «Мотоцикл»: ${motoProgress}% (${totalForMoto.toFixed(0)} / ${f.цель_мотоцикл.бюджет} ₽)</div><div class="progress-finance"><div class="progress-finance-fill" style="width:${motoProgress}%"></div></div></div>`; const accounts=[ {key:'железный',icon:'⚛️',name:'Железный Реактор',balance:f.счета.железный.баланс,info:`Ставка ${f.счета.железный.ставка}%, погашение ${f.счета.железный.погашение}`}, {key:'крепость',icon:'🖤',name:'Крепость',balance:f.счета.крепость.баланс,info:`Цель ${f.счета.крепость.цель} ₽`}, {key:'живой',icon:'💰',name:'Живой Реактор',balance:f.счета.живой.баланс,info:`Ставка ${f.счета.живой.ставка}%`}, {key:'жизнь',icon:'💸',name:'Жизнь',balance:f.счета.жизнь.баланс,info:'Операционные'}, {key:'долг',icon:'🔴',name:'Долг',balance:f.счета.долг.баланс,info:'Перед родителями'} ]; accounts.forEach(acc=>{ html+=`<div class="finance-card"><div class="balance-row"><span>${acc.icon} ${acc.name}</span><span>${acc.balance.toFixed(2)} ₽</span></div><div style="font-size:0.8rem; color:#aaa;">${acc.info}</div>`; if(acc.key==='крепость'){ const prog=Math.min(100,(acc.balance/f.счета.крепость.цель)*100); html+=`<div class="progress-finance"><div class="progress-finance-fill" style="width:${prog}%"></div></div>`; } if(acc.key==='живой'){ html+=`<div class="sub-account">Субсчета:</div>`; for(const [sub,bal] of Object.entries(f.счета.живой.субсчета)){ html+=`<div class="balance-row sub-account"><span>📌 ${sub}</span><span>${bal.toFixed(2)} ₽</span></div>`; } } html+=`</div>`; }); html+=`<div style="display:flex; gap:10px; margin-bottom:15px;"><button class="btn small-btn" onclick="addFinanceOperation('income')">+ Доход</button><button class="btn small-btn" onclick="addFinanceOperation('expense')">- Расход</button><button class="btn small-btn" onclick="addFinanceOperation('transfer')">↔️ Перевод</button><button class="btn small-btn" onclick="exportFinanceProtocol()">📋 Протокол</button></div>`; html+=`<div class="finance-card"><h4>Последние операции</h4><div class="operation-list">`; const ops=f.операции.slice(-10).reverse(); ops.forEach(op=>{ html+=`<div class="operation-item"><span>${op.date} ${op.desc}</span><span class="${op.amount>0?'positive':'negative'}">${op.amount>0?'+':''}${op.amount.toFixed(2)} ₽</span></div>`; }); html+=`</div></div>`; container.innerHTML=html; }
-    function addFinanceOperation(type) { const f=currentData.финансы; const amount=parseFloat(prompt('Сумма:')); if(isNaN(amount)||amount<=0) return; const desc=prompt('Описание:')||type; const today=new Date().toISOString().slice(0,10); if(type==='income'){ if(f.фаза==='Фаза 1 Накопление') f.счета.живой.субсчета.мотоцикл+=amount; else f.счета.жизнь.баланс+=amount; f.операции.push({date:today,desc:`Доход: ${desc}`,amount:amount}); } else if(type==='expense'){ f.счета.жизнь.баланс-=amount; f.операции.push({date:today,desc:`Расход: ${desc}`,amount:-amount}); } else if(type==='transfer'){ alert('Переводы будут добавлены позже'); return; } localStorage.setItem('obsidian_hybrid',JSON.stringify(currentData)); renderFinanceTab(); }
-    function exportFinanceProtocol() { const f=currentData.финансы; let text=`=== Протокол финансовой системы v8.1.1 ===\nДата: ${new Date().toLocaleDateString('ru-RU')}\nФаза: ${f.фаза}\nЦель Мотоцикл: ${f.цель_мотоцикл.бюджет} ₽ (срок ${f.цель_мотоцикл.срок})\n\nСчета:\n`; text+=`⚛️ Железный: ${f.счета.железный.баланс.toFixed(2)} ₽ (ставка ${f.счета.железный.ставка}%)\n`; text+=`🖤 Крепость: ${f.счета.крепость.баланс.toFixed(2)} ₽ (цель ${f.счета.крепость.цель})\n`; text+=`💰 Живой: ${f.счета.живой.баланс.toFixed(2)} ₽\n`; for(const [sub,bal] of Object.entries(f.счета.живой.субсчета)) text+=`   📌 ${sub}: ${bal.toFixed(2)} ₽\n`; text+=`💸 Жизнь: ${f.счета.жизнь.баланс.toFixed(2)} ₽\n`; text+=`🔴 Долг: ${f.счета.долг.баланс.toFixed(2)} ₽\n`; navigator.clipboard.writeText(text).then(()=>alert('Протокол скопирован!')); }
+
+    function updatePhase() {
+      const f = currentData.финансы;
+      const totalForMoto = f.счета.железный.баланс + (f.счета.живой.субсчета?.мотоцикл || 0) + Math.max(0, f.счета.крепость.баланс - f.счета.крепость.минимум);
+      const motoGoal = f.цель_мотоцикл.бюджет;
+      const now = new Date();
+      const deadline = new Date(f.цель_мотоцикл.срок);
+
+      if (totalForMoto >= motoGoal && now <= deadline) {
+        f.фаза = 'Фаза 2 Покупка';
+      } else if (f.счета.долг.баланс > 0 && f.доход_будущий_мес_брутто > 0) {
+        f.фаза = 'Фаза 3 Восстановление';
+      } else if (f.счета.крепость.баланс >= f.счета.крепость.цель && f.счета.железный.баланс >= 50000) {
+        f.фаза = 'Стандартный режим';
+      } else {
+        f.фаза = 'Фаза 1 Накопление';
+      }
+    }
+
+    function renderFinanceTab() {
+      const container = document.getElementById('financeContainer');
+      if (!container) return;
+      accrueInterest();
+      updatePhase();
+      const f = currentData.финансы;
+      let html = '';
+
+      const totalForMoto = f.счета.железный.баланс + (f.счета.живой.субсчета?.мотоцикл || 0) + Math.max(0, f.счета.крепость.баланс - f.счета.крепость.минимум);
+      const motoProgress = Math.min(100, Math.round((totalForMoto / f.цель_мотоцикл.бюджет) * 100));
+      html += `<div class="finance-card">
+        <h3>📊 Фаза: <span class="phase-badge">${f.фаза}</span></h3>
+        <div>Цель «Мотоцикл»: ${motoProgress}% (${totalForMoto.toFixed(0)} / ${f.цель_мотоцикл.бюджет} ₽)</div>
+        <div class="progress-finance"><div class="progress-finance-fill" style="width:${motoProgress}%"></div></div>
+      </div>`;
+
+      const accounts = [
+        { key: 'железный', icon: '⚛️', name: 'Железный Реактор', balance: f.счета.железный.баланс, info: `Ставка ${f.счета.железный.ставка}%, погашение ${f.счета.железный.погашение}` },
+        { key: 'крепость', icon: '🖤', name: 'Крепость', balance: f.счета.крепость.баланс, info: `Цель ${f.счета.крепость.цель} ₽` },
+        { key: 'живой', icon: '💰', name: 'Живой Реактор', balance: f.счета.живой.баланс, info: `Ставка ${f.счета.живой.ставка}%` },
+        { key: 'жизнь', icon: '💸', name: 'Жизнь', balance: f.счета.жизнь.баланс, info: 'Операционные' },
+        { key: 'долг', icon: '🔴', name: 'Долг', balance: f.счета.долг.баланс, info: 'Перед родителями' }
+      ];
+      accounts.forEach(acc => {
+        html += `<div class="finance-card">
+          <div class="balance-row"><span>${acc.icon} ${acc.name}</span><span>${acc.balance.toFixed(2)} ₽</span></div>
+          <div style="font-size:0.8rem; color:#aaa;">${acc.info}</div>`;
+        if (acc.key === 'крепость') {
+          const prog = Math.min(100, (acc.balance / f.счета.крепость.цель) * 100);
+          html += `<div class="progress-finance"><div class="progress-finance-fill" style="width:${prog}%"></div></div>`;
+        }
+        if (acc.key === 'живой') {
+          html += `<div class="sub-account">Субсчета:</div>`;
+          for (const [sub, bal] of Object.entries(f.счета.живой.субсчета)) {
+            html += `<div class="balance-row sub-account"><span>📌 ${sub}</span><span>${bal.toFixed(2)} ₽</span></div>`;
+          }
+        }
+        html += `</div>`;
+      });
+
+      html += `<div style="display:flex; gap:10px; margin-bottom:15px;">
+        <button class="btn small-btn" onclick="addFinanceOperation('income')">+ Доход</button>
+        <button class="btn small-btn" onclick="addFinanceOperation('expense')">- Расход</button>
+        <button class="btn small-btn" onclick="transferFunds()">↔️ Перевод</button>
+        <button class="btn small-btn" onclick="exportFinanceProtocol()">📋 Протокол</button>
+      </div>`;
+
+      html += `<div class="finance-card"><h4>Последние операции</h4><div class="operation-list">`;
+      const ops = f.операции.slice(-10).reverse();
+      ops.forEach(op => {
+        html += `<div class="operation-item"><span>${op.date} ${op.desc}</span><span class="${op.amount > 0 ? 'positive' : 'negative'}">${op.amount > 0 ? '+' : ''}${op.amount.toFixed(2)} ₽</span></div>`;
+      });
+      html += `</div></div>`;
+      container.innerHTML = html;
+    }
+
+    function addFinanceOperation(type) {
+      const f = currentData.финансы;
+      const amount = parseFloat(prompt('Сумма:'));
+      if (isNaN(amount) || amount <= 0) return;
+      const desc = prompt('Описание:') || type;
+      const today = new Date().toISOString().slice(0,10);
+      if (type === 'income') {
+        if (f.фаза === 'Фаза 1 Накопление') f.счета.живой.субсчета.мотоцикл += amount;
+        else f.счета.жизнь.баланс += amount;
+        f.операции.push({ date: today, desc: `Доход: ${desc}`, amount: amount });
+      } else if (type === 'expense') {
+        f.счета.жизнь.баланс -= amount;
+        f.операции.push({ date: today, desc: `Расход: ${desc}`, amount: -amount });
+      }
+      updatePhase();
+      localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
+      renderFinanceTab();
+    }
+
+    function transferFunds() {
+      const f = currentData.финансы;
+      const from = prompt('Из какого счёта перевести? (жизнь, крепость, живой, долг, железный):');
+      if (!from) return;
+      const to = prompt('В какой счёт зачислить? (жизнь, крепость, живой, долг, железный):');
+      if (!to) return;
+      const amount = parseFloat(prompt('Сумма перевода:'));
+      if (isNaN(amount) || amount <= 0) return;
+
+      const accounts = f.счета;
+      const fromKey = from.trim().toLowerCase();
+      const toKey = to.trim().toLowerCase();
+      if (!accounts[fromKey] || !accounts[toKey]) {
+        alert('Неверное имя счёта');
+        return;
+      }
+      if (accounts[fromKey].баланс < amount) {
+        alert('Недостаточно средств');
+        return;
+      }
+
+      accounts[fromKey].баланс -= amount;
+      if (toKey === 'живой') {
+        accounts.живой.баланс += amount;
+        const sub = prompt('На какой субсчёт зачислить? (мотоцикл, акции, дом и т.д.)') || 'мотоцикл';
+        if (accounts.живой.субсчета[sub] !== undefined) {
+          accounts.живой.субсчета[sub] += amount;
+        } else {
+          accounts.живой.субсчета.мотоцикл += amount;
+        }
+      } else {
+        accounts[toKey].баланс += amount;
+      }
+
+      const today = new Date().toISOString().slice(0,10);
+      f.операции.push({ date: today, desc: `Перевод: ${from} → ${to}`, amount: amount });
+
+      updatePhase();
+      localStorage.setItem('obsidian_hybrid', JSON.stringify(currentData));
+      renderFinanceTab();
+    }
+
+    function exportFinanceProtocol() {
+      const f = currentData.финансы;
+      let text = `=== Протокол финансовой системы v8.1.1 ===\nДата: ${new Date().toLocaleDateString('ru-RU')}\nФаза: ${f.фаза}\nЦель Мотоцикл: ${f.цель_мотоцикл.бюджет} ₽ (срок ${f.цель_мотоцикл.срок})\n\nСчета:\n`;
+      text += `⚛️ Железный: ${f.счета.железный.баланс.toFixed(2)} ₽ (ставка ${f.счета.железный.ставка}%)\n`;
+      text += `🖤 Крепость: ${f.счета.крепость.баланс.toFixed(2)} ₽ (цель ${f.счета.крепость.цель})\n`;
+      text += `💰 Живой: ${f.счета.живой.баланс.toFixed(2)} ₽\n`;
+      for (const [sub, bal] of Object.entries(f.счета.живой.субсчета)) text += `   📌 ${sub}: ${bal.toFixed(2)} ₽\n`;
+      text += `💸 Жизнь: ${f.счета.жизнь.баланс.toFixed(2)} ₽\n`;
+      text += `🔴 Долг: ${f.счета.долг.баланс.toFixed(2)} ₽\n`;
+      navigator.clipboard.writeText(text).then(() => alert('Протокол скопирован!'));
+    }
   </script>
 </body>
 </html>
